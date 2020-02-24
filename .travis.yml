@@ -3,7 +3,7 @@ dist: xenial
 language: python
 python:
 - 3.7
-- 3.8-dev
+- 3.8
 
 matrix:
   include:
@@ -42,6 +42,7 @@ env:
 install:
 - cd /tmp
 - curl -sSf https://sh.rustup.rs/ | sh -s -- --default-toolchain=$TRAVIS_RUST_VERSION -y
+- rustup component add rustc-dev
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rustup target add x86_64-unknown-linux-gnu; fi
 - CARGO_TARGET_DIR="${HOME}/.cargo/target" cargo install cargo-update || echo "cargo-update already installed"
 - CARGO_TARGET_DIR="${HOME}/.cargo/target" cargo install --git git://github.com/bhuztez/cov cargo-cov || echo "cargo-cov already installed"
