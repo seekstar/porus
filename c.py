@@ -73,7 +73,6 @@ def rustc_argv(mode, target, filename, *libs):
         yield from ("-C", "opt-level=2")
         yield from ("-C", "panic=abort")
 
-    yield from ('-Z', 'external-macro-backtrace')
     if target is not None:
         yield from ('--target', target)
     for feature in features(mode, target):
