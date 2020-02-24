@@ -2,7 +2,7 @@ use crate::fmt::{self, fwrite_str};
 #[allow(unused_imports)]
 use crate::fmt::{f, fwrite};
 use crate::io::Sink;
-use alloc::alloc::{Alloc, Global};
+use alloc::alloc::{AllocRef, Global, Layout};
 use core::cmp::Ordering;
 use core::mem::size_of;
 use core::ops::Deref;
@@ -126,12 +126,12 @@ impl Clone for Union {
     }
 }
 
-pub struct String<A: Alloc = Global> {
+pub struct String<A: AllocRef = Global> {
     s: Union,
     allocator: A,
 }
 
-impl<A: Alloc + Default> From<&'static [u8]> for String<A> {
+impl<A: AllocRef + Default> From<&'static [u8]> for String<A> {
     fn from(s: &'static [u8]) -> Self {
         Self {
             s: Union {
@@ -146,7 +146,7 @@ impl<A: Alloc + Default> From<&'static [u8]> for String<A> {
     }
 }
 
-impl<A: Alloc> Deref for String<A> {
+impl<A: AllocRef> Deref for String<A> {
     type Target = str;
 
     #[inline]
@@ -155,25 +155,25 @@ impl<A: Alloc> Deref for String<A> {
     }
 }
 
-impl<A: Alloc> AsRef<[u8]> for String<A> {
+impl<A: AllocRef> AsRef<[u8]> for String<A> {
     fn as_ref(&self) -> &[u8] {
         self.s.as_bytes()
     }
 }
 
-impl<A: Alloc> PartialEq for String<A> {
+impl<A: AllocRef> PartialEq for String<A> {
     fn eq(&self, other: &Self) -> bool {
         PartialEq::eq(self.as_ref(), other.as_ref())
     }
 }
 
-impl<A: Alloc> PartialOrd for String<A> {
+impl<A: AllocRef> PartialOrd for String<A> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         PartialOrd::partial_cmp(self.as_ref(), other.as_ref())
     }
 }
 
-impl<A: Alloc + Clone> Clone for String<A> {
+impl<A: AllocRef + Clone> Clone for String<A> {
     fn clone(&self) -> Self {
         Self {
             s: Clone::clone(&self.s),
@@ -182,19 +182,22 @@ impl<A: Alloc + Clone> Clone for String<A> {
     }
 }
 
-impl<A: Alloc> Drop for String<A> {
+impl<A: AllocRef> Drop for String<A> {
     fn drop(&mut self) {
         if let Tag::Shared = self.s.tag() {
             unsafe {
                 if let Some(c) = usize::checked_sub(*self.s.shared.counter.as_ref(), 1) {
                     *self.s.shared.counter.as_mut() = c;
                 } else {
-                    Alloc::dealloc_array::<u8>(
+                    AllocRef::dealloc(
                         &mut self.allocator,
                         self.s.shared.counter.cast(),
-                        usize::wrapping_add(size_of::<usize>(), self.s.shared.length),
+                        Layout::array::<u8>(usize::wrapping_add(
+                            size_of::<usize>(),
+                            self.s.shared.length,
+                        ))
+                        .expect("layout error"),
                     )
-                    .expect("dealloc failed");
                 }
             }
         }

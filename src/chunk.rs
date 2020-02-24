@@ -1,9 +1,9 @@
 use crate::block::Block;
 use crate::capacity::{DefaultPolicy, Policy};
 use crate::pool::{self, Pool};
-use alloc::alloc::{Alloc, Global};
-use core::num::NonZeroUsize;
+use alloc::alloc::{AllocRef, Global};
 use core::mem::ManuallyDrop;
+use core::num::NonZeroUsize;
 
 #[derive(Clone, Copy)]
 struct Index(NonZeroUsize);
@@ -28,13 +28,13 @@ union Node<T> {
     next: Option<Index>,
 }
 
-pub struct Chunk<T, P: Policy = DefaultPolicy, A: Alloc = Global> {
+pub struct Chunk<T, P: Policy = DefaultPolicy, A: AllocRef = Global> {
     size: usize,
     next: Option<Index>,
     data: Block<Node<T>, P, A>,
 }
 
-impl<T, P: Policy, A: Alloc> Chunk<T, P, A> {
+impl<T, P: Policy, A: AllocRef> Chunk<T, P, A> {
     pub fn new(allocator: A, capacity: usize) -> Self {
         Self {
             size: 0,
@@ -44,13 +44,13 @@ impl<T, P: Policy, A: Alloc> Chunk<T, P, A> {
     }
 }
 
-impl<T, P: Policy, A: Alloc + Default> Chunk<T, P, A> {
+impl<T, P: Policy, A: AllocRef + Default> Chunk<T, P, A> {
     pub fn new_with_capacity(capacity: usize) -> Self {
         Self::new(Default::default(), capacity)
     }
 }
 
-impl<T, P: Policy, A: Alloc> Pool for Chunk<T, P, A> {
+impl<T, P: Policy, A: AllocRef> Pool for Chunk<T, P, A> {
     type Handle = Handle;
     type Elem = T;
 
@@ -78,7 +78,12 @@ impl<T, P: Policy, A: Alloc> Pool for Chunk<T, P, A> {
             }
         };
 
-        self.data.write(index, Node { data: ManuallyDrop::new(item) });
+        self.data.write(
+            index,
+            Node {
+                data: ManuallyDrop::new(item),
+            },
+        );
         Handle(Index::new(index))
     }
 

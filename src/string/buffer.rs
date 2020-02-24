@@ -4,19 +4,19 @@ use crate::capacity::{DefaultPolicy, Policy};
 use crate::io::{PeekableSource, Sink, Source};
 use crate::scan::{is_whitespace, Consumer};
 use crate::utils::unwrap;
-use alloc::alloc::{Alloc, Global};
+use alloc::alloc::{AllocRef, Global, Layout};
 use core::marker::PhantomData;
 use core::mem::{forget, size_of, transmute_copy};
 use core::ptr::{copy_nonoverlapping, NonNull};
 use core::slice::{from_raw_parts, from_raw_parts_mut};
 
-pub struct Buffer<P: Policy = DefaultPolicy, A: Alloc = Global> {
+pub struct Buffer<P: Policy = DefaultPolicy, A: AllocRef = Global> {
     buffer: Union,
     allocator: A,
     _policy: PhantomData<P>,
 }
 
-impl<P: Policy, A: Alloc + Default> Buffer<P, A> {
+impl<P: Policy, A: AllocRef + Default> Buffer<P, A> {
     pub fn new() -> Self {
         Self {
             buffer: Union {
@@ -31,7 +31,7 @@ impl<P: Policy, A: Alloc + Default> Buffer<P, A> {
     }
 }
 
-impl<P: Policy, A: Alloc + Default> Default for Buffer<P, A> {
+impl<P: Policy, A: AllocRef + Default> Default for Buffer<P, A> {
     fn default() -> Self {
         Self::new()
     }
@@ -61,12 +61,12 @@ unsafe fn capacity(u: &Union) -> usize {
     }
 }
 
-unsafe fn resize<A: Alloc>(allocator: &mut A, s: &mut SharedString, new_size: usize) {
+unsafe fn resize<A: AllocRef>(allocator: &mut A, s: &mut SharedString, new_size: usize) {
     let counter_size = size_of::<usize>();
-    s.counter = Alloc::realloc_array::<u8>(
+    s.counter = AllocRef::realloc(
         allocator,
         s.counter.cast(),
-        usize::wrapping_add(counter_size, s.length),
+        Layout::array::<u8>(usize::wrapping_add(counter_size, s.length)).expect("layout error"),
         usize::wrapping_add(counter_size, new_size),
     )
     .expect("realloc failed")
@@ -83,21 +83,21 @@ fn len(u: &Union) -> usize {
     }
 }
 
-impl<P: Policy, A: Alloc> AsRef<[u8]> for Buffer<P, A> {
+impl<P: Policy, A: AllocRef> AsRef<[u8]> for Buffer<P, A> {
     fn as_ref(&self) -> &[u8] {
         let buf = &self.buffer;
         unsafe { from_raw_parts(as_ptr(buf), len(buf)) }
     }
 }
 
-impl<P: Policy, A: Alloc> AsMut<[u8]> for Buffer<P, A> {
+impl<P: Policy, A: AllocRef> AsMut<[u8]> for Buffer<P, A> {
     fn as_mut(&mut self) -> &mut [u8] {
         let buf = &mut self.buffer;
         unsafe { from_raw_parts_mut(as_mut_ptr(buf), len(buf)) }
     }
 }
 
-impl<P: Policy, A: Alloc> Sink for Buffer<P, A> {
+impl<P: Policy, A: AllocRef> Sink for Buffer<P, A> {
     fn write(&mut self, c: u8) {
         let offset = len(&self.buffer);
         let capacity = unsafe { capacity(&self.buffer) };
@@ -115,9 +115,10 @@ impl<P: Policy, A: Alloc> Sink for Buffer<P, A> {
                 } else {
                     let counter_size = size_of::<usize>();
                     let new_capacity = P::grow(P::initial(capacity));
-                    let s = Alloc::alloc_array::<u8>(
+                    let s = AllocRef::alloc(
                         &mut self.allocator,
-                        usize::wrapping_add(counter_size, new_capacity),
+                        Layout::array::<u8>(usize::wrapping_add(counter_size, new_capacity))
+                            .expect("layout error"),
                     )
                     .expect("alloc failed");
 
@@ -153,7 +154,7 @@ impl<P: Policy, A: Alloc> Sink for Buffer<P, A> {
     }
 }
 
-impl<'a, P: Policy, A: Alloc> Consumer for &'a mut Buffer<P, A> {
+impl<'a, P: Policy, A: AllocRef> Consumer for &'a mut Buffer<P, A> {
     fn consume<I: Source>(self, s: &mut PeekableSource<I>) -> bool {
         while let Some(&c) = s.peek() {
             if is_whitespace(c) {
@@ -168,23 +169,26 @@ impl<'a, P: Policy, A: Alloc> Consumer for &'a mut Buffer<P, A> {
     }
 }
 
-impl<P: Policy, A: Alloc> Drop for Buffer<P, A> {
+impl<P: Policy, A: AllocRef> Drop for Buffer<P, A> {
     fn drop(&mut self) {
         if let Shared = self.buffer.tag() {
             unsafe {
-                Alloc::dealloc_array::<u8>(
+                AllocRef::dealloc(
                     &mut self.allocator,
                     self.buffer.shared.counter.cast(),
-                    usize::wrapping_add(size_of::<usize>(), capacity(&self.buffer)),
+                    Layout::array::<u8>(usize::wrapping_add(
+                        size_of::<usize>(),
+                        capacity(&self.buffer),
+                    ))
+                    .expect("layout error"),
                 )
-                .expect("dealloc failed");
             }
         }
     }
 }
 
 #[allow(clippy::fallible_impl_from)]
-impl<P: Policy, A: Alloc> From<Buffer<P, A>> for String<A> {
+impl<P: Policy, A: AllocRef> From<Buffer<P, A>> for String<A> {
     fn from(mut x: Buffer<P, A>) -> Self {
         unsafe {
             if let Shared = x.buffer.tag() {

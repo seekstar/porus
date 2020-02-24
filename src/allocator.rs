@@ -1,6 +1,6 @@
 use crate::libc;
 use crate::pool;
-use alloc::alloc::{Alloc, Global, GlobalAlloc, Layout};
+use alloc::alloc::{AllocRef, Global, GlobalAlloc, Layout};
 use core::cmp::min;
 use core::marker::PhantomData;
 use core::ptr::{copy_nonoverlapping, null_mut, read, write, NonNull};
@@ -85,12 +85,12 @@ pub struct Handle(NonNull<u8>);
 
 impl pool::Handle for Handle {}
 
-pub struct Pool<T, A: Alloc = Global> {
+pub struct Pool<T, A: AllocRef = Global> {
     allocator: A,
     _type: PhantomData<T>,
 }
 
-impl<T, A: Alloc> Pool<T, A> {
+impl<T, A: AllocRef> Pool<T, A> {
     pub fn new_with_allocator(allocator: A) -> Self {
         Self {
             allocator,
@@ -99,19 +99,19 @@ impl<T, A: Alloc> Pool<T, A> {
     }
 }
 
-impl<T, A: Alloc + Default> Pool<T, A> {
+impl<T, A: AllocRef + Default> Pool<T, A> {
     pub fn new() -> Self {
         Self::new_with_allocator(Default::default())
     }
 }
 
-impl<T, A: Alloc + Default> Default for Pool<T, A> {
+impl<T, A: AllocRef + Default> Default for Pool<T, A> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T, A: Alloc> pool::Pool for Pool<T, A> {
+impl<T, A: AllocRef> pool::Pool for Pool<T, A> {
     type Handle = Handle;
     type Elem = T;
 
@@ -125,16 +125,17 @@ impl<T, A: Alloc> pool::Pool for Pool<T, A> {
 
     fn add(&mut self, item: T) -> Handle {
         unsafe {
-            let ptr = Alloc::alloc_one::<T>(&mut self.allocator).expect("alloc faield");
-            write(ptr.as_ptr(), item);
-            Handle(NonNull::cast(ptr))
+            let ptr =
+                AllocRef::alloc(&mut self.allocator, Layout::new::<T>()).expect("alloc faield");
+            write(ptr.as_ptr().cast(), item);
+            Handle(ptr)
         }
     }
 
     fn remove(&mut self, handle: Handle) -> T {
         unsafe {
             let item = read(handle.0.cast().as_ptr());
-            Alloc::dealloc_one(&mut self.allocator, handle.0);
+            AllocRef::dealloc(&mut self.allocator, handle.0, Layout::new::<T>());
             item
         }
     }

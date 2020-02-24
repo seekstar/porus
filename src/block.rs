@@ -1,20 +1,27 @@
 use crate::capacity::Policy;
 use crate::utils::unwrap;
-use core::alloc::Alloc;
+use core::alloc::{AllocRef, Layout};
 use core::marker::PhantomData;
 use core::ptr::{copy, read, write, NonNull};
 
-pub struct Block<T, P: Policy, A: Alloc> {
+pub struct Block<T, P: Policy, A: AllocRef> {
     capacity: usize,
     data: NonNull<T>,
     allocator: A,
     _policy: PhantomData<P>,
 }
 
-impl<T, P: Policy, A: Alloc> Block<T, P, A> {
+impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
     pub fn new(mut allocator: A, size: usize) -> Self {
         let capacity = P::initial(size);
-        let data = Alloc::alloc_array(&mut allocator, capacity).expect("alloc failed");
+        let data = unsafe {
+            AllocRef::alloc(
+                &mut allocator,
+                Layout::array::<T>(capacity).expect("layout error"),
+            )
+        }
+        .expect("alloc failed")
+        .cast();
         Self {
             capacity,
             data,
@@ -62,9 +69,15 @@ impl<T, P: Policy, A: Alloc> Block<T, P, A> {
         let new_capacity = P::grow(self.capacity);
         let grow = usize::checked_sub(new_capacity, self.capacity).expect("grow to a smaller size");
         self.data = unsafe {
-            Alloc::realloc_array(&mut self.allocator, self.data, self.capacity, new_capacity)
+            AllocRef::realloc(
+                &mut self.allocator,
+                self.data.cast(),
+                Layout::array::<T>(self.capacity).expect("layout error"),
+                new_capacity,
+            )
         }
-        .expect("realloc failed");
+        .expect("realloc failed")
+        .cast();
         let dst = unwrap(usize::checked_add(src, grow));
         self.copy(src, dst, n);
         self.capacity = new_capacity;
@@ -85,24 +98,35 @@ impl<T, P: Policy, A: Alloc> Block<T, P, A> {
                 Some(i) => self.copy(i, 0, n),
             }
             self.data = unsafe {
-                Alloc::realloc_array(&mut self.allocator, self.data, self.capacity, new_capacity)
+                AllocRef::realloc(
+                    &mut self.allocator,
+                    self.data.cast(),
+                    Layout::array::<T>(self.capacity).expect("layout error"),
+                    new_capacity,
+                )
             }
-            .expect("realloc failed");
+            .expect("realloc failed")
+            .cast();
         }
         self.capacity = new_capacity;
         shrink
     }
 }
 
-impl<T, P: Policy, A: Alloc + Default> Block<T, P, A> {
+impl<T, P: Policy, A: AllocRef + Default> Block<T, P, A> {
     pub fn new_with_capacity(capacity: usize) -> Self {
         Self::new(Default::default(), capacity)
     }
 }
 
-impl<T, P: Policy, A: Alloc> Drop for Block<T, P, A> {
+impl<T, P: Policy, A: AllocRef> Drop for Block<T, P, A> {
     fn drop(&mut self) {
-        unsafe { Alloc::dealloc_array(&mut self.allocator, self.data, self.capacity) }
-            .expect("dealloc failed");
+        unsafe {
+            AllocRef::dealloc(
+                &mut self.allocator,
+                self.data.cast(),
+                Layout::array::<T>(self.capacity).expect("layout error"),
+            )
+        }
     }
 }

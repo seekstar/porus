@@ -4,6 +4,7 @@
 #![feature(specialization)]
 #![feature(untagged_unions)]
 #![feature(allocator_api)]
+#![feature(alloc_layout_extra)]
 #![feature(alloc_error_handler)]
 #![feature(maybe_uninit_ref)]
 #![feature(ptr_offset_from)]
