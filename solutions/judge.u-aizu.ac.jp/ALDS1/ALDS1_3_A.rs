@@ -52,7 +52,7 @@ impl<'a> Consumer for &'a mut Symbol {
 }
 
 fn main() {
-    let a = &mut SinglyLinkedList::new_with_pool(Chunk::<_>::new_with_capacity(0));
+    let a = &mut Vec::new();
 
     while let Some(s) = read_opt!() {
         match s {
