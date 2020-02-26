@@ -1,0 +1,93 @@
+trigger:
+  branches:
+    include:
+    - '*'
+  tags:
+    include:
+    - '*'
+
+strategy:
+  matrix:
+    ubuntu-1604:
+      imageName: "ubuntu-16.04"
+    mac-mojave:
+      imageName: "macos-10.14"
+    mac-high-sierra:
+      imageName: "macos-10.13"
+    win-2019:
+      imageName: "windows-2019"
+    win-2016:
+      imageName: "vs2017-win2016"
+  maxParallel: 1
+
+pool:
+  vmImage: $(imageName)
+
+steps:
+- script: sudo apt-get install -y mingw-w64 libc6-dev-i386 gcc-multilib
+  condition: eq(variables['Agent.OS'], 'Linux')
+  displayName: 'install MinGW and GCC-multilib (Ubuntu)'
+- script: brew install mingw-w64
+  condition: eq(variables['Agent.OS'], 'Darwin')
+  displayName: 'install MinGW (MacOSX)'
+- script: curl -Lo MacPorts.pkg https://github.com/macports/macports-base/releases/download/v2.5.4/MacPorts-2.5.4-10.14-Mojave.pkg
+  condition: eq(variables['imageName'], 'macos-10.14')
+  displayName: 'download MacPorts (MacOSX 10.14 Mojave)'
+- script: curl -Lo MacPorts.pkg https://github.com/macports/macports-base/releases/download/v2.5.4/MacPorts-2.5.4-10.13-HighSierra.pkg
+  condition: eq(variables['imageName'], 'macos-10.13')
+  displayName: 'download MacPorts (MacOSX 10.13 High Sierra)'
+- script: sudo installer -pkg MacPorts.pkg -target /
+  condition: eq(variables['Agent.OS'], 'Darwin')
+  displayName: 'install MacPorts (MacOSX)'
+- bash: echo '##vso[task.setvariable variable=PATH]'$PATH:/opt/local/bin:/opt/local/sbin
+  condition: eq(variables['Agent.OS'], 'Darwin')
+  displayName: 'set up PATH for MacPorts (MacOSX)'
+- script: sudo port -v install i386-elf-gcc x86_64-elf-gcc
+  condition: eq(variables['Agent.OS'], 'Darwin')
+  displayName: 'install Linux GCC (MacOSX)'
+- script: choco install llvm cygwin cyg-get
+  condition: eq(variables['Agent.OS'], 'Windows_NT')
+  displayName: 'install LLVM and Cygwin (Windows)'
+- powershell: Write-Host "##vso[task.setvariable variable=PATH]$env:PATH;C:\Program Files\LLVM\bin"
+  condition: eq(variables['Agent.OS'], 'Windows_NT')
+  displayName: 'set up PATH for LLVM (Windows)'
+- script: cyg-get cygwin-devel
+  condition: eq(variables['Agent.OS'], 'Windows_NT')
+  displayName: 'install cygwin-devel (Cygwin)'
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.7'
+    architecture: 'x64'
+- script: pip3 install --verbose certifi
+  condition: eq(variables['Agent.OS'], 'Windows_NT')
+  displayName: 'install certifi (Windows)'
+- script: pip3 install --verbose -r requirements.txt
+  displayName: 'install'
+- script: curl -sSf https://sh.rustup.rs/ | sh -s -- --default-toolchain=nightly -y
+  displayName: 'install Rust'
+- bash: echo '##vso[task.setvariable variable=PATH]'$HOME/.cargo/bin:$PATH
+  condition: not(eq(variables['Agent.OS'], 'Windows_NT'))
+  displayName: 'set up PATH for Rust'
+- script: rustup component add rustc-dev
+- script: rustup target add x86_64-unknown-linux-gnu
+  condition: not(eq(variables['Agent.OS'], 'Linux'))
+- script: cargo install cargo-update || echo "cargo-update already installed"
+  env:
+    CARGO_TARGET_DIR: $(Pipeline.Workspace)/.cargo/target
+- script: cargo install --git git://github.com/bhuztez/cov cargo-cov || echo "cargo-cov already installed"
+  env:
+    CARGO_TARGET_DIR: $(Pipeline.Workspace)/.cargo/target
+- script: cargo install-update -ag
+  env:
+    CARGO_TARGET_DIR: $(Pipeline.Workspace)/.cargo/target
+- script: cargo test --verbose
+- script: cargo test --release --verbose
+- script: python3 c.py test solutions
+  env:
+    VERBOSE: 1
+- script: python3 c.py test --mode release solutions
+  env:
+    VERBOSE: 1
+- script: python3 c.py clean
+  env:
+    VERBOSE: 1
