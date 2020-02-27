@@ -5,53 +5,97 @@ on: [push]
 
 jobs:
   porus-debug:
-    name: test debug
+    name: porus debug
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest]
 
     runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install latest nightly
-      uses: actions-rs/toolchain@v1
+    - uses: actions-rs/toolchain@v1
       with:
         toolchain: nightly
         components: rustc-dev
         default: true
         override: true
 
-    - name: cargo test
-      uses: actions-rs/cargo@v1
+    - uses: actions-rs/cargo@v1
       with:
         command: test
         args: --verbose
 
   porus-release:
-    name: test release
+    name: porus release
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest]
 
     runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install latest nightly
-      uses: actions-rs/toolchain@v1
+    - uses: actions-rs/toolchain@v1
       with:
         toolchain: nightly
         components: rustc-dev
         default: true
         override: true
 
-    - name: cargo test
-      uses: actions-rs/cargo@v1
+    - uses: actions-rs/cargo@v1
       with:
         command: test
         args: --release --verbose
+
+  porus-debug-windows:
+    name: porus debug windows
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: choco install mingw
+
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        components: rustc-dev
+        target: x86_64-pc-windows-gnu
+        default: true
+        override: true
+
+    - uses: actions-rs/cargo@v1
+      with:
+        command: test
+        args: --verbose --target=x86_64-pc-windows-gnu
+
+
+  porus-release-windows:
+    name: porus release windows
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: choco install mingw
+
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        components: rustc-dev
+        target: x86_64-pc-windows-gnu
+        default: true
+        override: true
+
+    - uses: actions-rs/cargo@v1
+      with:
+        command: test
+        args: --release --verbose --target=x86_64-pc-windows-gnu
+

@@ -10,25 +10,21 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install latest nightly
-      uses: actions-rs/toolchain@v1
+    - uses: actions-rs/toolchain@v1
       with:
         toolchain: nightly
         components: rustfmt
         default: true
         override: true
 
-    - name: fmt porus
-      uses: actions-rs/cargo@v1
+    - uses: actions-rs/cargo@v1
       with:
         command: fmt
         args: --all -- --check
 
-    - name: fmt solutions
-      run: find solutions -name '*.rs' | xargs -I {} rustfmt --edition 2018 --check {}
+    - run: find solutions -name '*.rs' | xargs -I {} rustfmt --edition 2018 --check {}
 
-    - name: fmt examples
-      run: find examples -name '*.rs' | xargs -I {} rustfmt --edition 2018 --check {}
+    - run: find examples -name '*.rs' | xargs -I {} rustfmt --edition 2018 --check {}
 
   clippy:
     name: clippy
@@ -37,19 +33,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install latest nightly
-      uses: actions-rs/toolchain@v1
+    - uses: actions-rs/toolchain@v1
       with:
         toolchain: nightly
         components: clippy, rustc-dev
         default: true
         override: true
 
-    - name: clippy porus
-      uses: actions-rs/cargo@v1
+    - uses: actions-rs/cargo@v1
       with:
         command: clippy
         args: --all-features
 
-    - name: clippy porus_macros
-      run: cd porus_macros && cargo clippy
+    - run: cd porus_macros && cargo clippy

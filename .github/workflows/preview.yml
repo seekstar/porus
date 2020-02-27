@@ -1,0 +1,35 @@
+name: Preview
+
+on: [push]
+
+jobs:
+  solutions:
+    name: solutions
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        components: rustc-dev
+        target: x86_64-unknown-linux-gnu
+        default: true
+        override: true
+
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.7'
+        architecture: 'x64'
+
+    - run: pip3 install -r requirements.txt
+
+    - run: find solutions -name '*.rs' | xargs -I {} python3 c.py preview {}
+
+    - run: find examples -name '*.rs' | xargs -I {} python3 c.py preview {}

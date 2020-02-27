@@ -7,25 +7,6 @@ python:
 
 matrix:
   include:
-  - name: Lint
-    language: rust
-    rust: nightly
-    install:
-    - ./install-lint.sh
-    - rustup component add rustc-dev
-    script:
-    - cargo fmt --all -- --check
-    - find solutions -name '*.rs' | xargs -I {} rustfmt --edition 2018 --check {}
-    - find examples -name '*.rs' | xargs -I {} rustfmt --edition 2018 --check {}
-    - cargo clippy --all-features
-    - cd porus_macros
-    - cargo clippy
-    - cd ..
-    after_success:
-    cache:
-      directories:
-      - $HOME/.cargo
-      - $TRAVIS_BUILD_DIR/target
   - os: osx
     language: generic
     python: 3.7
@@ -33,8 +14,6 @@ matrix:
     - curl -Lo python.pkg https://www.python.org/ftp/python/3.7.3/python-3.7.3-macosx10.6.pkg
     - sudo installer -pkg python.pkg -target /
     - /Applications/Python\ 3.7/Install\ Certificates.command
-  allow_failures:
-  - python: "3.8-dev"
 env:
   global:
   - PATH=${PATH}:${HOME}/.cargo/bin
@@ -51,13 +30,8 @@ install:
 - cd "$TRAVIS_BUILD_DIR"
 - pip3 install -r requirements.txt
 script:
-- cargo test --verbose
-- cargo test --release --verbose
 - VERBOSE=1 python3 c.py test solutions
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then VERBOSE=1 python3 c.py test --mode release solutions; fi
-- VERBOSE=1 python3 c.py clean
-- find solutions -name '*.rs' | xargs -I {} python3 c.py preview {}
-- find examples -name '*.rs' | xargs -I {} python3 c.py preview {}
 - VERBOSE=1 python3 c.py clean
 - VERBOSE=1 python3 c.py clean examples
 after_success:
