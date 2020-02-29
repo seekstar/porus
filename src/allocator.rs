@@ -48,6 +48,7 @@ pub unsafe fn realloc_fallback(
 }
 
 // libstd/sys/unix/alloc.rs
+#[cfg(unix)]
 unsafe fn aligned_malloc(layout: &Layout) -> *mut u8 {
     let mut out = null_mut();
     let ret = libc::posix_memalign(&mut out, layout.align(), layout.size());
@@ -56,6 +57,11 @@ unsafe fn aligned_malloc(layout: &Layout) -> *mut u8 {
     } else {
         null_mut()
     }
+}
+
+#[cfg(windows)]
+unsafe fn aligned_malloc(layout: &Layout) -> *mut u8 {
+    libc::_aligned_malloc(layout.size(), layout.align())
 }
 
 unsafe impl GlobalAlloc for System {
@@ -67,15 +73,35 @@ unsafe impl GlobalAlloc for System {
         }
     }
 
+    #[cfg(unix)]
     unsafe fn dealloc(&self, ptr: *mut u8, _layout: Layout) {
         libc::free(ptr)
     }
 
+    #[cfg(windows)]
+    unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
+        if layout.align() <= MIN_ALIGN && layout.align() <= layout.size() {
+            libc::free(ptr)
+        } else {
+            libc::_aligned_free(ptr)
+        }
+    }
+
+    #[cfg(unix)]
     unsafe fn realloc(&self, ptr: *mut u8, layout: Layout, new_size: usize) -> *mut u8 {
         if layout.align() <= MIN_ALIGN && layout.align() <= new_size {
             libc::realloc(ptr, new_size)
         } else {
             realloc_fallback(self, ptr, layout, new_size)
+        }
+    }
+
+    #[cfg(windows)]
+    unsafe fn realloc(&self, ptr: *mut u8, layout: Layout, new_size: usize) -> *mut u8 {
+        if layout.align() <= MIN_ALIGN && layout.align() <= new_size {
+            libc::realloc(ptr, new_size)
+        } else {
+            libc::_aligned_realloc(ptr, new_size, layout.align())
         }
     }
 }

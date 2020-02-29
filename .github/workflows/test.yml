@@ -60,8 +60,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: choco install mingw
-
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: nightly
@@ -75,7 +73,6 @@ jobs:
         command: test
         args: --verbose --target=x86_64-pc-windows-gnu
 
-
   porus-release-windows:
     name: porus release windows
 
@@ -83,8 +80,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
-    - run: choco install mingw
 
     - uses: actions-rs/toolchain@v1
       with:
@@ -98,4 +93,3 @@ jobs:
       with:
         command: test
         args: --release --verbose --target=x86_64-pc-windows-gnu
-

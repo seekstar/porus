@@ -19,6 +19,7 @@ matrix:
     script:
     - VERBOSE=1 python3 c.py test --mode coverage solutions
     - cargo cov test -v
+    after_success:
     - cargo cov report --coveralls
   - os: osx
     language: generic
@@ -29,6 +30,7 @@ matrix:
     - /Applications/Python\ 3.7/Install\ Certificates.command
   allow_failures:
   - python: nightly
+  - name: coverage
 env:
   global:
   - PATH=${PATH}:${HOME}/.cargo/bin
