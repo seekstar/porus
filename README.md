@@ -1,5 +1,8 @@
 # porus
 
+[![Lint](https://github.com/bhuztez/porus/workflows/Lint/badge.svg)](https://github.com/bhuztez/porus/actions?query=workflow%3ALint)
+[![Test](https://github.com/bhuztez/porus/workflows/Test/badge.svg)](https://github.com/bhuztez/porus/actions?query=workflow%3ATest)
+[![Preview](https://github.com/bhuztez/porus/workflows/Preview/badge.svg)](https://github.com/bhuztez/porus/actions?query=workflow%3APreview)
 [![Build Status](https://travis-ci.org/bhuztez/porus.svg?branch=master)](https://travis-ci.org/bhuztez/porus)
 [![Coverage Status](https://coveralls.io/repos/github/bhuztez/porus/badge.svg?branch=master)](https://coveralls.io/github/bhuztez/porus?branch=master)
 
