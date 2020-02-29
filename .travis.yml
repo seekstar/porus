@@ -4,9 +4,22 @@ language: python
 python:
 - 3.7
 - 3.8
+- nightly
 
 matrix:
   include:
+  - name: coverage
+    language: python
+    python: 3.7
+    before_script:
+    - CARGO_TARGET_DIR="${HOME}/.cargo/target" cargo install cargo-update || echo "cargo-update already installed"
+    - CARGO_TARGET_DIR="${HOME}/.cargo/target" cargo install --git git://github.com/bhuztez/cov cargo-cov || echo "cargo-cov already installed"
+    - CARGO_TARGET_DIR="${HOME}/.cargo/target" cargo install-update -ag
+    - cargo cov clean
+    script:
+    - VERBOSE=1 python3 c.py test --mode coverage solutions
+    - cargo cov test -v
+    - cargo cov report --coveralls
   - os: osx
     language: generic
     python: 3.7
@@ -14,6 +27,8 @@ matrix:
     - curl -Lo python.pkg https://www.python.org/ftp/python/3.7.3/python-3.7.3-macosx10.6.pkg
     - sudo installer -pkg python.pkg -target /
     - /Applications/Python\ 3.7/Install\ Certificates.command
+  allow_failures:
+  - python: nightly
 env:
   global:
   - PATH=${PATH}:${HOME}/.cargo/bin
@@ -24,21 +39,11 @@ install:
 - curl -sSf https://sh.rustup.rs/ | sh -s -- --default-toolchain=$TRAVIS_RUST_VERSION -y
 - rustup component add rustc-dev
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rustup target add x86_64-unknown-linux-gnu; fi
-- CARGO_TARGET_DIR="${HOME}/.cargo/target" cargo install cargo-update || echo "cargo-update already installed"
-- CARGO_TARGET_DIR="${HOME}/.cargo/target" cargo install --git git://github.com/bhuztez/cov cargo-cov || echo "cargo-cov already installed"
-- CARGO_TARGET_DIR="${HOME}/.cargo/target" cargo install-update -ag
 - cd "$TRAVIS_BUILD_DIR"
 - pip3 install -r requirements.txt
 script:
 - VERBOSE=1 python3 c.py test solutions
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then VERBOSE=1 python3 c.py test --mode release solutions; fi
-- VERBOSE=1 python3 c.py clean
-- VERBOSE=1 python3 c.py clean examples
-after_success:
-- cargo cov clean
-- VERBOSE=1 python3 c.py test --mode coverage solutions
-- cargo cov test -v
-- cargo cov report --coveralls
 cache:
   pip: true
   directories:
