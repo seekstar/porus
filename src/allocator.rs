@@ -151,8 +151,7 @@ impl<T, A: AllocRef> pool::Pool for Pool<T, A> {
 
     fn add(&mut self, item: T) -> Handle {
         unsafe {
-            let ptr =
-                AllocRef::alloc(&mut self.allocator, Layout::new::<T>()).expect("alloc faield");
+            let ptr = AllocRef::alloc(&mut self.allocator, Layout::new::<T>()).unwrap();
             write(ptr.as_ptr().cast(), item);
             Handle(ptr)
         }

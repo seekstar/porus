@@ -243,6 +243,7 @@ pub trait Float {
 }
 
 #[allow(clippy::float_arithmetic)]
+#[allow(clippy::ok_expect)]
 impl Float for f64 {
     fn write<S: Sink>(mut self, s: &mut S, prec: u32) {
         if self.is_finite() {
@@ -258,7 +259,7 @@ impl Float for f64 {
                 self = fabs(self);
             }
 
-            self *= powi(10.0, TryInto::try_into(prec).expect("prec overflow"));
+            self *= powi(10.0, TryInto::try_into(prec).ok().expect("prec overflow"));
             let m = 10_u64.pow(prec);
 
             if self <= 9_007_199_254_740_992.0 {

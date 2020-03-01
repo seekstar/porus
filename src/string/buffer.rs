@@ -66,10 +66,10 @@ unsafe fn resize<A: AllocRef>(allocator: &mut A, s: &mut SharedString, new_size:
     s.counter = AllocRef::realloc(
         allocator,
         s.counter.cast(),
-        Layout::array::<u8>(usize::wrapping_add(counter_size, s.length)).expect("layout error"),
+        Layout::array::<u8>(usize::wrapping_add(counter_size, s.length)).unwrap(),
         usize::wrapping_add(counter_size, new_size),
     )
-    .expect("realloc failed")
+    .unwrap()
     .cast();
     s.length = new_size;
 }
@@ -118,9 +118,9 @@ impl<P: Policy, A: AllocRef> Sink for Buffer<P, A> {
                     let s = AllocRef::alloc(
                         &mut self.allocator,
                         Layout::array::<u8>(usize::wrapping_add(counter_size, new_capacity))
-                            .expect("layout error"),
+                            .unwrap(),
                     )
-                    .expect("alloc failed");
+                    .unwrap();
 
                     copy_nonoverlapping(
                         self.buffer.as_ptr(),
@@ -180,7 +180,7 @@ impl<P: Policy, A: AllocRef> Drop for Buffer<P, A> {
                         size_of::<usize>(),
                         capacity(&self.buffer),
                     ))
-                    .expect("layout error"),
+                    .unwrap(),
                 )
             }
         }

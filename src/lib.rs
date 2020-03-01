@@ -30,9 +30,8 @@
 #![allow(clippy::use_self)]
 #![allow(clippy::as_conversions)]
 #![allow(clippy::must_use_candidate)]
-#![allow(clippy::result_expect_used)]
 #![allow(clippy::option_expect_used)]
-#![allow(clippy::ok_expect)]
+#![allow(clippy::result_unwrap_used)]
 
 //! [`porus`](self) is a library for competitive programming. Since
 //! most popular online judges accept only a single file within tens

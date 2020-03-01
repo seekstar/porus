@@ -196,7 +196,7 @@ impl<A: AllocRef> Drop for String<A> {
                             size_of::<usize>(),
                             self.s.shared.length,
                         ))
-                        .expect("layout error"),
+                        .unwrap(),
                     )
                 }
             }

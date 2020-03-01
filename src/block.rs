@@ -14,14 +14,10 @@ pub struct Block<T, P: Policy, A: AllocRef> {
 impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
     pub fn new(mut allocator: A, size: usize) -> Self {
         let capacity = P::initial(size);
-        let data = unsafe {
-            AllocRef::alloc(
-                &mut allocator,
-                Layout::array::<T>(capacity).expect("layout error"),
-            )
-        }
-        .expect("alloc failed")
-        .cast();
+        let data =
+            unsafe { AllocRef::alloc(&mut allocator, Layout::array::<T>(capacity).unwrap()) }
+                .unwrap()
+                .cast();
         Self {
             capacity,
             data,
@@ -72,11 +68,11 @@ impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
             AllocRef::realloc(
                 &mut self.allocator,
                 self.data.cast(),
-                Layout::array::<T>(self.capacity).expect("layout error"),
+                Layout::array::<T>(self.capacity).unwrap(),
                 new_capacity,
             )
         }
-        .expect("realloc failed")
+        .unwrap()
         .cast();
         let dst = unwrap(usize::checked_add(src, grow));
         self.copy(src, dst, n);
@@ -101,11 +97,11 @@ impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
                 AllocRef::realloc(
                     &mut self.allocator,
                     self.data.cast(),
-                    Layout::array::<T>(self.capacity).expect("layout error"),
+                    Layout::array::<T>(self.capacity).unwrap(),
                     new_capacity,
                 )
             }
-            .expect("realloc failed")
+            .unwrap()
             .cast();
         }
         self.capacity = new_capacity;
@@ -125,7 +121,7 @@ impl<T, P: Policy, A: AllocRef> Drop for Block<T, P, A> {
             AllocRef::dealloc(
                 &mut self.allocator,
                 self.data.cast(),
-                Layout::array::<T>(self.capacity).expect("layout error"),
+                Layout::array::<T>(self.capacity).unwrap(),
             )
         }
     }

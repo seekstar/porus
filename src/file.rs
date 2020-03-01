@@ -36,6 +36,7 @@ fn write(fd: i32, buf: *const u8, count: usize) -> Result<(), libc::Error> {
 }
 
 #[cfg(feature = "online-judge")]
+#[allow(clippy::ok_expect)]
 fn expect<T, E: Debug>(result: Result<T, E>, msg: &str) -> T {
     result.ok().expect(msg)
 }
