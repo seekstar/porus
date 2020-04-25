@@ -4,7 +4,7 @@ use crate::capacity::{DefaultPolicy, Policy};
 use crate::io::{PeekableSource, Sink, Source};
 use crate::scan::{is_whitespace, Consumer};
 use crate::utils::unwrap;
-use alloc::alloc::{AllocRef, Global, Layout};
+use alloc::alloc::{AllocInit, AllocRef, Global, Layout, ReallocPlacement};
 use core::marker::PhantomData;
 use core::mem::{forget, size_of, transmute_copy};
 use core::ptr::{copy_nonoverlapping, NonNull};
@@ -63,13 +63,16 @@ unsafe fn capacity(u: &Union) -> usize {
 
 unsafe fn resize<A: AllocRef>(allocator: &mut A, s: &mut SharedString, new_size: usize) {
     let counter_size = size_of::<usize>();
-    s.counter = AllocRef::realloc(
+    s.counter = AllocRef::grow(
         allocator,
         s.counter.cast(),
         Layout::array::<u8>(usize::wrapping_add(counter_size, s.length)).unwrap(),
         usize::wrapping_add(counter_size, new_size),
+        ReallocPlacement::MayMove,
+        AllocInit::Uninitialized,
     )
     .unwrap()
+    .ptr
     .cast();
     s.length = new_size;
 }
@@ -119,8 +122,10 @@ impl<P: Policy, A: AllocRef> Sink for Buffer<P, A> {
                         &mut self.allocator,
                         Layout::array::<u8>(usize::wrapping_add(counter_size, new_capacity))
                             .unwrap(),
+                        AllocInit::Uninitialized,
                     )
-                    .unwrap();
+                    .unwrap()
+                    .ptr;
 
                     copy_nonoverlapping(
                         self.buffer.as_ptr(),

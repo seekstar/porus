@@ -1,6 +1,6 @@
 use crate::libc;
 use crate::pool;
-use alloc::alloc::{AllocRef, Global, GlobalAlloc, Layout};
+use alloc::alloc::{AllocInit, AllocRef, Global, GlobalAlloc, Layout};
 use core::cmp::min;
 use core::marker::PhantomData;
 use core::ptr::{copy_nonoverlapping, null_mut, read, write, NonNull};
@@ -151,9 +151,14 @@ impl<T, A: AllocRef> pool::Pool for Pool<T, A> {
 
     fn add(&mut self, item: T) -> Handle {
         unsafe {
-            let ptr = AllocRef::alloc(&mut self.allocator, Layout::new::<T>()).unwrap();
-            write(ptr.as_ptr().cast(), item);
-            Handle(ptr)
+            let mem = AllocRef::alloc(
+                &mut self.allocator,
+                Layout::new::<T>(),
+                AllocInit::Uninitialized,
+            )
+            .unwrap();
+            write(mem.ptr.as_ptr().cast(), item);
+            Handle(mem.ptr)
         }
     }
 

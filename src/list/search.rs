@@ -17,7 +17,7 @@ const fn is_empty(r: &(usize, usize)) -> bool {
 }
 
 const fn midpoint(r: &(usize, usize)) -> usize {
-    usize::saturating_add(r.0, usize::saturating_sub(r.1, 1)) >> 1
+    usize::wrapping_shr(usize::saturating_add(r.0, usize::saturating_sub(r.1, 1)), 1)
 }
 
 const fn range_left(r: &(usize, usize), m: usize) -> (usize, usize) {

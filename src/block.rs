@@ -1,6 +1,6 @@
 use crate::capacity::Policy;
 use crate::utils::unwrap;
-use core::alloc::{AllocRef, Layout};
+use core::alloc::{AllocInit, AllocRef, Layout, ReallocPlacement};
 use core::marker::PhantomData;
 use core::ptr::{copy, read, write, NonNull};
 
@@ -14,13 +14,15 @@ pub struct Block<T, P: Policy, A: AllocRef> {
 impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
     pub fn new(mut allocator: A, size: usize) -> Self {
         let capacity = P::initial(size);
-        let data =
-            unsafe { AllocRef::alloc(&mut allocator, Layout::array::<T>(capacity).unwrap()) }
-                .unwrap()
-                .cast();
+        let mem = AllocRef::alloc(
+            &mut allocator,
+            Layout::array::<T>(capacity).unwrap(),
+            AllocInit::Uninitialized,
+        )
+        .unwrap();
         Self {
             capacity,
-            data,
+            data: mem.ptr.cast(),
             allocator,
             _policy: PhantomData,
         }
@@ -64,16 +66,18 @@ impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
         let src = usize::checked_sub(self.capacity, n).expect("n greater than capacity");
         let new_capacity = P::grow(self.capacity);
         let grow = usize::checked_sub(new_capacity, self.capacity).expect("grow to a smaller size");
-        self.data = unsafe {
-            AllocRef::realloc(
+        let mem = unsafe {
+            AllocRef::grow(
                 &mut self.allocator,
                 self.data.cast(),
                 Layout::array::<T>(self.capacity).unwrap(),
                 new_capacity,
+                ReallocPlacement::MayMove,
+                AllocInit::Uninitialized,
             )
         }
-        .unwrap()
-        .cast();
+        .unwrap();
+        self.data = mem.ptr.cast();
         let dst = unwrap(usize::checked_add(src, grow));
         self.copy(src, dst, n);
         self.capacity = new_capacity;
@@ -93,16 +97,17 @@ impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
                 None => self.copy(src, dst, n),
                 Some(i) => self.copy(i, 0, n),
             }
-            self.data = unsafe {
-                AllocRef::realloc(
+            let mem = unsafe {
+                AllocRef::shrink(
                     &mut self.allocator,
                     self.data.cast(),
                     Layout::array::<T>(self.capacity).unwrap(),
                     new_capacity,
+                    ReallocPlacement::MayMove,
                 )
             }
-            .unwrap()
-            .cast();
+            .unwrap();
+            self.data = mem.ptr.cast();
         }
         self.capacity = new_capacity;
         shrink

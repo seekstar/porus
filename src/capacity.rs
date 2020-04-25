@@ -28,7 +28,7 @@ impl Policy for DefaultPolicy {
     }
 
     fn grow(capacity: usize) -> usize {
-        usize::saturating_add(capacity, capacity >> 1)
+        usize::saturating_add(capacity, usize::wrapping_shr(capacity, 1))
     }
 
     fn shrink(size: usize, capacity: usize) -> usize {

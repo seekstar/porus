@@ -85,7 +85,7 @@ impl Union {
         unsafe {
             match self.tag() {
                 Tag::Shared => self.shared.length,
-                Tag::Inline => (self.inline.length >> 2) as usize,
+                Tag::Inline => u8::wrapping_shr(self.inline.length, 2) as usize,
                 Tag::Static => self.static_.length,
             }
         }
