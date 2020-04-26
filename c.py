@@ -41,17 +41,14 @@ def libname(path):
     return os.path.splitext(os.path.basename(path))[0][3:].split('-', 1)[0]
 
 def cargo_argv(mode, target):
-    yield 'cargo'
-    # if mode == 'coverage':
-    #     yield 'cov'
-    yield 'build'
-    yield '--lib'
+    yield from ('cargo', 'build', '--lib')
     yield '-v' if VERBOSE else '-q'
     if mode == 'release':
         yield '--release'
+    if mode == 'coverage':
+        yield from ('--target-dir', os.path.dirname(os.path.join(ROOTDIR, *target_dir(mode, target))))
     if target is not None:
         yield from ('--target', target)
-    yield from ('--target-dir', os.path.dirname(os.path.join(ROOTDIR, *target_dir(mode, target))))
     yield from ('--features', ",".join(features(mode, target)))
     yield from ("--message-format", "json")
 
@@ -132,10 +129,6 @@ def compile_libs(mode='debug', target=None):
 def get_compile_argv(filename, *libs, mode='debug', target=None):
     env = os.environ.copy()
     dest = dest_filename(filename, mode, target)
-
-    if mode == 'coverage':
-        env["CARGO_INCREMENTAL"] = "0"
-
     return dest, list(rustc_argv(mode, target, filename, *libs)), env
 
 
