@@ -52,6 +52,15 @@ def cargo_argv(mode, target):
     yield from ('--features', ",".join(features(mode, target)))
     yield from ("--message-format", "json")
 
+def coverage_flags():
+    yield from ("-Z", "profile")
+    yield from ("-Z", "no-landing-pads")
+    yield from ("-C", "codegen-units=1")
+    yield from ("-C", "opt-level=0")
+    yield from ("-C", "link-dead-code")
+    yield from ("-C", "overflow-checks=off")
+    yield from ("-C", "inline-threshold=0")
+
 def rustc_argv(mode, target, filename, *libs):
     yield from ('rustc', '--edition', '2018')
 
@@ -67,12 +76,7 @@ def rustc_argv(mode, target, filename, *libs):
         yield from ("-C", "opt-level=2")
         yield from ("-C", "panic=abort")
     if mode == 'coverage':
-        yield from ("-Z", "profile")
-        yield from ("-Z", "no-landing-pads")
-        yield from ("-C", "codegen-units=1")
-        yield from ("-C", "opt-level=0")
-        yield from ("-C", "link-dead-code")
-        yield from ("-C", "overflow-checks=off")
+        yield from coverage_flags()
 
     if target is not None:
         yield from ('--target', target)
@@ -112,7 +116,7 @@ def compile_libs(mode='debug', target=None):
     env = os.environ.copy()
     if mode == 'coverage':
         env["CARGO_INCREMENTAL"] = "0"
-        env["RUSTFLAGS"] = "-Zprofile -Ccodegen-units=1 -Copt-level=0 -Clink-dead-code -Coverflow-checks=off -Zno-landing-pads"
+        env["RUSTFLAGS"] = " ".join(coverage_flags())
     output = run(list(cargo_argv(mode, target)), stdin=DEVNULL, cwd=ROOTDIR, env=env, capture_output=True, check=True).stdout
     packages = [json.loads(line) for line in output.splitlines()]
 

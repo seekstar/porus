@@ -14,14 +14,13 @@ matrix:
     before_script:
     - CARGO_TARGET_DIR="${HOME}/.cargo/target" cargo install grcov
     script:
-    - VERBOSE=1 python3 c.py test --mode coverage
+    - cargo clean
     - export CARGO_INCREMENTAL=0
-    - export RUSTFLAGS="-Zprofile -Ccodegen-units=1 -Copt-level=0 -Clink-dead-code -Coverflow-checks=off -Zno-landing-pads"
+    - export RUSTFLAGS="-Z profile -Z no-landing-pads -C codegen-units=1 -C opt-level=0 -C link-dead-code -C overflow-checks=off -C inline-threshold=0"
     - cargo test --verbose
     after_success:
-    - zip -0 ccov.zip `find . \( -name "porus*.gc*" \) -print`;
-    - grcov ccov.zip -s . -t lcov --llvm --branch --ignore-not-existing --ignore "/*" -o lcov.info;
-    - bash <(curl -s https://codecov.io/bash) -f lcov.info;
+    - grcov . -s . -t coveralls+ --ignore-not-existing --ignore "/*" --service-name travis-ci --service-job-id $TRAVIS_JOB_ID > coveralls.json
+    - curl "https://coveralls.io/api/v1/jobs" -F json_file=@coveralls.json
   - os: osx
     language: generic
     python: 3.7
@@ -44,7 +43,6 @@ install:
 - pip3 install -r requirements.txt
 script:
 - VERBOSE=1 python3 c.py test
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then VERBOSE=1 python3 c.py test --mode release; fi
 cache:
   pip: true
   directories:
