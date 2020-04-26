@@ -1,5 +1,3 @@
-extern crate porus;
-
 use std::cell::Cell;
 
 pub struct Item<'a> {

@@ -9,6 +9,9 @@ edition = '2018'
 [dependencies]
 porus_macros = { path = "porus_macros" }
 
+[dev-dependencies]
+proptest = "0.9.6"
+
 [features]
 local-judge = []
 online-judge = []

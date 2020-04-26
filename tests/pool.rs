@@ -1,4 +1,3 @@
-extern crate porus;
 use porus::prelude::*;
 
 use std::mem::size_of;
