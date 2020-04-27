@@ -17,6 +17,7 @@ pub struct Buffer<P: Policy = DefaultPolicy, A: AllocRef = Global> {
 }
 
 impl<P: Policy, A: AllocRef + Default> Buffer<P, A> {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             buffer: Union {

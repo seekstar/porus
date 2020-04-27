@@ -12,6 +12,7 @@ pub fn fread<I: Source, C: Consumer>(s: &mut PeekableSource<I>, c: C) -> bool {
     Consumer::consume(c, s)
 }
 
+#[must_use]
 pub fn is_whitespace(c: u8) -> bool {
     match c {
         b' ' | b'\t'..=b'\r' => true,

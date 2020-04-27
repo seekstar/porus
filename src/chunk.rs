@@ -45,6 +45,7 @@ impl<T, P: Policy, A: AllocRef> Chunk<T, P, A> {
 }
 
 impl<T, P: Policy, A: AllocRef + Default> Chunk<T, P, A> {
+    #[must_use]
     pub fn new_with_capacity(capacity: usize) -> Self {
         Self::new(Default::default(), capacity)
     }

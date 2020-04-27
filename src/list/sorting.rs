@@ -90,7 +90,7 @@ pub fn insertion_sort<E, L: ListMut<Elem = E> + Collection, F: Fn(&E, &E) -> boo
 ) -> usize {
     let size = collection::size(list);
     (0..size)
-        .map(|i| bubble_sorted(&mut slice_mut(list, 0..i), &lt))
+        .map(|i| bubble_sorted(&mut slice_mut(list, 0..=i), &lt))
         .sum()
 }
 

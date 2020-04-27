@@ -50,6 +50,7 @@ pub struct Bytes<'a> {
 }
 
 impl<'a> Bytes<'a> {
+    #[must_use]
     pub const fn new(s: &'a [u8]) -> Self {
         Self { s }
     }

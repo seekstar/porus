@@ -25,7 +25,7 @@ impl<T: Debug + Clone> Arbitrary for ArbitraryStack<T> {
 
 proptest! {
     #[test]
-    fn stack(v: Vec::<u32>, mut stack: ArbitraryStack::<_>) {
+    fn stack(v: Vec::<usize>, mut stack: ArbitraryStack::<_>) {
         let s = stack.as_mut();
         prop_assert!(Stack::is_empty(s));
         prop_assert_eq!(None, Stack::top(s));

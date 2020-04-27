@@ -29,6 +29,7 @@ impl<T, H: Handle, P: Pool<Elem = Node<H, T>, Handle = H>> SinglyLinkedList<T, H
 }
 
 impl<T, H: Handle, P: Pool<Elem = Node<H, T>, Handle = H> + Default> SinglyLinkedList<T, H, P> {
+    #[must_use]
     pub fn new() -> Self {
         Self::new_with_pool(Default::default())
     }

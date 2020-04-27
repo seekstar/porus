@@ -29,7 +29,6 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::use_self)]
 #![allow(clippy::as_conversions)]
-#![allow(clippy::must_use_candidate)]
 #![allow(clippy::option_expect_used)]
 #![allow(clippy::result_unwrap_used)]
 

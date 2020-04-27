@@ -11,6 +11,7 @@ pub use core::f64::consts::PI;
 
 pub use crate::math::*;
 
+#[must_use]
 pub fn default<T: Default>() -> T {
     Default::default()
 }

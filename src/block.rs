@@ -115,6 +115,7 @@ impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
 }
 
 impl<T, P: Policy, A: AllocRef + Default> Block<T, P, A> {
+    #[must_use]
     pub fn new_with_capacity(capacity: usize) -> Self {
         Self::new(Default::default(), capacity)
     }

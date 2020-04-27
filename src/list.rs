@@ -1,4 +1,6 @@
 use crate::collection::{self, Collection};
+use core::cell::Cell;
+use core::mem::transmute;
 use core::ops::{Bound, RangeBounds};
 
 pub trait List: Collection {
@@ -24,17 +26,15 @@ pub fn set<L: ListMut>(list: &mut L, index: usize, elem: <L as List>::Elem) {
     *get_mut(list, index) = elem
 }
 
+#[allow(clippy::transmute_ptr_to_ptr)]
 pub fn swap<L: ListMut>(list: &mut L, i: usize, j: usize) {
     if i == j {
         return;
     }
 
-    let t = &mut core::mem::MaybeUninit::uninit();
-    unsafe {
-        core::mem::swap(t.get_mut(), get_mut(list, i));
-        core::mem::swap(t.get_mut(), get_mut(list, j));
-        core::mem::swap(t.get_mut(), get_mut(list, i));
-    }
+    let p: &Cell<<L as List>::Elem> = unsafe { transmute(get(list, i)) };
+    let q: &Cell<<L as List>::Elem> = unsafe { transmute(get(list, j)) };
+    p.swap(q)
 }
 
 pub fn reverse<L: ListMut>(list: &mut L) {

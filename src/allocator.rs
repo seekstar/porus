@@ -126,6 +126,7 @@ impl<T, A: AllocRef> Pool<T, A> {
 }
 
 impl<T, A: AllocRef + Default> Pool<T, A> {
+    #[must_use]
     pub fn new() -> Self {
         Self::new_with_allocator(Default::default())
     }

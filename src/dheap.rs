@@ -3,10 +3,12 @@ use crate::heap::Heap;
 use crate::list::{self, ListMut};
 use crate::stack::{self, Stack};
 
+#[must_use]
 pub fn parent_index(d: usize, index: usize) -> Option<usize> {
     usize::checked_sub(index, 1).map(|i| usize::wrapping_div(i, d))
 }
 
+#[must_use]
 pub fn child_index(d: usize, index: usize, n: usize) -> usize {
     usize::saturating_add(usize::saturating_mul(d, index), usize::saturating_add(1, n))
 }
