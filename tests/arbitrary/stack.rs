@@ -15,17 +15,13 @@ impl<T: Debug + Clone> ArbitraryStack<T> {
     }
 }
 
-impl<T: Debug + Clone> Arbitrary for ArbitraryStack<T> {
-    type Parameters = ();
-    type Strategy = impl Strategy<Value = Self>;
-    fn arbitrary_with(_: ()) -> Self::Strategy {
-        prop_oneof![Just(ArbitraryStack::Vec(Vec::<T>::new()))]
-    }
+fn arbitrary_stack<T: Debug + Clone>() -> impl Strategy<Value = ArbitraryStack<T>> {
+    prop_oneof![Just(ArbitraryStack::Vec(Vec::<T>::new()))]
 }
 
 proptest! {
     #[test]
-    fn stack(v: Vec::<usize>, mut stack: ArbitraryStack::<_>) {
+    fn stack(v: Vec::<usize>, mut stack in arbitrary_stack()) {
         let s = stack.as_mut();
         prop_assert!(Stack::is_empty(s));
         prop_assert_eq!(None, Stack::top(s));

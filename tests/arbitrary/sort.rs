@@ -33,26 +33,36 @@ impl ArbitrarySort {
     }
 }
 
-impl Arbitrary for ArbitrarySort {
-    type Parameters = ();
-    type Strategy = impl Strategy<Value = Self>;
-    fn arbitrary_with(_: ()) -> Self::Strategy {
-        prop_oneof![
-            Just(ArbitrarySort::BubbleSort),
-            Just(ArbitrarySort::InsertionSort),
-            Just(ArbitrarySort::SelectionSort),
-            Just(ArbitrarySort::ShellSort(vec![
-                797161, 265720, 88573, 29524, 9841, 3280, 1093, 364, 121, 40, 13, 4, 1
-            ])),
-            Just(ArbitrarySort::QuickSort)
-        ]
-    }
+fn arbitrary_sort() -> impl Strategy<Value = ArbitrarySort> {
+    prop_oneof![
+        Just(ArbitrarySort::BubbleSort),
+        Just(ArbitrarySort::InsertionSort),
+        Just(ArbitrarySort::SelectionSort),
+        Just(ArbitrarySort::ShellSort(vec![
+            797161, 265720, 88573, 29524, 9841, 3280, 1093, 364, 121, 40, 13, 4, 1
+        ])),
+        Just(ArbitrarySort::QuickSort)
+    ]
+}
+
+fn arbitrary_stable_sort() -> impl Strategy<Value = ArbitrarySort> {
+    prop_oneof![
+        Just(ArbitrarySort::BubbleSort),
+        Just(ArbitrarySort::InsertionSort),
+    ]
 }
 
 proptest! {
     #[test]
-    fn sort(mut v: Vec::<usize>, sort: ArbitrarySort) {
+    fn sort(mut v: Vec::<usize>, sort in arbitrary_sort()) {
         sort.sort(&mut v, PartialOrd::lt);
         prop_assert!(v.iter().is_sorted());
+    }
+
+    #[test]
+    fn stable_sort(mut v: Vec::<usize>, sort in arbitrary_stable_sort()) {
+        let s: &mut Vec<usize> = &mut (0..v.len()).collect();
+        sort.sort(s, |&i, &j| list::get(&v, i) < list::get(&v, j));
+        prop_assert!(list::is_stable_sort(&v, PartialOrd::lt, s));
     }
 }
