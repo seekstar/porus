@@ -51,9 +51,8 @@ impl<T, P: Policy, A: AllocRef + Default> Chunk<T, P, A> {
     }
 }
 
-impl<T, P: Policy, A: AllocRef> Pool for Chunk<T, P, A> {
+impl<T, P: Policy, A: AllocRef> Pool<T> for Chunk<T, P, A> {
     type Handle = Handle;
-    type Elem = T;
 
     fn get(&self, handle: Handle) -> &T {
         unsafe { &self.data.get(handle.0.get()).data }

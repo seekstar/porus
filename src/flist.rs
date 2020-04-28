@@ -1,6 +1,6 @@
-use crate::allocator;
 use crate::pool::{self, Handle, Pool};
 use crate::stack::Stack;
+use alloc::alloc::Global;
 use core::marker::PhantomData;
 
 pub struct Node<H: Handle, T> {
@@ -10,15 +10,15 @@ pub struct Node<H: Handle, T> {
 
 pub struct SinglyLinkedList<
     T,
-    H: Handle = allocator::Handle,
-    P: Pool<Elem = Node<H, T>, Handle = H> = allocator::Pool<Node<H, T>>,
+    H: Handle = pool::AllocHandle,
+    P: Pool<Node<H, T>, Handle = H> = Global,
 > {
     pool: P,
-    sentinel: Option<H>,
+    sentinel: Option<P::Handle>,
     _data: PhantomData<T>,
 }
 
-impl<T, H: Handle, P: Pool<Elem = Node<H, T>, Handle = H>> SinglyLinkedList<T, H, P> {
+impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H>> SinglyLinkedList<T, H, P> {
     pub fn new_with_pool(pool: P) -> Self {
         Self {
             pool,
@@ -28,14 +28,14 @@ impl<T, H: Handle, P: Pool<Elem = Node<H, T>, Handle = H>> SinglyLinkedList<T, H
     }
 }
 
-impl<T, H: Handle, P: Pool<Elem = Node<H, T>, Handle = H> + Default> SinglyLinkedList<T, H, P> {
+impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H> + Default> SinglyLinkedList<T, H, P> {
     #[must_use]
     pub fn new() -> Self {
         Self::new_with_pool(Default::default())
     }
 }
 
-impl<T, H: Handle, P: Pool<Elem = Node<H, T>, Handle = H> + Default> Default
+impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H> + Default> Default
     for SinglyLinkedList<T, H, P>
 {
     fn default() -> Self {
@@ -43,7 +43,7 @@ impl<T, H: Handle, P: Pool<Elem = Node<H, T>, Handle = H> + Default> Default
     }
 }
 
-impl<T, H: Handle, P: Pool<Elem = Node<H, T>, Handle = H>> Stack for SinglyLinkedList<T, H, P> {
+impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H>> Stack for SinglyLinkedList<T, H, P> {
     type Elem = T;
 
     fn is_empty(&self) -> bool {

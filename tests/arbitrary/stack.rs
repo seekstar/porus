@@ -1,28 +1,34 @@
-use porus::prelude::Stack;
+use porus::prelude::{SinglyLinkedList, Stack};
 use proptest::prelude::*;
 use std::fmt::Debug;
 
 #[derive(Debug, Clone)]
-enum ArbitraryStack<T: Debug + Clone> {
-    Vec(Vec<T>),
+enum ArbitraryStack {
+    Vec,
+    SinglyLinkedList,
 }
 
-impl<T: Debug + Clone> ArbitraryStack<T> {
-    fn as_mut(&mut self) -> &mut dyn Stack<Elem = T> {
+impl ArbitraryStack {
+    fn allocate<'a, T: 'a>(&self) -> Box<dyn 'a + Stack<Elem = T>> {
         match self {
-            ArbitraryStack::Vec(v) => v as _,
+            ArbitraryStack::Vec => Box::new(Vec::<T>::new()) as _,
+            ArbitraryStack::SinglyLinkedList => Box::new(SinglyLinkedList::<T>::new()) as _,
         }
     }
 }
 
-fn arbitrary_stack<T: Debug + Clone>() -> impl Strategy<Value = ArbitraryStack<T>> {
-    prop_oneof![Just(ArbitraryStack::Vec(Vec::<T>::new()))]
+fn arbitrary_stack() -> impl Strategy<Value = ArbitraryStack> {
+    prop_oneof![
+        Just(ArbitraryStack::Vec),
+        Just(ArbitraryStack::SinglyLinkedList)
+    ]
 }
 
 proptest! {
     #[test]
-    fn stack(v: Vec::<usize>, mut stack in arbitrary_stack()) {
-        let s = stack.as_mut();
+    fn stack(v: Vec::<usize>, stack in arbitrary_stack()) {
+        let mut b = stack.allocate();
+        let s = b.as_mut();
         prop_assert!(Stack::is_empty(s));
         prop_assert_eq!(None, Stack::top(s));
         for e in v.iter() {

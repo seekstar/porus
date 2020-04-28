@@ -10,21 +10,10 @@ trait PoolTest {
     }
 }
 
-struct TestAlloc {}
-
-impl PoolTest for TestAlloc {
-    type Handle = porus::allocator::Handle;
-}
-
 struct TestChunk {}
 
 impl PoolTest for TestChunk {
     type Handle = porus::chunk::Handle;
-}
-
-#[test]
-fn test_alloc_handle_non_nul() {
-    TestAlloc::test_handle_non_null();
 }
 
 #[test]

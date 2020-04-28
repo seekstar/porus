@@ -11,22 +11,24 @@ enum ArbitrarySort {
     QuickSort,
 }
 
+use ArbitrarySort::*;
+
 impl ArbitrarySort {
     fn sort<E, L: ListMut<Elem = E>, F: Fn(&E, &E) -> bool>(&self, list: &mut L, lt: F) {
         match self {
-            ArbitrarySort::BubbleSort => {
+            BubbleSort => {
                 list::bubble_sort(list, lt);
             }
-            ArbitrarySort::InsertionSort => {
+            InsertionSort => {
                 list::insertion_sort(list, lt);
             }
-            ArbitrarySort::SelectionSort => {
+            SelectionSort => {
                 list::selection_sort(list, lt);
             }
-            ArbitrarySort::ShellSort(gaps) => {
+            ShellSort(gaps) => {
                 list::shell_sort(list, lt, gaps);
             }
-            ArbitrarySort::QuickSort => {
+            QuickSort => {
                 list::quick_sort(list, lt);
             }
         }
@@ -35,21 +37,18 @@ impl ArbitrarySort {
 
 fn arbitrary_sort() -> impl Strategy<Value = ArbitrarySort> {
     prop_oneof![
-        Just(ArbitrarySort::BubbleSort),
-        Just(ArbitrarySort::InsertionSort),
-        Just(ArbitrarySort::SelectionSort),
-        Just(ArbitrarySort::ShellSort(vec![
+        Just(BubbleSort),
+        Just(InsertionSort),
+        Just(SelectionSort),
+        Just(ShellSort(vec![
             797161, 265720, 88573, 29524, 9841, 3280, 1093, 364, 121, 40, 13, 4, 1
         ])),
-        Just(ArbitrarySort::QuickSort)
+        Just(QuickSort)
     ]
 }
 
 fn arbitrary_stable_sort() -> impl Strategy<Value = ArbitrarySort> {
-    prop_oneof![
-        Just(ArbitrarySort::BubbleSort),
-        Just(ArbitrarySort::InsertionSort),
-    ]
+    prop_oneof![Just(BubbleSort), Just(InsertionSort),]
 }
 
 proptest! {

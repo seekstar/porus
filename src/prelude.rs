@@ -7,8 +7,6 @@ pub use core::cmp::Ordering::Equal;
 pub use core::cmp::Ordering::Greater;
 pub use core::cmp::Ordering::Less;
 
-pub use core::f64::consts::PI;
-
 pub use crate::math::*;
 
 #[must_use]
@@ -24,9 +22,8 @@ pub use crate::scan::{Char, Whitespace};
 pub use crate::stdio::{read, read_opt, writef, writelnf};
 
 pub use crate::allocator;
-pub use crate::pool;
+pub use crate::pool::{self, Pool};
 
-pub use crate::allocator::Pool;
 pub use crate::chunk::Chunk;
 
 pub use crate::collection::{self, Collection};

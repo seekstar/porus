@@ -6,7 +6,7 @@ fn main() {
     let n: usize = read!();
     let q: usize = read!();
 
-    let a = &mut DoublyLinkedList::new_with_pool(Chunk::<_>::new_with_capacity(100000));
+    let a = &mut VecDeque::new();
 
     for _ in 0..n {
         let b: StringBuffer = read!();
