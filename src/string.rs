@@ -2,7 +2,6 @@ use crate::fmt::{self, fwrite_str};
 #[allow(unused_imports)]
 use crate::fmt::{f, fwrite};
 use crate::io::Sink;
-use crate::utils::unwrap;
 use alloc::alloc::{AllocRef, Global, Layout};
 use core::cmp::Ordering;
 use core::mem::size_of;
@@ -193,10 +192,11 @@ impl<A: AllocRef> Drop for String<A> {
                     AllocRef::dealloc(
                         &mut self.allocator,
                         self.s.shared.counter.cast(),
-                        unwrap(Layout::array::<u8>(usize::wrapping_add(
+                        Layout::array::<u8>(usize::wrapping_add(
                             size_of::<usize>(),
                             self.s.shared.length,
-                        ))),
+                        ))
+                        .unwrap(),
                     )
                 }
             }

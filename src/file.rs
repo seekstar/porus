@@ -1,7 +1,6 @@
 use crate::io;
 use crate::libc;
 use core::convert::TryFrom;
-use core::fmt::Debug;
 use core::iter::Iterator;
 use core::ptr;
 
@@ -35,17 +34,6 @@ fn write(fd: i32, buf: *const u8, count: usize) -> Result<(), libc::Error> {
     Ok(())
 }
 
-#[cfg(feature = "online-judge")]
-#[allow(clippy::ok_expect)]
-fn expect<T, E: Debug>(result: Result<T, E>, msg: &str) -> T {
-    result.ok().expect(msg)
-}
-
-#[cfg(not(feature = "online-judge"))]
-fn expect<T, E: Debug>(result: Result<T, E>, msg: &str) -> T {
-    result.expect(msg)
-}
-
 pub struct Source {
     fd: i32,
     end: *mut u8,
@@ -76,7 +64,7 @@ impl Iterator for Source {
         if (self.current == self.end) && (self.end == unsafe { self.buffer.add(self.capacity) }) {
             self.current = self.buffer;
 
-            self.end = expect(read(self.fd, self.buffer, self.capacity), "read failed");
+            self.end = read(self.fd, self.buffer, self.capacity).expect("read failed");
         }
 
         if self.current < self.end {
@@ -112,7 +100,7 @@ impl Sink {
 impl io::Sink for Sink {
     fn write(&mut self, c: u8) {
         if self.current == unsafe { self.buffer.add(self.capacity) } {
-            expect(write(self.fd, self.buffer, self.capacity), "write failed");
+            write(self.fd, self.buffer, self.capacity).expect("write failed");
             self.current = self.buffer;
         }
 
@@ -124,7 +112,7 @@ impl io::Sink for Sink {
 impl Drop for Sink {
     fn drop(&mut self) {
         if let Ok(size) = TryFrom::try_from(unsafe { self.current.offset_from(self.buffer) }) {
-            expect(write(self.fd, self.buffer, size), "write failed");
+            write(self.fd, self.buffer, size).expect("write failed");
         }
     }
 }

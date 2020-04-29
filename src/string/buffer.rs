@@ -3,7 +3,6 @@ use super::{InlineString, SharedString, String, Union};
 use crate::capacity::{DefaultPolicy, Policy};
 use crate::io::{PeekableSource, Sink, Source};
 use crate::scan::{is_whitespace, Consumer};
-use crate::utils::unwrap;
 use alloc::alloc::{AllocInit, AllocRef, Global, Layout, ReallocPlacement};
 use core::marker::PhantomData;
 use core::mem::{forget, size_of, transmute_copy};
@@ -64,17 +63,15 @@ unsafe fn capacity(u: &Union) -> usize {
 
 unsafe fn resize<A: AllocRef>(allocator: &mut A, s: &mut SharedString, new_size: usize) {
     let counter_size = size_of::<usize>();
-    s.counter = unwrap(AllocRef::grow(
+    s.counter = AllocRef::grow(
         allocator,
         s.counter.cast(),
-        unwrap(Layout::array::<u8>(usize::wrapping_add(
-            counter_size,
-            s.length,
-        ))),
+        Layout::array::<u8>(usize::wrapping_add(counter_size, s.length)).unwrap(),
         usize::wrapping_add(counter_size, new_size),
         ReallocPlacement::MayMove,
         AllocInit::Uninitialized,
-    ))
+    )
+    .unwrap()
     .ptr
     .cast();
     s.length = new_size;
@@ -121,14 +118,13 @@ impl<P: Policy, A: AllocRef> Sink for Buffer<P, A> {
                 } else {
                     let counter_size = size_of::<usize>();
                     let new_capacity = P::grow(P::initial(capacity));
-                    let s = unwrap(AllocRef::alloc(
+                    let s = AllocRef::alloc(
                         &mut self.allocator,
-                        unwrap(Layout::array::<u8>(usize::wrapping_add(
-                            counter_size,
-                            new_capacity,
-                        ))),
+                        Layout::array::<u8>(usize::wrapping_add(counter_size, new_capacity))
+                            .unwrap(),
                         AllocInit::Uninitialized,
-                    ))
+                    )
+                    .unwrap()
                     .ptr;
 
                     copy_nonoverlapping(
@@ -140,7 +136,7 @@ impl<P: Policy, A: AllocRef> Sink for Buffer<P, A> {
                     self.buffer.shared.counter = s.cast();
                     self.buffer.shared.length = new_capacity;
                     self.buffer.shared.s =
-                        unwrap(NonNull::new(as_mut_ptr(&mut self.buffer).add(capacity)));
+                        NonNull::new(as_mut_ptr(&mut self.buffer).add(capacity)).unwrap();
                     Sink::write(self, c)
                 }
             },
@@ -152,11 +148,11 @@ impl<P: Policy, A: AllocRef> Sink for Buffer<P, A> {
                         P::grow(capacity),
                     );
                     self.buffer.shared.s =
-                        unwrap(NonNull::new(as_mut_ptr(&mut self.buffer).add(offset)));
+                        NonNull::new(as_mut_ptr(&mut self.buffer).add(offset)).unwrap();
                 }
 
                 *self.buffer.shared.s.as_mut() = c;
-                self.buffer.shared.s = unwrap(NonNull::new(self.buffer.shared.s.as_ptr().add(1)));
+                self.buffer.shared.s = NonNull::new(self.buffer.shared.s.as_ptr().add(1)).unwrap();
             },
             Static => unreachable!(),
         }
@@ -185,10 +181,11 @@ impl<P: Policy, A: AllocRef> Drop for Buffer<P, A> {
                 AllocRef::dealloc(
                     &mut self.allocator,
                     self.buffer.shared.counter.cast(),
-                    unwrap(Layout::array::<u8>(usize::wrapping_add(
+                    Layout::array::<u8>(usize::wrapping_add(
                         size_of::<usize>(),
                         capacity(&self.buffer),
-                    ))),
+                    ))
+                    .unwrap(),
                 )
             }
         }
@@ -202,7 +199,7 @@ impl<P: Policy, A: AllocRef> From<Buffer<P, A>> for String<A> {
             if let Shared = x.buffer.tag() {
                 let length = len(&x.buffer);
                 resize(&mut x.allocator, &mut x.buffer.shared, length);
-                x.buffer.shared.s = unwrap(NonNull::new(as_mut_ptr(&mut x.buffer)));
+                x.buffer.shared.s = NonNull::new(as_mut_ptr(&mut x.buffer)).unwrap();
                 *x.buffer.shared.counter.as_mut() = 1;
             }
 
