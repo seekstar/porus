@@ -14,10 +14,7 @@ don't have to copy and paste library code into your solution.
 ## Requirements
 
 * Rust nightly
-  * i686-pc-windows-gnu
-  * i686-unknown-linux-gnu
-  * x86_64-pc-windows-gnu
-  * x86_64-unknown-linux-gnu
+* xargo
 * Python 3.7+
 
 

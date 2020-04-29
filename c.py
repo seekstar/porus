@@ -17,10 +17,14 @@ if __name__ == '__main__':
 
 import os
 from wronganswer.asm import escape_source
+from subprocess import DEVNULL, run
 import json
 from functools import wraps
 
 SOLUTION_PATTERN = r'^(?:[^/]+)/(?P<oj>[\w\-.]+)(?:/.*)?/(?P<pid>[A-Za-z0-9_\-]+)\.rs$'
+
+NATIVE = run(["rustc", "-vV"], stdin=DEVNULL, capture_output=True, check=True).stdout.decode().split("host: ", 1)[1].split("\n", 1)[0]
+SYSROOT = os.path.expanduser("~/.xargo")
 
 def features(mode, target):
     if target is None:
@@ -41,7 +45,11 @@ def libname(path):
     return os.path.splitext(os.path.basename(path))[0][3:].split('-', 1)[0]
 
 def cargo_argv(mode, target):
-    yield from ('cargo', 'build', '--lib')
+    if mode == 'release':
+        yield 'xargo'
+    else:
+        yield 'cargo'
+    yield from ('build', '--lib')
     yield '-v' if VERBOSE else '-q'
     if mode == 'release':
         yield '--release'
@@ -75,6 +83,11 @@ def rustc_argv(mode, target, filename, *libs):
         yield from ("-C", "lto=fat")
         yield from ("-C", "opt-level=2")
         yield from ("-C", "panic=abort")
+        yield from ("-C", "codegen-units=1")
+        if target != NATIVE:
+            yield from ("--sysroot", SYSROOT)
+        else:
+            yield from ("--sysroot", os.path.join(SYSROOT, "HOST"))
     if mode == 'coverage':
         yield from coverage_flags()
 
@@ -111,7 +124,6 @@ def lru1(func):
 @task("Compile porus")
 @lru1
 def compile_libs(mode='debug', target=None):
-    from subprocess import DEVNULL
     from wronganswer.subprocess import run
     env = os.environ.copy()
     if mode == 'coverage':

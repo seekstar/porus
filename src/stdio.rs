@@ -3,6 +3,7 @@ use crate::fmt::f;
 use crate::fmt::fwrite;
 use crate::io::{PeekableSource, Sink, Source};
 use crate::scan::{fread, Consumer, Whitespace};
+use crate::utils::unwrap;
 use core::cell::Cell;
 use core::iter::Iterator;
 use core::ptr::NonNull;
@@ -14,13 +15,13 @@ impl Iterator for Input {
     type Item = u8;
 
     fn next(&mut self) -> Option<u8> {
-        Iterator::next(unsafe { self.0.get().unwrap().as_mut() })
+        Iterator::next(unsafe { unwrap(self.0.get()).as_mut() })
     }
 }
 
 impl Sink for Output {
     fn write(&mut self, c: u8) {
-        Sink::write(unsafe { self.0.get().unwrap().as_mut() }, c)
+        Sink::write(unsafe { unwrap(self.0.get()).as_mut() }, c)
     }
 }
 

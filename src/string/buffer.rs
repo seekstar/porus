@@ -64,15 +64,17 @@ unsafe fn capacity(u: &Union) -> usize {
 
 unsafe fn resize<A: AllocRef>(allocator: &mut A, s: &mut SharedString, new_size: usize) {
     let counter_size = size_of::<usize>();
-    s.counter = AllocRef::grow(
+    s.counter = unwrap(AllocRef::grow(
         allocator,
         s.counter.cast(),
-        Layout::array::<u8>(usize::wrapping_add(counter_size, s.length)).unwrap(),
+        unwrap(Layout::array::<u8>(usize::wrapping_add(
+            counter_size,
+            s.length,
+        ))),
         usize::wrapping_add(counter_size, new_size),
         ReallocPlacement::MayMove,
         AllocInit::Uninitialized,
-    )
-    .unwrap()
+    ))
     .ptr
     .cast();
     s.length = new_size;
@@ -119,13 +121,14 @@ impl<P: Policy, A: AllocRef> Sink for Buffer<P, A> {
                 } else {
                     let counter_size = size_of::<usize>();
                     let new_capacity = P::grow(P::initial(capacity));
-                    let s = AllocRef::alloc(
+                    let s = unwrap(AllocRef::alloc(
                         &mut self.allocator,
-                        Layout::array::<u8>(usize::wrapping_add(counter_size, new_capacity))
-                            .unwrap(),
+                        unwrap(Layout::array::<u8>(usize::wrapping_add(
+                            counter_size,
+                            new_capacity,
+                        ))),
                         AllocInit::Uninitialized,
-                    )
-                    .unwrap()
+                    ))
                     .ptr;
 
                     copy_nonoverlapping(
@@ -182,11 +185,10 @@ impl<P: Policy, A: AllocRef> Drop for Buffer<P, A> {
                 AllocRef::dealloc(
                     &mut self.allocator,
                     self.buffer.shared.counter.cast(),
-                    Layout::array::<u8>(usize::wrapping_add(
+                    unwrap(Layout::array::<u8>(usize::wrapping_add(
                         size_of::<usize>(),
                         capacity(&self.buffer),
-                    ))
-                    .unwrap(),
+                    ))),
                 )
             }
         }

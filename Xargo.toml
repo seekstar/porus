@@ -1,0 +1,5 @@
+[dependencies.alloc]
+
+[dependencies.core]
+default-features=false
+features=["panic_immediate_abort"]
