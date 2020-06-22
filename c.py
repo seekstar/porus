@@ -49,7 +49,7 @@ def cargo_argv(mode, target):
         yield 'xargo'
     else:
         yield 'cargo'
-    yield from ('build', '--lib')
+    yield from ('rustc', '--lib')
     yield '-v' if VERBOSE else '-q'
     if mode == 'release':
         yield '--release'
@@ -59,6 +59,9 @@ def cargo_argv(mode, target):
         yield from ('--target', target)
     yield from ('--features', ",".join(features(mode, target)))
     yield from ("--message-format", "json")
+
+def release_flags():
+    yield from ("-C", "linker-plugin-lto")
 
 def coverage_flags():
     yield from ("-Z", "profile")
@@ -129,6 +132,9 @@ def compile_libs(mode='debug', target=None):
     if mode == 'coverage':
         env["CARGO_INCREMENTAL"] = "0"
         env["RUSTFLAGS"] = " ".join(coverage_flags())
+    if mode == 'release':
+        env["RUSTFLAGS"] = " ".join(release_flags())
+
     output = run(list(cargo_argv(mode, target)), stdin=DEVNULL, cwd=ROOTDIR, env=env, capture_output=True, check=True).stdout
     packages = [json.loads(line) for line in output.splitlines()]
 
