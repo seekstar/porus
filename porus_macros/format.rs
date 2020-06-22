@@ -1,14 +1,14 @@
 use crate::common::parse_args;
-use fmt_macros::{Argument, Count, Parser, Piece, Position};
 use proc_macro2::{Literal, TokenStream};
 use quote::ToTokens;
+use rustc_parse_format::{Argument, Count, ParseMode, Parser, Piece, Position};
 use syn::{Expr, LitStr};
 
 pub fn format(tokens: TokenStream) -> TokenStream {
     let (s, args): (LitStr, Expr) = parse_args(tokens).unwrap();
 
     let mut stream = quote! {};
-    for p in Parser::new(s.value().as_str(), None, vec![], false) {
+    for p in Parser::new(s.value().as_str(), None, None, false, ParseMode::Format) {
         match p {
             Piece::String(s) => {
                 let lit = Literal::string(s);

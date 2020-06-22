@@ -29,8 +29,8 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::use_self)]
 #![allow(clippy::as_conversions)]
-#![allow(clippy::option_expect_used)]
-#![allow(clippy::result_unwrap_used)]
+#![allow(clippy::expect_used)]
+#![allow(clippy::unwrap_used)]
 
 //! [`porus`](self) is a library for competitive programming. Since
 //! most popular online judges accept only a single file within tens
@@ -105,7 +105,7 @@ pub extern "C" fn eh_personality() {}
 #[panic_handler]
 #[no_mangle]
 pub fn panic(_info: &::core::panic::PanicInfo) -> ! {
-    unsafe { ::core::intrinsics::abort() }
+    ::core::intrinsics::abort()
 }
 
 #[global_allocator]
@@ -114,5 +114,5 @@ static _A: allocator::System = allocator::System;
 #[cfg(feature = "online-judge")]
 #[alloc_error_handler]
 fn oom(_info: ::core::alloc::Layout) -> ! {
-    unsafe { ::core::intrinsics::abort() }
+    ::core::intrinsics::abort()
 }
