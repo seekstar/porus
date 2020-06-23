@@ -16,7 +16,7 @@ matrix:
     script:
     - cargo clean
     - export CARGO_INCREMENTAL=0
-    - export RUSTFLAGS="-Z profile -Z no-landing-pads -C codegen-units=1 -C opt-level=0 -C link-dead-code -C overflow-checks=off -C inline-threshold=0"
+    - export RUSTFLAGS="-Z profile -C codegen-units=1 -C opt-level=0 -C link-dead-code -C overflow-checks=off -C inline-threshold=0"
     - cargo test --verbose
     after_success:
     - grcov . -s . -t coveralls+ --ignore-not-existing --ignore "/*" --service-name travis-ci --service-job-id $TRAVIS_JOB_ID > coveralls.json

@@ -65,7 +65,6 @@ def release_flags():
 
 def coverage_flags():
     yield from ("-Z", "profile")
-    yield from ("-Z", "no-landing-pads")
     yield from ("-C", "codegen-units=1")
     yield from ("-C", "opt-level=0")
     yield from ("-C", "link-dead-code")
