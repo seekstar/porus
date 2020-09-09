@@ -183,6 +183,7 @@ impl<'a, L: 'a + ListMut> Collection for ViewMut<'a, L> {
 impl<'a, L: 'a + List> List for View<'a, L> {
     type Elem = <L as List>::Elem;
 
+    #[allow(clippy::unwrap_in_result)]
     fn get(&self, index: usize) -> Option<&Self::Elem> {
         if index < self.size {
             Some(get(
@@ -198,6 +199,7 @@ impl<'a, L: 'a + List> List for View<'a, L> {
 impl<'a, L: 'a + ListMut> List for ViewMut<'a, L> {
     type Elem = <L as List>::Elem;
 
+    #[allow(clippy::unwrap_in_result)]
     fn get(&self, index: usize) -> Option<&Self::Elem> {
         if index < self.size {
             Some(get(
@@ -211,6 +213,8 @@ impl<'a, L: 'a + ListMut> List for ViewMut<'a, L> {
 }
 
 impl<'a, L: 'a + ListMut> ListMut for ViewMut<'a, L> {
+
+    #[allow(clippy::unwrap_in_result)]
     fn get_mut(&mut self, index: usize) -> Option<&mut Self::Elem> {
         if index < self.size {
             Some(get_mut(

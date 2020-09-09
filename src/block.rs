@@ -1,6 +1,6 @@
 use crate::capacity::Policy;
 use crate::utils::unwrap;
-use core::alloc::{AllocInit, AllocRef, Layout, ReallocPlacement};
+use core::alloc::{AllocRef, Layout};
 use core::marker::PhantomData;
 use core::ptr::{copy, read, write, NonNull};
 
@@ -14,15 +14,10 @@ pub struct Block<T, P: Policy, A: AllocRef> {
 impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
     pub fn new(mut allocator: A, size: usize) -> Self {
         let capacity = P::initial(size);
-        let mem = AllocRef::alloc(
-            &mut allocator,
-            Layout::array::<T>(capacity).unwrap(),
-            AllocInit::Uninitialized,
-        )
-        .unwrap();
+        let mem = AllocRef::alloc(&mut allocator, Layout::array::<T>(capacity).unwrap()).unwrap();
         Self {
             capacity,
-            data: mem.ptr.cast(),
+            data: mem.cast(),
             allocator,
             _policy: PhantomData,
         }
@@ -71,13 +66,11 @@ impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
                 &mut self.allocator,
                 self.data.cast(),
                 Layout::array::<T>(self.capacity).unwrap(),
-                new_capacity,
-                ReallocPlacement::MayMove,
-                AllocInit::Uninitialized,
+                Layout::array::<T>(new_capacity).unwrap(),
             )
         }
         .unwrap();
-        self.data = mem.ptr.cast();
+        self.data = mem.cast();
         let dst = unwrap(usize::checked_add(src, grow));
         self.copy(src, dst, n);
         self.capacity = new_capacity;
@@ -102,12 +95,11 @@ impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
                     &mut self.allocator,
                     self.data.cast(),
                     Layout::array::<T>(self.capacity).unwrap(),
-                    new_capacity,
-                    ReallocPlacement::MayMove,
+                    Layout::array::<T>(new_capacity).unwrap(),
                 )
             }
             .unwrap();
-            self.data = mem.ptr.cast();
+            self.data = mem.cast();
         }
         self.capacity = new_capacity;
         shrink

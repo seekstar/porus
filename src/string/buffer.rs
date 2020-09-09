@@ -3,7 +3,7 @@ use super::{InlineString, SharedString, String, Union};
 use crate::capacity::{DefaultPolicy, Policy};
 use crate::io::{PeekableSource, Sink, Source};
 use crate::scan::{is_whitespace, Consumer};
-use alloc::alloc::{AllocInit, AllocRef, Global, Layout, ReallocPlacement};
+use alloc::alloc::{AllocRef, Global, Layout};
 use core::marker::PhantomData;
 use core::mem::{forget, size_of, transmute_copy};
 use core::ptr::{copy_nonoverlapping, NonNull};
@@ -67,12 +67,9 @@ unsafe fn resize<A: AllocRef>(allocator: &mut A, s: &mut SharedString, new_size:
         allocator,
         s.counter.cast(),
         Layout::array::<u8>(usize::wrapping_add(counter_size, s.length)).unwrap(),
-        usize::wrapping_add(counter_size, new_size),
-        ReallocPlacement::MayMove,
-        AllocInit::Uninitialized,
+        Layout::array::<u8>(usize::wrapping_add(counter_size, new_size)).unwrap(),
     )
     .unwrap()
-    .ptr
     .cast();
     s.length = new_size;
 }
@@ -122,14 +119,12 @@ impl<P: Policy, A: AllocRef> Sink for Buffer<P, A> {
                         &mut self.allocator,
                         Layout::array::<u8>(usize::wrapping_add(counter_size, new_capacity))
                             .unwrap(),
-                        AllocInit::Uninitialized,
                     )
-                    .unwrap()
-                    .ptr;
+                    .unwrap();
 
                     copy_nonoverlapping(
                         self.buffer.as_ptr(),
-                        s.as_ptr().add(counter_size),
+                        s.as_ptr().cast::<u8>().add(counter_size),
                         capacity,
                     );
 

@@ -60,6 +60,7 @@ impl Source {
 impl Iterator for Source {
     type Item = u8;
 
+    #[allow(clippy::unwrap_in_result)]
     fn next(&mut self) -> Option<u8> {
         if (self.current == self.end) && (self.end == unsafe { self.buffer.add(self.capacity) }) {
             self.current = self.buffer;

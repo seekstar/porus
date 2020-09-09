@@ -25,7 +25,7 @@ pub fn remove<T, P: Pool<T>>(pool: &mut P, handle: P::Handle) -> T {
     Pool::remove(pool, handle)
 }
 
-use alloc::alloc::{AllocInit, AllocRef, Layout};
+use alloc::alloc::{AllocRef, Layout};
 use core::ptr::{read, write, NonNull};
 
 #[derive(Clone, Copy)]
@@ -46,9 +46,9 @@ impl<T, A: AllocRef> Pool<T> for A {
 
     fn add(&mut self, item: T) -> Self::Handle {
         unsafe {
-            let mem = AllocRef::alloc(self, Layout::new::<T>(), AllocInit::Uninitialized).unwrap();
-            write(mem.ptr.as_ptr().cast(), item);
-            AllocHandle(mem.ptr)
+            let mem = AllocRef::alloc(self, Layout::new::<T>()).unwrap();
+            write(mem.as_ptr().cast(), item);
+            AllocHandle(mem.cast())
         }
     }
 

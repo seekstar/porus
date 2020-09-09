@@ -7,12 +7,11 @@
 #![feature(alloc_layout_extra)]
 #![feature(alloc_error_handler)]
 #![feature(maybe_uninit_ref)]
-#![feature(ptr_offset_from)]
 #![feature(is_sorted)]
-#![feature(const_saturating_int_methods)]
 #![cfg_attr(feature = "online-judge", feature(lang_items))]
 #![doc(test(attr(feature(proc_macro_hygiene))))]
 #![no_std]
+#![allow(incomplete_features)]
 #![deny(stable_features)]
 #![deny(clippy::all)]
 #![deny(clippy::pedantic)]
@@ -31,6 +30,7 @@
 #![allow(clippy::as_conversions)]
 #![allow(clippy::expect_used)]
 #![allow(clippy::unwrap_used)]
+#![allow(clippy::blanket_clippy_restriction_lints)]
 
 //! [`porus`](self) is a library for competitive programming. Since
 //! most popular online judges accept only a single file within tens

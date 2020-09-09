@@ -13,11 +13,8 @@ pub fn fread<I: Source, C: Consumer>(s: &mut PeekableSource<I>, c: C) -> bool {
 }
 
 #[must_use]
-pub fn is_whitespace(c: u8) -> bool {
-    match c {
-        b' ' | b'\t'..=b'\r' => true,
-        _ => false,
-    }
+pub const fn is_whitespace(c: u8) -> bool {
+    matches!(c, b' ' | b'\t'..=b'\r')
 }
 
 pub struct Whitespace;
