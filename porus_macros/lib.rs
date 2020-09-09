@@ -11,8 +11,9 @@
 #![allow(clippy::implicit_return)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(clippy::missing_inline_in_public_items)]
-#![allow(clippy::result_unwrap_used)]
+#![allow(clippy::unwrap_used)]
 #![allow(clippy::panic)]
+#![allow(clippy::blanket_clippy_restriction_lints)]
 
 extern crate proc_macro;
 extern crate proc_macro2;

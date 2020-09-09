@@ -213,7 +213,6 @@ impl<'a, L: 'a + ListMut> List for ViewMut<'a, L> {
 }
 
 impl<'a, L: 'a + ListMut> ListMut for ViewMut<'a, L> {
-
     #[allow(clippy::unwrap_in_result)]
     fn get_mut(&mut self, index: usize) -> Option<&mut Self::Elem> {
         if index < self.size {
