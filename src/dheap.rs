@@ -93,7 +93,7 @@ impl<E, L: ListMut<Elem = E> + Stack<Elem = E>, F: Fn(&E, &E) -> bool> Heap for 
     fn push(&mut self, item: E) {
         let size = collection::size(self);
         stack::push(&mut self.list, item);
-        siftup(self.d, &mut self.list, size, &self.gt)
+        siftup(self.d, &mut self.list, size, &self.gt);
     }
 
     fn pop(&mut self) -> Option<E> {

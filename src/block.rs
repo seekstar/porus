@@ -12,9 +12,9 @@ pub struct Block<T, P: Policy, A: Allocator> {
 }
 
 impl<T, P: Policy, A: Allocator> Block<T, P, A> {
-    pub fn new(mut allocator: A, size: usize) -> Self {
+    pub fn new(allocator: A, size: usize) -> Self {
         let capacity = P::initial(size);
-        let mem = Allocator::allocate(&mut allocator, Layout::array::<T>(capacity).unwrap()).unwrap();
+        let mem = Allocator::allocate(&allocator, Layout::array::<T>(capacity).unwrap()).unwrap();
         Self {
             capacity,
             data: mem.cast(),
@@ -34,7 +34,9 @@ impl<T, P: Policy, A: Allocator> Block<T, P, A> {
 
     pub fn write(&mut self, index: usize, item: T) {
         assert!(index < self.capacity);
-        unsafe { write(self.data.as_ptr().add(index), item) }
+        unsafe {
+            write(self.data.as_ptr().add(index), item);
+        }
     }
 
     pub fn get(&self, index: usize) -> &T {
@@ -53,7 +55,7 @@ impl<T, P: Policy, A: Allocator> Block<T, P, A> {
                 self.data.as_ptr().add(src),
                 self.data.as_ptr().add(dst),
                 count,
-            )
+            );
         }
     }
 
@@ -63,7 +65,7 @@ impl<T, P: Policy, A: Allocator> Block<T, P, A> {
         let grow = usize::checked_sub(new_capacity, self.capacity).expect("grow to a smaller size");
         let mem = unsafe {
             Allocator::grow(
-                &mut self.allocator,
+                &self.allocator,
                 self.data.cast(),
                 Layout::array::<T>(self.capacity).unwrap(),
                 Layout::array::<T>(new_capacity).unwrap(),
@@ -92,7 +94,7 @@ impl<T, P: Policy, A: Allocator> Block<T, P, A> {
             }
             let mem = unsafe {
                 Allocator::shrink(
-                    &mut self.allocator,
+                    &self.allocator,
                     self.data.cast(),
                     Layout::array::<T>(self.capacity).unwrap(),
                     Layout::array::<T>(new_capacity).unwrap(),
@@ -117,10 +119,10 @@ impl<T, P: Policy, A: Allocator> Drop for Block<T, P, A> {
     fn drop(&mut self) {
         unsafe {
             Allocator::deallocate(
-                &mut self.allocator,
+                &self.allocator,
                 self.data.cast(),
                 Layout::array::<T>(self.capacity).unwrap(),
-            )
+            );
         }
     }
 }

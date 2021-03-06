@@ -23,7 +23,7 @@ pub fn get_mut<L: ListMut>(list: &mut L, index: usize) -> &mut <L as List>::Elem
 }
 
 pub fn set<L: ListMut>(list: &mut L, index: usize, elem: <L as List>::Elem) {
-    *get_mut(list, index) = elem
+    *get_mut(list, index) = elem;
 }
 
 #[allow(clippy::transmute_ptr_to_ptr)]
@@ -34,7 +34,7 @@ pub fn swap<L: ListMut>(list: &mut L, i: usize, j: usize) {
 
     let p: &Cell<<L as List>::Elem> = unsafe { transmute(get(list, i)) };
     let q: &Cell<<L as List>::Elem> = unsafe { transmute(get(list, j)) };
-    p.swap(q)
+    p.swap(q);
 }
 
 pub fn reverse<L: ListMut>(list: &mut L) {

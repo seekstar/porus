@@ -21,7 +21,7 @@ impl Iterator for Input {
 
 impl Sink for Output {
     fn write(&mut self, c: u8) {
-        Sink::write(unsafe { unwrap(self.0.get()).as_mut() }, c)
+        Sink::write(unsafe { unwrap(self.0.get()).as_mut() }, c);
     }
 }
 
@@ -34,6 +34,7 @@ struct PeekableSourceInput {
     _peeked: Option<Option<u8>>,
 }
 
+#[allow(clippy::ptr_as_ptr)]
 pub fn initialize(stdin: *mut dyn Source<Item = u8>, stdout: *mut dyn Sink) {
     unsafe {
         (*(&STDIN as *const _ as *const PeekableSourceInput))

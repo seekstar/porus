@@ -1,9 +1,6 @@
 # porus
 
-[![Lint](https://github.com/bhuztez/porus/workflows/Lint/badge.svg)](https://github.com/bhuztez/porus/actions?query=workflow%3ALint)
-[![Test](https://github.com/bhuztez/porus/workflows/Test/badge.svg)](https://github.com/bhuztez/porus/actions?query=workflow%3ATest)
-[![Preview](https://github.com/bhuztez/porus/workflows/Preview/badge.svg)](https://github.com/bhuztez/porus/actions?query=workflow%3APreview)
-[![Build Status](https://travis-ci.org/bhuztez/porus.svg?branch=master)](https://travis-ci.org/bhuztez/porus)
+[![Test](https://github.com/bhuztez/porus/actions/workflows/test.yml/badge.svg)](https://github.com/bhuztez/porus/actions/workflows/test.yml)
 [![Coverage Status](https://coveralls.io/repos/github/bhuztez/porus/badge.svg?branch=master)](https://coveralls.io/github/bhuztez/porus?branch=master)
 
 porus is Rust library designed for competitive programming, especially
@@ -13,10 +10,9 @@ don't have to copy and paste library code into your solution.
 
 ## Requirements
 
-* Rust nightly
+* Rust nightly (components: rustc-dev, rust-src)
 * xargo
 * Python 3.7+
-
 
 ## Quick start
 

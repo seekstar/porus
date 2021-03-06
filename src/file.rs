@@ -105,7 +105,9 @@ impl io::Sink for Sink {
             self.current = self.buffer;
         }
 
-        unsafe { ptr::write(self.current, c) };
+        unsafe {
+            ptr::write(self.current, c);
+        };
         self.current = unsafe { self.current.add(1) };
     }
 }

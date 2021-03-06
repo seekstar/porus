@@ -24,7 +24,7 @@ impl<T: Ord> Heap for BinaryHeap<T> {
     type Elem = T;
 
     fn push(&mut self, item: Self::Elem) {
-        self.push(item)
+        self.push(item);
     }
 
     fn pop(&mut self) -> Option<Self::Elem> {

@@ -3,6 +3,7 @@ use alloc::alloc::{GlobalAlloc, Layout};
 use core::cmp::min;
 use core::ptr::{copy_nonoverlapping, null_mut};
 
+#[allow(clippy::exhaustive_structs)]
 #[derive(Copy, Clone)]
 pub struct System;
 
@@ -50,7 +51,7 @@ pub unsafe fn realloc_fallback(
 unsafe fn aligned_malloc(layout: &Layout) -> *mut u8 {
     let mut out = null_mut();
     let ret = libc::posix_memalign(&mut out, layout.align(), layout.size());
-    if ret == 0 {
+    if ret == 0_i32 {
         out
     } else {
         null_mut()
@@ -73,7 +74,7 @@ unsafe impl GlobalAlloc for System {
 
     #[cfg(unix)]
     unsafe fn dealloc(&self, ptr: *mut u8, _layout: Layout) {
-        libc::free(ptr)
+        libc::free(ptr);
     }
 
     #[cfg(windows)]

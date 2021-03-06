@@ -71,9 +71,7 @@ impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H>> Stack for SinglyLinkedList<T
     }
 
     fn top(&self) -> Option<&T> {
-        match self.sentinel {
-            None => None,
-            Some(handle) => Some(&pool::get(&self.pool, handle).data),
-        }
+        self.sentinel
+            .map(|handle| &pool::get(&self.pool, handle).data)
     }
 }

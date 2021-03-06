@@ -12,7 +12,7 @@ pub fn is_empty<T: Stack>(s: &T) -> bool {
 }
 
 pub fn push<T: Stack>(s: &mut T, elem: T::Elem) {
-    Stack::push(s, elem)
+    Stack::push(s, elem);
 }
 
 pub fn pop<T: Stack>(s: &mut T) -> T::Elem {
@@ -33,7 +33,7 @@ impl<T> Stack for Vec<T> {
     }
 
     fn push(&mut self, elem: Self::Elem) {
-        self.push(elem)
+        self.push(elem);
     }
 
     fn pop(&mut self) -> Option<Self::Elem> {

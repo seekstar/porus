@@ -110,13 +110,13 @@ impl<P: Policy, A: Allocator> Sink for Buffer<P, A> {
                     #[allow(clippy::integer_arithmetic)]
                     #[allow(clippy::cast_possible_truncation)]
                     {
-                        self.buffer.inline.length = ((offset as u8 + 1) << 2) | 1;
+                        self.buffer.inline.length = ((offset as u8 + 1) << 2_i32) | 1;
                     }
                 } else {
                     let counter_size = size_of::<usize>();
                     let new_capacity = P::grow(P::initial(capacity));
                     let s = Allocator::allocate(
-                        &mut self.allocator,
+                        &self.allocator,
                         Layout::array::<u8>(usize::wrapping_add(counter_size, new_capacity))
                             .unwrap(),
                     )
@@ -132,7 +132,7 @@ impl<P: Policy, A: Allocator> Sink for Buffer<P, A> {
                     self.buffer.shared.length = new_capacity;
                     self.buffer.shared.s =
                         NonNull::new(as_mut_ptr(&mut self.buffer).add(capacity)).unwrap();
-                    Sink::write(self, c)
+                    Sink::write(self, c);
                 }
             },
             Shared => unsafe {
@@ -174,14 +174,14 @@ impl<P: Policy, A: Allocator> Drop for Buffer<P, A> {
         if let Shared = self.buffer.tag() {
             unsafe {
                 Allocator::deallocate(
-                    &mut self.allocator,
+                    &self.allocator,
                     self.buffer.shared.counter.cast(),
                     Layout::array::<u8>(usize::wrapping_add(
                         size_of::<usize>(),
                         capacity(&self.buffer),
                     ))
                     .unwrap(),
-                )
+                );
             }
         }
     }

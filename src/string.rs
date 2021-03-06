@@ -190,14 +190,14 @@ impl<A: Allocator> Drop for String<A> {
                     *self.s.shared.counter.as_mut() = c;
                 } else {
                     Allocator::deallocate(
-                        &mut self.allocator,
+                        &self.allocator,
                         self.s.shared.counter.cast(),
                         Layout::array::<u8>(usize::wrapping_add(
                             size_of::<usize>(),
                             self.s.shared.length,
                         ))
                         .unwrap(),
-                    )
+                    );
                 }
             }
         }

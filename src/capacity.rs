@@ -4,6 +4,7 @@ pub trait Policy {
     fn shrink(size: usize, capacity: usize) -> usize;
 }
 
+#[allow(clippy::exhaustive_structs)]
 pub struct FixedPolicy {}
 
 impl Policy for FixedPolicy {
@@ -20,6 +21,7 @@ impl Policy for FixedPolicy {
     }
 }
 
+#[allow(clippy::exhaustive_structs)]
 pub struct DefaultPolicy {}
 
 impl Policy for DefaultPolicy {

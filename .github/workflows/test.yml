@@ -2,16 +2,11 @@ name: Test
 
 on: [push]
 
-
 jobs:
-  porus-debug:
-    name: porus debug
+  rustfmt:
+    name: rustfmt
 
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -19,77 +14,171 @@ jobs:
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: nightly
+        components: rustfmt
+        default: true
+        override: true
+
+    - uses: actions-rs/cargo@v1
+      with:
+        command: fmt
+        args: --all -- --check
+
+    - run: find solutions -name '*.rs' | xargs -I {} rustfmt --edition 2018 --check {}
+
+    - run: find examples -name '*.rs' | xargs -I {} rustfmt --edition 2018 --check {}
+
+  clippy:
+    name: clippy
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        components: clippy, rustc-dev
+        default: true
+        override: true
+
+    - uses: actions-rs/cargo@v1
+      with:
+        command: clippy
+        args: --all-features
+
+    - run: cd porus_macros && cargo clippy
+
+  cargo:
+    name: cargo test
+
+    strategy:
+      matrix:
+        rust: [nightly]
+        os: [ubuntu-20.04, macos-10.15, windows-2019]
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions-rs/toolchain@v1
+      if: ${{ runner.os == 'Windows' }}
+      with:
+        toolchain: ${{ matrix.rust }}-gnu
         components: rustc-dev
         default: true
         override: true
+    - uses: actions-rs/toolchain@v1
+      if: ${{ runner.os != 'Windows' }}
+      with:
+        toolchain: ${{ matrix.rust }}
+        components: rustc-dev
+        default: true
+        override: true
+    - uses: actions-rs/cargo@v1
+      with:
+        command: install
+        args: xargo
 
     - uses: actions-rs/cargo@v1
       with:
         command: test
         args: --verbose
 
-  porus-release:
-    name: porus release
+    - uses: actions-rs/cargo@v1
+      with:
+        command: test
+        args: --release --verbose
 
+  preview:
+    name: preview
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
-
+        rust: [nightly]
+        os: [ubuntu-20.04, macos-10.15, windows-2019]
+      fail-fast: false
     runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
 
     - uses: actions-rs/toolchain@v1
+      if: ${{ runner.os == 'Windows' }}
       with:
-        toolchain: nightly
-        components: rustc-dev
+        toolchain: ${{ matrix.rust }}-gnu
+        components: rustc-dev, rust-src
         default: true
         override: true
-
+    - uses: actions-rs/toolchain@v1
+      if: ${{ runner.os != 'Windows' }}
+      with:
+        toolchain: ${{ matrix.rust }}
+        components: rustc-dev, rust-src
+        default: true
+        override: true
     - uses: actions-rs/cargo@v1
       with:
-        command: test
-        args: --release --verbose
+        command: install
+        args: xargo
 
-  porus-debug-windows:
-    name: porus debug windows
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.7'
+        architecture: 'x64'
+    - run: pip3 install -r requirements.txt
 
-    runs-on: windows-latest
+    - run: find solutions -name '*.rs' | xargs -I {} python3 c.py preview {}
+      shell: bash
+    - run: find examples -name '*.rs' | xargs -I {} python3 c.py preview {}
+      shell: bash
+
+  test:
+    name: test
+    strategy:
+      matrix:
+        rust: [nightly]
+        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        mode: [debug, release]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
 
     - uses: actions-rs/toolchain@v1
+      if: ${{ runner.os == 'Windows' }}
       with:
-        toolchain: nightly
-        components: rustc-dev
-        target: x86_64-pc-windows-gnu
+        toolchain: ${{ matrix.rust }}-gnu
+        components: rustc-dev, rust-src
         default: true
         override: true
-
-    - uses: actions-rs/cargo@v1
-      with:
-        command: test
-        args: --verbose --target=x86_64-pc-windows-gnu
-
-  porus-release-windows:
-    name: porus release windows
-
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
+    - if: ${{ runner.os == 'Windows' }}
+      run: |
+        copy C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\self-contained\crt2.o C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\crt2.o
+        copy C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\self-contained\dllcrt2.o C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\dllcrt2.o
     - uses: actions-rs/toolchain@v1
+      if: ${{ runner.os != 'Windows' }}
       with:
-        toolchain: nightly
-        components: rustc-dev
-        target: x86_64-pc-windows-gnu
+        toolchain: ${{ matrix.rust }}
+        components: rustc-dev, rust-src
         default: true
         override: true
-
     - uses: actions-rs/cargo@v1
       with:
-        command: test
-        args: --release --verbose --target=x86_64-pc-windows-gnu
+        command: install
+        args: xargo
+
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.7'
+        architecture: 'x64'
+    - uses: crazy-max/ghaction-github-runtime@v1
+    - run: pip3 install -r requirements.txt
+
+    - run: python3 c.py --debug test --mode=${{ matrix.mode }}
+      env:
+        VERBOSE: 1
+        ACTIONS_CACHE_VERSION: ${{ secrets.ACTIONS_CACHE_VERSION }}
+        ACTIONS_CACHE_KEYS: ${{ matrix.rust }}|${{ matrix.os }}|${{ matrix.mode }}|${{ github.job }}|${{ github.run_number }},${{ matrix.rust }}|${{ matrix.os }}|${{ matrix.mode }}|${{ github.job }}|,${{ matrix.rust }}|${{ matrix.os }}|${{ matrix.mode }}|,${{ matrix.rust }}|${{ matrix.os }}|,${{ matrix.rust }}|,

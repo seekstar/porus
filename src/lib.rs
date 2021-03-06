@@ -26,11 +26,14 @@
 #![allow(clippy::missing_inline_in_public_items)]
 #![allow(clippy::missing_safety_doc)]
 #![allow(clippy::missing_errors_doc)]
+#![allow(clippy::missing_panics_doc)]
 #![allow(clippy::use_self)]
 #![allow(clippy::as_conversions)]
 #![allow(clippy::expect_used)]
 #![allow(clippy::unwrap_used)]
 #![allow(clippy::blanket_clippy_restriction_lints)]
+#![allow(clippy::unreachable)]
+#![allow(clippy::needless_pass_by_value)]
 
 //! [`porus`](self) is a library for competitive programming. Since
 //! most popular online judges accept only a single file within tens

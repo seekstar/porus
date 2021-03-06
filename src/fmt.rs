@@ -93,7 +93,7 @@ pub macro f($($arg:tt)*) {
 }
 
 pub fn fwrite<S: Sink, F: FnMut(&mut S)>(sink: &mut S, mut f: F) {
-    f(sink)
+    f(sink);
 }
 
 pub fn join<S: Sink, Sep: FnMut(&mut S), F: FnMut(&mut S), I: Iterator<Item = F>>(
@@ -139,6 +139,7 @@ pub trait Int {
     fn write<S: Sink>(self, s: &mut S, radix: u8, width: usize);
 }
 
+#[allow(clippy::panic)]
 fn to_char(d: u8) -> u8 {
     match d {
         0..=9 => u8::wrapping_add(b'0', d),
@@ -244,6 +245,7 @@ pub trait Float {
 
 #[allow(clippy::float_arithmetic)]
 #[allow(clippy::ok_expect)]
+#[allow(clippy::panic)]
 impl Float for f64 {
     fn write<S: Sink>(mut self, s: &mut S, prec: u32) {
         if self.is_finite() {
@@ -259,10 +261,13 @@ impl Float for f64 {
                 self = fabs(self);
             }
 
-            self *= powi(10.0, TryInto::try_into(prec).ok().expect("prec overflow"));
+            self *= powi(
+                10.0_f64,
+                TryInto::try_into(prec).ok().expect("prec overflow"),
+            );
             let m = 10_u64.pow(prec);
 
-            if self <= 9_007_199_254_740_992.0 {
+            if self <= 9_007_199_254_740_992.0_f64 {
                 #[allow(clippy::cast_sign_loss, clippy::cast_possible_truncation)]
                 let i = round(self) as u64;
                 write_unsigned(s, u64::wrapping_div(i, m), 10, 1);
@@ -278,6 +283,6 @@ impl Float for f64 {
 
 impl<'a> Float for &'a f64 {
     fn write<S: Sink>(self, s: &mut S, prec: u32) {
-        Float::write(*self, s, prec)
+        Float::write(*self, s, prec);
     }
 }

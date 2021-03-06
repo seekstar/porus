@@ -15,7 +15,7 @@ pub fn is_empty<T: Deque>(q: &T) -> bool {
 }
 
 pub fn push_front<T: Deque>(q: &mut T, elem: T::Elem) {
-    Deque::push_front(q, elem)
+    Deque::push_front(q, elem);
 }
 
 pub fn pop_front<T: Deque>(q: &mut T) -> T::Elem {
@@ -23,7 +23,7 @@ pub fn pop_front<T: Deque>(q: &mut T) -> T::Elem {
 }
 
 pub fn push_back<T: Deque>(q: &mut T, elem: T::Elem) {
-    Deque::push_back(q, elem)
+    Deque::push_back(q, elem);
 }
 
 pub fn pop_back<T: Deque>(q: &mut T) -> T::Elem {
@@ -70,7 +70,7 @@ impl<T> Deque for VecDeque<T> {
     }
 
     fn push_front(&mut self, elem: Self::Elem) {
-        self.push_front(elem)
+        self.push_front(elem);
     }
 
     fn pop_front(&mut self) -> Option<Self::Elem> {
@@ -78,7 +78,7 @@ impl<T> Deque for VecDeque<T> {
     }
 
     fn push_back(&mut self, elem: Self::Elem) {
-        self.push_back(elem)
+        self.push_back(elem);
     }
 
     fn pop_back(&mut self) -> Option<Self::Elem> {

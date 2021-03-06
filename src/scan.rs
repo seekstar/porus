@@ -17,6 +17,7 @@ pub const fn is_whitespace(c: u8) -> bool {
     matches!(c, b' ' | b'\t'..=b'\r')
 }
 
+#[allow(clippy::exhaustive_structs)]
 pub struct Whitespace;
 
 impl Consumer for Whitespace {
@@ -32,6 +33,7 @@ impl Consumer for Whitespace {
     }
 }
 
+#[allow(clippy::exhaustive_structs)]
 pub struct Char<'a>(pub &'a mut u8);
 
 impl<'a> Consumer for Char<'a> {
@@ -211,7 +213,7 @@ impl<'a> Consumer for &'a mut f64 {
 
         #[allow(clippy::cast_precision_loss)]
         {
-            *self = sign * powi(10.0, exp) * (int as f64);
+            *self = sign * powi(10.0_f64, exp) * (int as f64);
         }
 
         true

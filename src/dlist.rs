@@ -143,10 +143,7 @@ impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H>> Deque for DoublyLinkedList<T
     }
 
     fn pop_front(&mut self) -> Option<T> {
-        match self.front() {
-            None => None,
-            Some(handle) => Some(self.remove(handle)),
-        }
+        self.front().map(|handle| self.remove(handle))
     }
 
     fn push_back(&mut self, elem: T) {
@@ -155,23 +152,16 @@ impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H>> Deque for DoublyLinkedList<T
     }
 
     fn pop_back(&mut self) -> Option<T> {
-        match self.back() {
-            None => None,
-            Some(handle) => Some(self.remove(handle)),
-        }
+        self.back().map(|handle| self.remove(handle))
     }
 
     fn front(&self) -> Option<&T> {
-        match self.front() {
-            None => None,
-            Some(handle) => Some(&pool::get(&self.pool, handle).data),
-        }
+        self.front()
+            .map(|handle| &pool::get(&self.pool, handle).data)
     }
 
     fn back(&self) -> Option<&T> {
-        match self.back() {
-            None => None,
-            Some(handle) => Some(&pool::get(&self.pool, handle).data),
-        }
+        self.back()
+            .map(|handle| &pool::get(&self.pool, handle).data)
     }
 }
