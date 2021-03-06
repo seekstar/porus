@@ -25,7 +25,7 @@ pub fn remove<T, P: Pool<T>>(pool: &mut P, handle: P::Handle) -> T {
     Pool::remove(pool, handle)
 }
 
-use alloc::alloc::{AllocRef, Layout};
+use alloc::alloc::{Allocator, Layout};
 use core::ptr::{read, write, NonNull};
 
 #[derive(Clone, Copy)]
@@ -33,7 +33,7 @@ pub struct AllocHandle(NonNull<u8>);
 
 impl Handle for AllocHandle {}
 
-impl<T, A: AllocRef> Pool<T> for A {
+impl<T, A: Allocator> Pool<T> for A {
     type Handle = AllocHandle;
 
     fn get(&self, handle: Self::Handle) -> &T {
@@ -46,7 +46,7 @@ impl<T, A: AllocRef> Pool<T> for A {
 
     fn add(&mut self, item: T) -> Self::Handle {
         unsafe {
-            let mem = AllocRef::alloc(self, Layout::new::<T>()).unwrap();
+            let mem = Allocator::allocate(self, Layout::new::<T>()).unwrap();
             write(mem.as_ptr().cast(), item);
             AllocHandle(mem.cast())
         }
@@ -55,7 +55,7 @@ impl<T, A: AllocRef> Pool<T> for A {
     fn remove(&mut self, handle: Self::Handle) -> T {
         unsafe {
             let item = read(handle.0.cast().as_ptr());
-            AllocRef::dealloc(self, handle.0, Layout::new::<T>());
+            Allocator::deallocate(self, handle.0, Layout::new::<T>());
             item
         }
     }

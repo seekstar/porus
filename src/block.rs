@@ -1,20 +1,20 @@
 use crate::capacity::Policy;
 use crate::utils::unwrap;
-use core::alloc::{AllocRef, Layout};
+use core::alloc::{Allocator, Layout};
 use core::marker::PhantomData;
 use core::ptr::{copy, read, write, NonNull};
 
-pub struct Block<T, P: Policy, A: AllocRef> {
+pub struct Block<T, P: Policy, A: Allocator> {
     capacity: usize,
     data: NonNull<T>,
     allocator: A,
     _policy: PhantomData<P>,
 }
 
-impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
+impl<T, P: Policy, A: Allocator> Block<T, P, A> {
     pub fn new(mut allocator: A, size: usize) -> Self {
         let capacity = P::initial(size);
-        let mem = AllocRef::alloc(&mut allocator, Layout::array::<T>(capacity).unwrap()).unwrap();
+        let mem = Allocator::allocate(&mut allocator, Layout::array::<T>(capacity).unwrap()).unwrap();
         Self {
             capacity,
             data: mem.cast(),
@@ -62,7 +62,7 @@ impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
         let new_capacity = P::grow(self.capacity);
         let grow = usize::checked_sub(new_capacity, self.capacity).expect("grow to a smaller size");
         let mem = unsafe {
-            AllocRef::grow(
+            Allocator::grow(
                 &mut self.allocator,
                 self.data.cast(),
                 Layout::array::<T>(self.capacity).unwrap(),
@@ -91,7 +91,7 @@ impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
                 Some(i) => self.copy(i, 0, n),
             }
             let mem = unsafe {
-                AllocRef::shrink(
+                Allocator::shrink(
                     &mut self.allocator,
                     self.data.cast(),
                     Layout::array::<T>(self.capacity).unwrap(),
@@ -106,17 +106,17 @@ impl<T, P: Policy, A: AllocRef> Block<T, P, A> {
     }
 }
 
-impl<T, P: Policy, A: AllocRef + Default> Block<T, P, A> {
+impl<T, P: Policy, A: Allocator + Default> Block<T, P, A> {
     #[must_use]
     pub fn new_with_capacity(capacity: usize) -> Self {
         Self::new(Default::default(), capacity)
     }
 }
 
-impl<T, P: Policy, A: AllocRef> Drop for Block<T, P, A> {
+impl<T, P: Policy, A: Allocator> Drop for Block<T, P, A> {
     fn drop(&mut self) {
         unsafe {
-            AllocRef::dealloc(
+            Allocator::deallocate(
                 &mut self.allocator,
                 self.data.cast(),
                 Layout::array::<T>(self.capacity).unwrap(),
