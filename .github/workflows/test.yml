@@ -92,6 +92,129 @@ jobs:
         command: test
         args: --release --verbose
 
+  cargo-coverage:
+    name: cargo coverage
+
+    strategy:
+      matrix:
+        rust: [nightly]
+        os: [ubuntu-20.04, macos-10.15, windows-2019]
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions-rs/toolchain@v1
+      if: ${{ runner.os == 'Windows' }}
+      with:
+        toolchain: ${{ matrix.rust }}-gnu
+        components: rustc-dev
+        default: true
+        override: true
+    - uses: actions-rs/toolchain@v1
+      if: ${{ runner.os != 'Windows' }}
+      with:
+        toolchain: ${{ matrix.rust }}
+        components: rustc-dev
+        default: true
+        override: true
+    - uses: actions-rs/cargo@v1
+      with:
+        command: install
+        args: xargo
+
+    - uses: actions-rs/cargo@v1
+      with:
+        command: test
+        args: --no-fail-fast
+      env:
+        CARGO_INCREMENTAL: '0'
+        RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
+        RUSTDOCFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
+
+    - id: coverage
+      uses: actions-rs/grcov@v0.1
+
+    - name: Coveralls upload
+      uses: coverallsapp/github-action@master
+      with:
+        flag-name: cargo-${{ matrix.rust }}-${{ matrix.os }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: ${{ steps.coverage.outputs.report }}
+        parallel: true
+
+  coverage:
+    name: coverage
+    strategy:
+      matrix:
+        rust: [nightly]
+        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        mode: [coverage]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions-rs/toolchain@v1
+      if: ${{ runner.os == 'Windows' }}
+      with:
+        toolchain: ${{ matrix.rust }}-gnu
+        components: rustc-dev, rust-src
+        default: true
+        override: true
+    - if: ${{ runner.os == 'Windows' }}
+      run: |
+        copy C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\self-contained\crt2.o C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\crt2.o
+        copy C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\self-contained\dllcrt2.o C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\dllcrt2.o
+    - uses: actions-rs/toolchain@v1
+      if: ${{ runner.os != 'Windows' }}
+      with:
+        toolchain: ${{ matrix.rust }}
+        components: rustc-dev, rust-src
+        default: true
+        override: true
+    - uses: actions-rs/cargo@v1
+      with:
+        command: install
+        args: xargo
+
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.7'
+        architecture: 'x64'
+    - uses: crazy-max/ghaction-github-runtime@v1
+    - run: pip3 install -r requirements.txt
+
+    - run: python3 c.py --debug test --mode=${{ matrix.mode }}
+      env:
+        VERBOSE: 1
+        ACTIONS_CACHE_VERSION: ${{ secrets.ACTIONS_CACHE_VERSION }}
+        ACTIONS_CACHE_KEYS: ${{ matrix.rust }}|${{ matrix.os }}|${{ matrix.mode }}|${{ github.job }}|${{ github.run_number }},${{ matrix.rust }}|${{ matrix.os }}|${{ matrix.mode }}|${{ github.job }}|,${{ matrix.rust }}|${{ matrix.os }}|${{ matrix.mode }}|,${{ matrix.rust }}|${{ matrix.os }}|,${{ matrix.rust }}|,
+
+    - id: coverage
+      uses: actions-rs/grcov@v0.1
+
+    - name: Coveralls upload
+      uses: coverallsapp/github-action@master
+      with:
+        flag-name: solutions-${{ matrix.rust }}-${{ matrix.os }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: ${{ steps.coverage.outputs.report }}
+        parallel: true
+
+  finish:
+    needs: [cargo-coverage, coverage]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        parallel-finished: true
+
   preview:
     name: preview
     strategy:
