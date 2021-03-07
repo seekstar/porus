@@ -14,23 +14,15 @@ if __name__ == '__main__':
     main("Porus Project")
     quit()
 
-
 import os
-from wronganswer.asm import escape_source
-from subprocess import DEVNULL, run, check_output
+from subprocess import DEVNULL, run
 import json
-import platform
 from functools import wraps
 
 SOLUTION_PATTERN = r'^(?:[^/]+)/(?P<oj>[\w\-.]+)(?:/.*)?/(?P<pid>[A-Za-z0-9_\-]+)\.rs$'
 
 NATIVE = run(["rustc", "-vV"], stdin=DEVNULL, capture_output=True, check=True).stdout.decode().split("host: ", 1)[1].split("\n", 1)[0]
 SYSROOT = os.path.expanduser("~/.xargo")
-
-if platform.system() == 'Darwin':
-    gcc_info = json.loads(check_output(["brew", "info", "--json=v1", "gcc"]))[0]
-    gcc_version = gcc_info["linked_keg"]
-    GCC = os.path.join(gcc_info["bottle"]["stable"]["cellar"], 'gcc', gcc_version, 'bin', 'gcc-' + gcc_version.split('.')[0])
 
 def features(mode, target):
     if target is None:
