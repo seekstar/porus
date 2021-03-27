@@ -258,6 +258,14 @@ impl<T> ListMut for VecDeque<T> {
     }
 }
 
+impl <T, const N: usize> List for [T;N] {
+    type Elem = T;
+
+    fn get(&self, index: usize) -> Option<&T> {
+        self.as_slice().get(index)
+    }
+}
+
 mod iter;
 pub use self::iter::iter;
 
