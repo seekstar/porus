@@ -6,7 +6,7 @@ pub fn size<T: Collection>(c: &T) -> usize {
     Collection::size(c)
 }
 
-impl <T, const N: usize> Collection for [T;N] {
+impl<T, const N: usize> Collection for [T; N] {
     fn size(&self) -> usize {
         N
     }
