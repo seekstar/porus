@@ -125,7 +125,7 @@
 | [ITP2_3_A](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_3_A) | [Min-Max](solutions/judge.u-aizu.ac.jp/ITP2/ITP2_3_A.rs) |
 | [ITP2_3_B](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_3_B) | [Min-Max Element](solutions/judge.u-aizu.ac.jp/ITP2/ITP2_3_B.rs) |
 | [ITP2_3_C](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_3_C) | [Count](solutions/judge.u-aizu.ac.jp/ITP2/ITP2_3_C.rs) |
-| [ITP2_3_D](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_3_D) | Lexicographical Comparison |
+| [ITP2_3_D](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_3_D) | [Lexicographical Comparison](solutions/judge.u-aizu.ac.jp/ITP2/ITP2_3_D.rs) |
 | [ITP2_4_A](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_4_A) | [Reverse](solutions/judge.u-aizu.ac.jp/ITP2/ITP2_4_A.rs) |
 | [ITP2_4_B](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_4_B) | [Rotate](solutions/judge.u-aizu.ac.jp/ITP2/ITP2_4_B.rs) |
 | [ITP2_4_C](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_4_C) | [Swap](solutions/judge.u-aizu.ac.jp/ITP2/ITP2_4_C.rs) |
