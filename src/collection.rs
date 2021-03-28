@@ -35,3 +35,11 @@ impl<T: Ord> Collection for BinaryHeap<T> {
         self.len()
     }
 }
+
+use alloc::collections::BTreeSet;
+
+impl<T: Ord> Collection for BTreeSet<T> {
+    fn size(&self) -> usize {
+        self.len()
+    }
+}

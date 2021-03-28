@@ -1,3 +1,4 @@
+pub use alloc::collections::BTreeSet;
 pub use alloc::collections::BTreeMap;
 pub use alloc::collections::BinaryHeap;
 pub use alloc::collections::VecDeque;
@@ -30,7 +31,8 @@ pub use crate::collection::{self, Collection};
 pub use crate::deque::{self, Deque};
 pub use crate::heap::{self, Heap};
 pub use crate::list::sorting;
-pub use crate::list::{self, List};
+pub use crate::list::{self, List, ListMut};
+pub use crate::set::{self, Set, SetMut};
 pub use crate::stack::{self, Stack};
 
 pub use crate::dheap::{self, DHeap};

@@ -2,13 +2,11 @@
 #![feature(decl_macro)]
 #![feature(const_fn)]
 #![feature(specialization)]
-#![feature(untagged_unions)]
 #![feature(allocator_api)]
-#![feature(alloc_layout_extra)]
 #![feature(alloc_error_handler)]
-#![feature(maybe_uninit_ref)]
 #![feature(is_sorted)]
 #![feature(array_methods)]
+#![feature(associated_type_bounds)]
 #![cfg_attr(feature = "online-judge", feature(lang_items))]
 #![doc(test(attr(feature(proc_macro_hygiene))))]
 #![no_std]
@@ -85,6 +83,7 @@ pub mod collection;
 pub mod deque;
 pub mod heap;
 pub mod list;
+pub mod set;
 pub mod pool;
 pub mod stack;
 
