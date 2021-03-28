@@ -9,6 +9,7 @@ use core::ops::Deref;
 use core::ptr::NonNull;
 use core::slice::from_raw_parts;
 use core::str;
+use core::hint::unreachable_unchecked;
 
 mod buffer;
 pub use self::buffer::Buffer as StringBuffer;
@@ -77,7 +78,7 @@ impl Union {
             0 => Tag::Shared,
             1 => Tag::Inline,
             2 => Tag::Static,
-            _ => unreachable!(),
+            _ => unsafe { unreachable_unchecked() },
         }
     }
 

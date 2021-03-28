@@ -1,6 +1,7 @@
 use super::{get, List};
 use crate::collection;
 use core::cmp::Ordering;
+use core::hint::unreachable_unchecked;
 
 pub fn find<E: PartialEq, L: List<Elem = E>>(list: &L, elem: &E) -> Option<usize> {
     let size = collection::size(list);
@@ -52,7 +53,7 @@ pub fn bsearch<E: Ord, L: List<Elem = E>>(list: &L, elem: &E) -> (usize, usize) 
         match Ord::cmp(elem, get(list, m)) {
             Ordering::Equal => rl = range_left(&rl, m),
             Ordering::Greater => rl = range_right(&rl, m),
-            Ordering::Less => unreachable!(),
+            Ordering::Less => unsafe { unreachable_unchecked() },
         }
     }
 
@@ -61,7 +62,7 @@ pub fn bsearch<E: Ord, L: List<Elem = E>>(list: &L, elem: &E) -> (usize, usize) 
         match Ord::cmp(elem, get(list, m)) {
             Ordering::Equal => rr = range_right(&rr, m),
             Ordering::Less => rr = range_left(&rr, m),
-            Ordering::Greater => unreachable!(),
+            Ordering::Greater => unsafe { unreachable_unchecked() },
         }
     }
 

@@ -18,6 +18,7 @@ impl<S: Source> PeekableSource<S> {
         }
     }
 
+    #[allow(clippy::unreachable)]
     pub fn peek(&mut self) -> Option<&S::Item> {
         if self.peeked.is_none() {
             self.consume();

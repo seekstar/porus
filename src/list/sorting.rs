@@ -132,8 +132,6 @@ pub fn selection_sort<E, L: ListMut<Elem = E> + Collection, F: Fn(&E, &E) -> boo
                 swap(list, i, min);
                 count = usize::wrapping_add(count, 1);
             }
-        } else {
-            unreachable!();
         }
     }
     count

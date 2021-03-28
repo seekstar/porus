@@ -93,10 +93,12 @@ impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H>> DoublyLinkedList<T, H, P> {
         self.get_link(handle).next
     }
 
+    #[allow(clippy::needless_pass_by_value)]
     pub fn get(&self, handle: P::Handle) -> &T {
         &pool::get(&self.pool, handle).data
     }
 
+    #[allow(clippy::needless_pass_by_value)]
     pub fn get_mut(&mut self, handle: P::Handle) -> &mut T {
         &mut pool::get_mut(&mut self.pool, handle).data
     }
@@ -121,6 +123,7 @@ impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H>> DoublyLinkedList<T, H, P> {
         new
     }
 
+    #[allow(clippy::needless_pass_by_value)]
     pub fn remove(&mut self, handle: P::Handle) -> T {
         let prev = self.prev(Some(handle));
         let next = self.next(Some(handle));

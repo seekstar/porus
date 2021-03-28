@@ -3,12 +3,14 @@ pub trait Unwrap<T> {
 }
 
 impl<T> Unwrap<T> for Option<T> {
+    #[allow(clippy::unreachable)]
     fn unwrap(self) -> T {
         self.unwrap_or_else(|| unreachable!())
     }
 }
 
 impl<T, E> Unwrap<T> for Result<T, E> {
+    #[allow(clippy::unreachable)]
     fn unwrap(self) -> T {
         self.unwrap_or_else(|_| unreachable!())
     }

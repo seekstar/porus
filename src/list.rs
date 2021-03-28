@@ -129,7 +129,7 @@ impl<'a, L: 'a + List> Slice<L> for View<'a, L> {
     }
 }
 
-impl<L: List> Slice<L> for L {
+impl<L: List> Slice<Self> for L {
     fn slice<'a, T: RangeBounds<usize>>(&'a self, bound: &T) -> View<'a, Self> {
         let start = start_bound(bound);
         let end = end_bound(bound, collection::size(self));
@@ -155,7 +155,7 @@ impl<'a, L: 'a + ListMut> SliceMut<L> for ViewMut<'a, L> {
     }
 }
 
-impl<L: ListMut> SliceMut<L> for L {
+impl<L: ListMut> SliceMut<Self> for L {
     fn slice_mut<'a, T: RangeBounds<usize>>(&'a mut self, bound: &T) -> ViewMut<'a, Self> {
         let start = start_bound(bound);
         let end = end_bound(bound, collection::size(self));

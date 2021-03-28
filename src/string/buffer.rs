@@ -8,6 +8,7 @@ use core::marker::PhantomData;
 use core::mem::{forget, size_of, transmute_copy};
 use core::ptr::{copy_nonoverlapping, NonNull};
 use core::slice::{from_raw_parts, from_raw_parts_mut};
+use core::hint::unreachable_unchecked;
 
 pub struct Buffer<P: Policy = DefaultPolicy, A: Allocator = Global> {
     buffer: Union,
@@ -41,7 +42,7 @@ unsafe fn as_ptr(u: &Union) -> *const u8 {
     match u.tag() {
         Inline => u.inline.s.as_ptr(),
         Shared => u.shared.counter.as_ptr().add(1).cast(),
-        Static => unreachable!(),
+        Static => unreachable_unchecked(),
     }
 }
 
@@ -49,7 +50,7 @@ unsafe fn as_mut_ptr(u: &mut Union) -> *mut u8 {
     match u.tag() {
         Inline => u.inline.s.as_mut_ptr(),
         Shared => u.shared.counter.as_ptr().add(1).cast(),
-        Static => unreachable!(),
+        Static => unreachable_unchecked(),
     }
 }
 
@@ -57,7 +58,7 @@ unsafe fn capacity(u: &Union) -> usize {
     match u.tag() {
         Inline => u.inline.s.len(),
         Shared => u.shared.length,
-        Static => unreachable!(),
+        Static => unreachable_unchecked(),
     }
 }
 
@@ -79,7 +80,7 @@ fn len(u: &Union) -> usize {
     match u.tag() {
         Inline => u.len(),
         Shared => unsafe { u.shared.s.as_ptr().offset_from(as_ptr(u)) as usize },
-        Static => unreachable!(),
+        Static => unsafe { unreachable_unchecked() },
     }
 }
 
@@ -149,7 +150,7 @@ impl<P: Policy, A: Allocator> Sink for Buffer<P, A> {
                 *self.buffer.shared.s.as_mut() = c;
                 self.buffer.shared.s = NonNull::new(self.buffer.shared.s.as_ptr().add(1)).unwrap();
             },
-            Static => unreachable!(),
+            Static => unsafe { unreachable_unchecked() },
         }
     }
 }
