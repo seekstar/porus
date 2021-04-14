@@ -185,14 +185,12 @@ impl<'a, L: 'a + List> List for View<'a, L> {
 
     #[allow(clippy::unwrap_in_result)]
     fn get(&self, index: usize) -> Option<&Self::Elem> {
-        if index < self.size {
-            Some(get(
+        (index < self.size).then(|| {
+            get(
                 self.list,
                 usize::checked_add(self.start, index).expect("index overflow"),
-            ))
-        } else {
-            None
-        }
+            )
+        })
     }
 }
 
@@ -201,28 +199,24 @@ impl<'a, L: 'a + ListMut> List for ViewMut<'a, L> {
 
     #[allow(clippy::unwrap_in_result)]
     fn get(&self, index: usize) -> Option<&Self::Elem> {
-        if index < self.size {
-            Some(get(
+        (index < self.size).then(|| {
+            get(
                 self.list,
                 usize::checked_add(self.start, index).expect("index overflow"),
-            ))
-        } else {
-            None
-        }
+            )
+        })
     }
 }
 
 impl<'a, L: 'a + ListMut> ListMut for ViewMut<'a, L> {
     #[allow(clippy::unwrap_in_result)]
     fn get_mut(&mut self, index: usize) -> Option<&mut Self::Elem> {
-        if index < self.size {
-            Some(get_mut(
+        (index < self.size).then(move || {
+            get_mut(
                 self.list,
                 usize::checked_add(self.start, index).expect("index overflow"),
-            ))
-        } else {
-            None
-        }
+            )
+        })
     }
 }
 

@@ -4,12 +4,12 @@ use crate::fmt::{f, fwrite};
 use crate::io::Sink;
 use alloc::alloc::{Allocator, Global, Layout};
 use core::cmp::Ordering;
+use core::hint::unreachable_unchecked;
 use core::mem::size_of;
 use core::ops::Deref;
 use core::ptr::NonNull;
 use core::slice::from_raw_parts;
 use core::str;
-use core::hint::unreachable_unchecked;
 
 mod buffer;
 pub use self::buffer::Buffer as StringBuffer;

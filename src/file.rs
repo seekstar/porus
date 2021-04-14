@@ -68,13 +68,11 @@ impl Iterator for Source {
             self.end = read(self.fd, self.buffer, self.capacity).expect("read failed");
         }
 
-        if self.current < self.end {
+        (self.current < self.end).then(|| {
             let c = unsafe { ptr::read(self.current) };
             self.current = unsafe { self.current.add(1) };
-            Some(c)
-        } else {
-            None
-        }
+            c
+        })
     }
 }
 

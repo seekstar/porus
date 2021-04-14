@@ -80,8 +80,8 @@ pub mod collection;
 pub mod deque;
 pub mod heap;
 pub mod list;
-pub mod set;
 pub mod pool;
+pub mod set;
 pub mod stack;
 
 pub mod block;

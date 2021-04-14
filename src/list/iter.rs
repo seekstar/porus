@@ -18,13 +18,11 @@ where
     type Item = T::Elem;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.start < self.end {
+        (self.start < self.end).then(|| {
             let index = self.start;
             self.start = usize::wrapping_add(self.start, 1);
-            Some(Clone::clone(get(self.list, index)))
-        } else {
-            None
-        }
+            Clone::clone(get(self.list, index))
+        })
     }
 }
 
@@ -42,13 +40,11 @@ where
     T::Elem: Clone,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
-        if self.start < self.end {
+        (self.start < self.end).then(|| {
             self.end = usize::wrapping_sub(self.end, 1);
             let index = self.end;
-            Some(Clone::clone(get(self.list, index)))
-        } else {
-            None
-        }
+            Clone::clone(get(self.list, index))
+        })
     }
 }
 

@@ -4,11 +4,11 @@ use crate::capacity::{DefaultPolicy, Policy};
 use crate::io::{PeekableSource, Sink, Source};
 use crate::scan::{is_whitespace, Consumer};
 use alloc::alloc::{Allocator, Global, Layout};
+use core::hint::unreachable_unchecked;
 use core::marker::PhantomData;
 use core::mem::{forget, size_of, transmute_copy};
 use core::ptr::{copy_nonoverlapping, NonNull};
 use core::slice::{from_raw_parts, from_raw_parts_mut};
-use core::hint::unreachable_unchecked;
 
 pub struct Buffer<P: Policy = DefaultPolicy, A: Allocator = Global> {
     buffer: Union,
