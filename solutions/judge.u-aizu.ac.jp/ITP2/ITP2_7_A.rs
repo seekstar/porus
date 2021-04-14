@@ -18,7 +18,7 @@ fn main() {
             1 => {
                 writelnf!("{:d}", if set::contains(s, &x) { 1 } else { 0 });
             }
-            _ => panic!("invalid query")
+            _ => panic!("invalid query"),
         }
     }
 }

@@ -30,7 +30,7 @@ fn main() {
                     writelnf!("{:d}", c);
                 }
             }
-            _ => panic!("invalid query")
+            _ => panic!("invalid query"),
         }
     }
 }

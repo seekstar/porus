@@ -21,7 +21,7 @@ fn main() {
             2 => {
                 set::remove(s, &x);
             }
-            _ => panic!("invalid query")
+            _ => panic!("invalid query"),
         }
     }
 }
