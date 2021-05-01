@@ -7,6 +7,7 @@
 #![feature(is_sorted)]
 #![feature(array_methods)]
 #![feature(associated_type_bounds)]
+#![feature(const_fn_trait_bound)]
 #![cfg_attr(feature = "online-judge", feature(lang_items))]
 #![doc(test(attr(feature(proc_macro_hygiene))))]
 #![no_std]

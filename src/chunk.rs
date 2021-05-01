@@ -13,7 +13,7 @@ impl Index {
         Self(NonZeroUsize::new(!x).expect("index overflow"))
     }
 
-    pub fn get(self) -> usize {
+    pub const fn get(self) -> usize {
         !self.0.get()
     }
 }

@@ -57,7 +57,7 @@ macro_rules! prelude {
             static mut STDIN: [u8; $size] = [0; $size];
             static mut STDOUT: [u8; $size] = [0; $size];
 
-            #[cfg_attr(not(feature = "online-judge"), main)]
+            #[cfg_attr(not(feature = "online-judge"), rustc_main)]
             fn main() {
                 let stdin = &mut Source::new(0, unsafe { &mut STDIN });
                 let stdout = &mut Sink::new(1, unsafe { &mut STDOUT });
