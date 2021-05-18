@@ -1,6 +1,5 @@
 #![feature(core_intrinsics)]
 #![feature(decl_macro)]
-#![feature(const_fn)]
 #![feature(specialization)]
 #![feature(allocator_api)]
 #![feature(alloc_error_handler)]
