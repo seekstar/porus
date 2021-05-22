@@ -71,7 +71,7 @@ def coverage_flags():
     yield from ("-C", "overflow-checks=off")
     yield from ("-C", "inline-threshold=0")
 
-def rustc_argv(mode, target, filename, *libs):
+def rustc_argv_prefix(mode, target, filename, *libs):
     yield from ('rustc', '--edition', '2018')
 
     if VERBOSE:
@@ -109,9 +109,11 @@ def rustc_argv(mode, target, filename, *libs):
 
     yield from ("-Z", "macro-backtrace")
     yield from ("-Z", "proc-macro-backtrace=yes")
+
+def rustc_argv(mode, target, filename, *libs):
+    yield from rustc_argv_prefix(mode, target, filename, *libs)
     yield from ("-o", dest_filename(filename, mode, target))
     yield "-"
-
 
 def lru1(func):
     last = None
@@ -170,3 +172,25 @@ def read_source(filename):
 
 def get_submit_env(name, envs):
     return None
+
+def rustc_expand_argv(mode, target, filename, *libs):
+    yield from rustc_argv_prefix(mode, target, filename, *libs)
+    yield from ("-Z", "unstable-options")
+    yield "--pretty=expanded"
+    yield "-"
+
+@command.add_command
+def expand(
+        filename: Argument(help="path to solution"),
+        recompile: Argument("-r", "--recompile", action="store_true", help="force recompile") = False,
+        mode: Argument("--mode") = 'debug',
+        target = None):
+    kwargs = {}
+    if mode != 'debug' or target is not None:
+        kwargs['mode'] = mode
+        kwargs['target'] = target
+
+    libs = compile_libs(**kwargs)
+    argv = list(rustc_expand_argv(mode, target, filename, *libs))
+    source = read_source(filename)
+    run(argv, input=source, check=True)
