@@ -4,7 +4,7 @@ use syn::punctuated::Punctuated;
 use syn::token::{Comma, Paren};
 use syn::{Expr, ExprTuple, LitStr};
 
-fn args(input: ParseStream) -> Result<(LitStr, Expr)> {
+fn args(input: ParseStream) -> Result<(LitStr, Punctuated<Expr, Comma>)> {
     let s: LitStr = input.parse()?;
 
     if !input.is_empty() {
@@ -13,15 +13,17 @@ fn args(input: ParseStream) -> Result<(LitStr, Expr)> {
 
     let args = Punctuated::parse_terminated(input)?;
 
-    let tuple = Expr::Tuple(ExprTuple {
+    Ok((s, args))
+}
+
+pub fn parse_args(tokens: TokenStream) -> Result<(LitStr, Punctuated<Expr, Comma>)> {
+    Parser::parse2(args, tokens)
+}
+
+pub fn make_tuple(args: Punctuated<Expr, Comma>) -> Expr {
+    Expr::Tuple(ExprTuple {
         attrs: Vec::new(),
         paren_token: Paren(Span::call_site()),
         elems: args,
-    });
-
-    Ok((s, tuple))
-}
-
-pub fn parse_args(tokens: TokenStream) -> Result<(LitStr, Expr)> {
-    Parser::parse2(args, tokens)
+    })
 }

@@ -12,10 +12,10 @@ fn main() {
         let s: String = From::from(b);
         let command = s.as_ref();
         if command == b"insert" {
-            let x: usize = read!();
+            let x: u64 = read!();
             a.insert_after(x, None);
         } else if command == b"delete" {
-            let x: usize = read!();
+            let x: u64 = read!();
             let mut h = a.front();
             while !h.is_none() {
                 if a.get(h.unwrap()) == &x {
@@ -33,5 +33,6 @@ fn main() {
         }
     }
 
-    writelnf!("{}", join(f!(" "), deque::drain(a).map(|e| f!("{:d}", e))));
+    interleave(deque::drain(a), || printf!(" "), |e| printf!("{e:u}"));
+    printf!("\n");
 }

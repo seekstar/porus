@@ -25,29 +25,25 @@ fn main() {
 
     let bi: &mut Vec<usize> = &mut (0..n).collect();
     list::bubble_sort(bi, |&i, &j| list::get(a, i).1 < list::get(a, j).1);
-    writelnf!(
-        "{}",
-        join(
-            f!(" "),
-            list::iter(bi).map(|i| f!("{:c}{:d}", list::get(a, i).0, list::get(a, i).1))
-        )
+    interleave(
+        list::iter(bi),
+        || printf!(" "),
+        |i| printf!("{:c}{:u}", list::get(a, i).0, list::get(a, i).1),
     );
-    writelnf!(
-        "{:s}",
+    printf!(
+        "\n{}\n",
         stable(list::is_stable_sort(a, |x, y| x.1 < y.1, bi))
     );
 
     let si: &mut Vec<usize> = &mut (0..n).collect();
     list::selection_sort(si, |&i, &j| list::get(a, i).1 < list::get(a, j).1);
-    writelnf!(
-        "{}",
-        join(
-            f!(" "),
-            list::iter(si).map(|i| f!("{:c}{:d}", list::get(a, i).0, list::get(a, i).1))
-        )
+    interleave(
+        list::iter(si),
+        || printf!(" "),
+        |i| printf!("{:c}{:u}", list::get(a, i).0, list::get(a, i).1),
     );
-    writelnf!(
-        "{:s}",
+    printf!(
+        "\n{}\n",
         stable(list::is_stable_sort(a, |x, y| x.1 < y.1, si))
     );
 }

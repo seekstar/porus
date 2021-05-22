@@ -6,19 +6,19 @@ prelude!();
 
 fn main() {
     loop {
-        let m: isize = read!();
-        let f: isize = read!();
-        let r: isize = read!();
+        let m: i64 = read!();
+        let f: i64 = read!();
+        let r: i64 = read!();
 
         if (m == -1) && (f == -1) && (r == -1) {
             break;
         }
 
         if (m == -1) || (f == -1) {
-            writelnf!("F");
+            printf!("F\n");
         } else {
-            writelnf!(
-                "{:s}",
+            printf!(
+                "{}\n",
                 match m + f {
                     80..=100 => "A",
                     65..80 => "B",

@@ -4,7 +4,7 @@ prelude!();
 
 fn main() {
     let n: usize = read!();
-    let a: &mut Vec<(usize, usize, u8, usize, String)> = &mut (0..n)
+    let a: &mut Vec<(u64, u64, u8, u64, String)> = &mut (0..n)
         .map(|_| {
             let v = read!();
             let w = read!();
@@ -26,6 +26,6 @@ fn main() {
     );
 
     for (v, w, t, d, s) in list::iter(a) {
-        writelnf!("{:d} {:d} {:c} {:d} {:s}", v, w, t, d, &*s)
+        printf!("{:u} {:u} {:c} {:u} {:s}\n", v, w, t, d, &s);
     }
 }

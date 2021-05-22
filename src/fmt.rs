@@ -1,288 +1,86 @@
-//! Utilities for formatting and printing strings, i.e. alternative to
-//! `std::fmt`
-//!
-//! This module contains the runtime support for the
-//! [`f!`](../macro.f.html) macro. This macro uses a procedural macro
-//! to emit calls to this module in order to format arguments at
-//! runtime into strings.
-//!
-//! # Usage
-//!
-//! Since the procedural macro uses rustc's `libfmt_macros` to parse
-//! the format string, thus the usage of [`f!`](../macro.f.html) macro
-//! is very close to that of `std::format_args!`.
-//!
-//! ## Positional parameters
-//!
-//! ```
-//! # use porus::prelude::*;
-//! assert_eq!(b"2 1 1 2", stringf!("{1:d} {:d} {0:d} {:d}", 1, 2).as_ref());
-//! ```
-//!
-//! ## Formatting Types
-//!
-//! ### Character
-//!
-//! ```
-//! # use porus::prelude::*;
-//! assert_eq!(b"A", stringf!("{:c}", 0x41).as_ref());
-//! ```
-//!
-//! ### String
-//! ```
-//! # use porus::prelude::*;
-//! assert_eq!(b"hello", stringf!("{:s}", "hello").as_ref());
-//! ```
-//!
-//! ### Integer
-//!
-//! #### Decimal
-//!
-//! ```
-//! # use porus::prelude::*;
-//! assert_eq!(b"123", stringf!("{:d}", 123).as_ref());
-//! ```
-//!
-//! ### Floating-point number
-//!
-//! ```
-//! # use porus::prelude::*;
-//! assert_eq!(b"0.125", stringf!("{:.3f}", 0.125).as_ref());
-//! ```
-//!
-//! precision specified by a parameter
-//!
-//! ```
-//! # use porus::prelude::*;
-//! assert_eq!(b"0.125", stringf!("{:.*f}", 3, 0.125).as_ref());
-//! ```
-//!
-//! ### Format function
-//!
-//! ```
-//! # use porus::prelude::*;
-//! assert_eq!(b"hello", stringf!("{}", f!("hello")).as_ref());
-//! ```
+pub use porus_macros::printf;
 
-use crate::io::Sink;
-use crate::math::{fabs, powi, round};
-use crate::utils::unwrap;
-use core::convert::TryInto;
-use core::iter::Iterator;
-use core::ops::{Div, Neg, Rem};
-#[allow(unused_imports)]
-use porus_macros::format;
-
-/// The core macro for formatted string creation & output,
-/// i.e. alternative to `std::format_args!`
-///
-/// Values returned by this macro can be passed to
-/// [`stringf!`](macro.stringf.html),
-/// [`writef!`](macro.writef.html),
-/// [`writelnf!`](macro.writelnf.html).
-///
-/// ```
-/// # use porus::prelude::*;
-/// let s = stringf!("{}", f!("Hello, world!"));
-/// assert_eq!(b"Hello, world!", s.as_ref());
-/// ```
-///
-/// For more information, see the documentation in [`porus::fmt`](crate::fmt).
-pub macro f($($arg:tt)*) {
-    format!($($arg)*)
+#[allow(clippy::integer_arithmetic)]
+#[allow(clippy::many_single_char_names)]
+#[allow(clippy::indexing_slicing)]
+#[must_use]
+pub const fn concat<const M: usize, const N: usize>(a: [u8; M], b: [u8; N]) -> [u8; M + N] {
+    let mut c: [u8; M + N] = [0; M + N];
+    let mut i = 0;
+    while i < M {
+        c[i] = a[i];
+        i += 1;
+    }
+    let mut j = 0;
+    while j < N {
+        c[M + j] = b[j];
+        j += 1;
+    }
+    c
 }
 
-pub fn fwrite<S: Sink, F: FnMut(&mut S)>(sink: &mut S, mut f: F) {
-    f(sink);
+#[allow(clippy::len_without_is_empty)]
+pub trait Bytes {
+    fn len(&self) -> usize;
+    fn as_ptr(&self) -> *const u8;
 }
 
-pub fn join<S: Sink, Sep: FnMut(&mut S), F: FnMut(&mut S), I: Iterator<Item = F>>(
-    mut sep: Sep,
-    mut it: I,
-) -> impl FnMut(&mut S) {
-    move |s: &mut S| {
-        let iter = &mut it;
+impl Bytes for str {
+    fn len(&self) -> usize {
+        self.len()
+    }
 
-        match Iterator::next(iter) {
-            None => {
-                return;
-            }
-            Some(mut f) => {
-                f(s);
-            }
-        }
-
-        for mut f in iter {
-            sep(s);
-            f(s);
-        }
+    fn as_ptr(&self) -> *const u8 {
+        self.as_ptr()
     }
 }
 
-pub fn fwrite_str<S: Sink, T: AsRef<[u8]>>(s: &mut S, t: T) {
-    for c in AsRef::<[u8]>::as_ref(&t) {
-        Sink::write(s, *c);
+impl Bytes for [u8] {
+    fn len(&self) -> usize {
+        self.len()
+    }
+
+    fn as_ptr(&self) -> *const u8 {
+        self.as_ptr()
     }
 }
 
-pub trait String {
-    fn write<S: Sink>(self, s: &mut S);
-}
+#[cfg(not(feature = "local-judge"))]
+pub const FLOAT_ESCAPE_PREFIX: [u8; 0] = [];
 
-impl<'a> String for &'a str {
-    fn write<S: Sink>(self, s: &mut S) {
-        fwrite_str(s, self);
-    }
-}
+#[cfg(not(feature = "local-judge"))]
+pub const FLOAT_ESCAPE_SUFFIX: [u8; 0] = [];
 
-pub trait Int {
-    fn write<S: Sink>(self, s: &mut S, radix: u8, width: usize);
-}
+#[cfg(feature = "local-judge")]
+pub const FLOAT_ESCAPE_PREFIX: [u8; 4] = *b"\x1bXf.";
 
-#[allow(clippy::panic)]
-fn to_char(d: u8) -> u8 {
-    match d {
-        0..=9 => u8::wrapping_add(b'0', d),
-        10..=35 => u8::wrapping_add(b'7', d),
-        _ => panic!(),
-    }
-}
+#[cfg(feature = "local-judge")]
+pub const FLOAT_ESCAPE_SUFFIX: [u8; 2] = *b"\x1b\\";
 
-fn write_unsigned<
-    S: Sink,
-    T: Copy + Default + PartialOrd + Div<Output = T> + Rem<Output = T> + TryInto<u8>,
->(
-    s: &mut S,
-    mut x: T,
-    radix: T,
-    width: usize,
+#[cfg(windows)]
+pub const PRI: [u8; 3] = *b"I64";
+#[cfg(windows)]
+pub const PRI64: [u8; 3] = *b"I64";
+#[cfg(not(windows))]
+pub const PRI: [u8; 2] = *b"ll";
+#[cfg(not(windows))]
+pub const PRI64: [u8; 2] = *b"ll";
+pub const PRI32: [u8; 0] = *b"";
+pub const PRI16: [u8; 1] = *b"h";
+pub const PRI8: [u8; 2] = *b"hh";
+pub const PRISIZE: [u8; 1] = *b"z";
+
+pub fn interleave<T: Clone, F: FnMut(T), I: Iterator<Item = T>, S: FnMut()>(
+    it: I,
+    mut sep: S,
+    mut f: F,
 ) {
-    let mut buf = [b'0'; 128];
-    let mut i = 127;
-
-    while x > Default::default() {
-        *unsafe { buf.get_unchecked_mut(i) } = to_char(
-            TryInto::try_into(x % radix)
-                .ok()
-                .expect("digit greater than 255"),
-        );
-        i = unwrap(usize::checked_sub(i, 1));
-        x = x / radix;
-    }
-
-    i = Ord::min(
-        usize::saturating_add(i, 1),
-        usize::saturating_sub(128, width),
-    );
-
-    fwrite_str(s, unsafe { buf.get_unchecked_mut(i..) });
-}
-
-fn write_signed<
-    S: Sink,
-    T: Copy + Default + PartialOrd + Neg<Output = T> + Div<Output = T> + Rem<Output = T> + TryInto<u8>,
->(
-    s: &mut S,
-    x: T,
-    radix: T,
-    width: usize,
-) {
-    if x < -x {
-        Sink::write(s, b'-');
-        write_unsigned(s, -x, radix, width);
-    } else {
-        write_unsigned(s, x, radix, width);
-    }
-}
-
-#[doc(hidden)]
-macro unsigned($t:ty) {
-    impl Int for $t {
-        fn write<S: Sink>(self, s: &mut S, radix: u8, width: usize) {
-            write_unsigned(s, self, From::from(radix), width)
+    it.map(Some).intersperse(None).for_each(|e| match e {
+        Some(x) => {
+            f(x);
         }
-    }
-
-    impl<'a> Int for &'a $t {
-        fn write<S: Sink>(self, s: &mut S, radix: u8, width: usize) {
-            Int::write(*self, s, radix, width)
+        None => {
+            sep();
         }
-    }
-}
-
-#[doc(hidden)]
-macro signed($t:ty) {
-    impl Int for $t {
-        fn write<S: Sink>(self, s: &mut S, radix: u8, width: usize) {
-            write_signed(s, self, From::from(radix), width)
-        }
-    }
-
-    impl<'a> Int for &'a $t {
-        fn write<S: Sink>(self, s: &mut S, radix: u8, width: usize) {
-            Int::write(*self, s, radix, width)
-        }
-    }
-}
-
-unsigned!(u8);
-unsigned!(u16);
-unsigned!(u32);
-unsigned!(u64);
-unsigned!(u128);
-unsigned!(usize);
-
-// signed!(i8);
-signed!(i16);
-signed!(i32);
-signed!(i64);
-signed!(i128);
-signed!(isize);
-
-pub trait Float {
-    fn write<S: Sink>(self, s: &mut S, prec: u32);
-}
-
-#[allow(clippy::float_arithmetic)]
-#[allow(clippy::ok_expect)]
-#[allow(clippy::panic)]
-impl Float for f64 {
-    fn write<S: Sink>(mut self, s: &mut S, prec: u32) {
-        if self.is_finite() {
-            #[cfg(feature = "local-judge")]
-            {
-                fwrite_str(s, b"\x1bXf.");
-                write_unsigned(s, prec, 10, 1);
-                fwrite_str(s, b"\x1b\\");
-            }
-
-            if self.is_sign_negative() {
-                Sink::write(s, b'-');
-                self = fabs(self);
-            }
-
-            self *= powi(
-                10.0_f64,
-                TryInto::try_into(prec).ok().expect("prec overflow"),
-            );
-            let m = 10_u64.pow(prec);
-
-            if self <= 9_007_199_254_740_992.0_f64 {
-                #[allow(clippy::cast_sign_loss, clippy::cast_possible_truncation)]
-                let i = round(self) as u64;
-                write_unsigned(s, u64::wrapping_div(i, m), 10, 1);
-                Sink::write(s, b'.');
-                write_unsigned(s, u64::wrapping_rem(i, m), 10, prec as usize);
-                return;
-            }
-        }
-
-        panic!("floating number out of range");
-    }
-}
-
-impl<'a> Float for &'a f64 {
-    fn write<S: Sink>(self, s: &mut S, prec: u32) {
-        Float::write(*self, s, prec);
-    }
+    });
 }

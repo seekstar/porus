@@ -9,9 +9,9 @@ fn main() {
     let mut cursor = list.front();
 
     for _ in 0..n {
-        let op: isize = read!();
+        let op: u64 = read!();
         if op == 0 {
-            let x: isize = read!();
+            let x: i64 = read!();
             cursor = Some(list.insert_before(x, cursor));
         } else if op == 1 {
             let d: isize = read!();
@@ -33,6 +33,6 @@ fn main() {
     }
 
     while !deque::is_empty(list) {
-        writelnf!("{:d}", deque::pop_front(list));
+        printf!("{:i}\n", deque::pop_front(list));
     }
 }

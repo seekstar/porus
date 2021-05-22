@@ -3,19 +3,19 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let n: usize = read!();
+    let n: u64 = read!();
 
-    let mut min = isize::max_value();
-    let mut max = isize::min_value();
-    let mut sum: isize = 0;
+    let mut min = i64::max_value();
+    let mut max = i64::min_value();
+    let mut sum: i64 = 0;
 
     for _ in 0..n {
-        let a: isize = read!();
+        let a: i64 = read!();
 
         min = Ord::min(a, min);
         max = Ord::max(a, max);
         sum = sum + a;
     }
 
-    writelnf!("{:d} {:d} {:d}", min, max, sum);
+    printf!("{min:i} {max:i} {sum:i}\n");
 }

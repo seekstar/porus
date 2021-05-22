@@ -25,15 +25,10 @@ fn main() {
 
     let bi: &mut Vec<usize> = &mut (0..n).collect();
     list::quick_sort(bi, |&i, &j| list::get(a, i).1 <= list::get(a, j).1);
-    writelnf!(
-        "{:s}",
+
+    printf!(
+        "{}\n",
         stable(list::is_stable_sort(a, |x, y| x.1 < y.1, bi))
     );
-    writelnf!(
-        "{}",
-        join(
-            f!("\n"),
-            list::iter(bi).map(|i| f!("{:c} {:d}", list::get(a, i).0, list::get(a, i).1))
-        )
-    );
+    list::iter(bi).for_each(|i| printf!("{:c} {:u}\n", list::get(a, i).0, list::get(a, i).1));
 }

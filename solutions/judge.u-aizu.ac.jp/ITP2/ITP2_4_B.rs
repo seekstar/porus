@@ -4,7 +4,7 @@ prelude!();
 
 fn main() {
     let n: usize = read!();
-    let a: &mut Vec<isize> = &mut (0..n).map(|_| read!()).collect();
+    let a: &mut Vec<i64> = &mut (0..n).map(|_| read!()).collect();
     let q: usize = read!();
 
     for _ in 0..q {
@@ -15,5 +15,6 @@ fn main() {
         list::rotate_left(&mut list::slice_mut(a, b..e), e - m);
     }
 
-    writelnf!("{}", join(f!(" "), list::iter(a).map(|e| f!("{:d}", e))));
+    interleave(list::iter(a), || printf!(" "), |e| printf!("{e:i}"));
+    printf!("\n");
 }

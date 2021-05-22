@@ -3,5 +3,5 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    writelnf!("Hello World");
+    printf!("Hello World\n");
 }

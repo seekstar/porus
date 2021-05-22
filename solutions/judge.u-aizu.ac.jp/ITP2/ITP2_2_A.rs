@@ -9,14 +9,14 @@ fn main() {
     let a: &mut Vec<_> = &mut (0..n).map(|_| Vec::new()).collect();
 
     for _ in 0..q {
-        let op: usize = read!();
+        let op: u64 = read!();
         let t: usize = read!();
         if op == 0 {
-            let x: isize = read!();
+            let x: i64 = read!();
             stack::push(list::get_mut(a, t), x);
         } else if op == 1 {
             if !stack::is_empty(list::get(a, t)) {
-                writelnf!("{:d}", stack::top(list::get(a, t)))
+                printf!("{:i}\n", *stack::top(list::get(a, t)))
             }
         } else if op == 2 {
             Stack::pop(list::get_mut(a, t));

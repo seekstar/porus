@@ -4,17 +4,14 @@ prelude!();
 
 fn main() {
     let n: usize = read!();
-    let a: &mut Vec<usize> = &mut (0..n).map(|_| read!()).collect();
+    let a: &mut Vec<u64> = &mut (0..n).map(|_| read!()).collect();
 
     let pivot = sorting::partition(a, PartialOrd::le);
 
     let l = &list::slice(a, ..pivot);
     let r = &list::slice(a, (pivot + 1)..);
 
-    writelnf!(
-        "{}[{:d}]{}",
-        join(f!(""), list::iter(l).map(|e| f!("{:d} ", e))),
-        list::get(a, pivot),
-        join(f!(""), list::iter(r).map(|e| f!(" {:d}", e)))
-    );
+    list::iter(l).for_each(|e| printf!("{e:u} "));
+    printf!("[{:u}]", *list::get(a, pivot));
+    list::iter(r).for_each(|e| printf!(" {e:u}"));
 }

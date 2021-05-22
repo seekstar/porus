@@ -5,11 +5,11 @@ prelude!();
 fn main() {
     let mut i: usize = 1;
     loop {
-        let x: usize = read!();
+        let x: u64 = read!();
         if x == 0 {
             break;
         }
-        writelnf!("Case {:d}: {:d}", i, x);
+        printf!("Case {:usize}: {:u}\n", i, x);
         i += 1;
     }
 }

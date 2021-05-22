@@ -12,10 +12,10 @@ fn main() {
         if command == b"end" {
             break;
         } else if command == b"insert" {
-            let k: usize = read!();
+            let k: u64 = read!();
             heap::push(h, k);
         } else if command == b"extract" {
-            writelnf!("{:d}", heap::pop(h));
+            printf!("{:u}\n", heap::pop(h));
         }
     }
 }

@@ -22,7 +22,7 @@ fn main() {
 
         match query {
             0 => {
-                writelnf!("{:d}", if (state & (1 << m)) > 0 { 1 } else { 0 });
+                printf!("{:u}\n", (state & (1 << m)) > 0);
             }
             1 => {
                 state |= mask[m];
@@ -34,19 +34,19 @@ fn main() {
                 state ^= mask[m];
             }
             4 => {
-                writelnf!("{:d}", if (state & mask[m]) == mask[m] { 1 } else { 0 });
+                printf!("{:u}\n", (state & mask[m]) == mask[m]);
             }
             5 => {
-                writelnf!("{:d}", if (state & mask[m]) > 0 { 1 } else { 0 });
+                printf!("{:u}\n", (state & mask[m]) > 0);
             }
             6 => {
-                writelnf!("{:d}", if (state & mask[m]) == 0 { 1 } else { 0 });
+                printf!("{:u}\n", (state & mask[m]) == 0);
             }
             7 => {
-                writelnf!("{:d}", (state & mask[m]).count_ones());
+                printf!("{:u}\n", (state & mask[m]).count_ones());
             }
             8 => {
-                writelnf!("{:d}", (state & mask[m]));
+                printf!("{:u}\n", state & mask[m]);
             }
             _ => panic!("invalid query"),
         }

@@ -4,11 +4,11 @@ prelude!();
 
 fn main() {
     loop {
-        let x: usize = read!();
-        let y: usize = read!();
+        let x: u64 = read!();
+        let y: u64 = read!();
         if (x == 0) && (y == 0) {
             break;
         }
-        writelnf!("{:d} {:d}", Ord::min(x, y), Ord::max(x, y));
+        printf!("{:u} {:u}\n", Ord::min(x, y), Ord::max(x, y));
     }
 }

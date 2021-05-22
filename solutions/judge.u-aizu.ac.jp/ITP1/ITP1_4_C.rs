@@ -4,15 +4,15 @@ prelude!();
 
 fn main() {
     loop {
-        let (mut a, mut op, mut b): (isize, u8, isize) = default();
+        let (mut a, mut op, mut b): (i64, u8, i64) = default();
         read!(&mut a, Char(&mut op), &mut b);
 
         if op == b'?' {
             break;
         }
 
-        writelnf!(
-            "{:d}",
+        printf!(
+            "{:i}\n",
             match op {
                 b'+' => a + b,
                 b'-' => a - b,

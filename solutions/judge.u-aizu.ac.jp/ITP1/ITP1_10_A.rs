@@ -7,8 +7,8 @@ fn main() {
     let y1: f64 = read!();
     let x2: f64 = read!();
     let y2: f64 = read!();
-    writelnf!(
-        "{:.5f}",
+    printf!(
+        "{:.5f}\n",
         sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1))
     );
 }

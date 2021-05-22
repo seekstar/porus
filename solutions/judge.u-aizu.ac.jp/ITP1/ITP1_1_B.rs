@@ -3,6 +3,7 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let x: usize = read!();
-    writelnf!("{:d}", x * x * x);
+    let x: u64 = read!();
+    let cube = x * x * x;
+    printf!("{cube:u}\n");
 }

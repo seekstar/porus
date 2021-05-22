@@ -4,6 +4,6 @@ prelude!();
 
 fn main() {
     for _ in 0..1000 {
-        writelnf!("Hello World");
+        printf!("Hello World\n");
     }
 }

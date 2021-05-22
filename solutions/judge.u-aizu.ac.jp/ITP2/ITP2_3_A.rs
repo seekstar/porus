@@ -3,11 +3,11 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let a: isize = read!();
-    let b: isize = read!();
-    let c: isize = read!();
-    writelnf!(
-        "{:d} {:d}",
+    let a: i64 = read!();
+    let b: i64 = read!();
+    let c: i64 = read!();
+    printf!(
+        "{:i} {:i}\n",
         Ord::min(Ord::min(a, b), c),
         Ord::max(Ord::max(a, b), c)
     );

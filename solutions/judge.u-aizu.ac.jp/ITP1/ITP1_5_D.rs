@@ -3,9 +3,9 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let n: usize = read!();
+    let n: u64 = read!();
 
-    'outer: for i in (0..n).map(|x| x + 1) {
+    'outer: for i in 1..=n {
         if (i % 3) != 0 {
             let mut x = i;
             while (x % 10) != 3 {
@@ -16,7 +16,7 @@ fn main() {
             }
         }
 
-        writef!(" {:d}", i);
+        printf!(" {i:u}");
     }
-    writelnf!("");
+    printf!("\n");
 }

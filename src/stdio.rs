@@ -1,6 +1,4 @@
 #[allow(unused_imports)]
-use crate::fmt::f;
-use crate::fmt::fwrite;
 use crate::io::{PeekableSource, Sink, Source};
 use crate::scan::{fread, Consumer, Whitespace};
 use crate::utils::unwrap;
@@ -74,69 +72,4 @@ pub macro read {
             read_skip_ws($expr);
         )*
     }
-}
-
-pub fn write<F: FnMut(&mut Output)>(f: F) {
-    unsafe {
-        fwrite(&mut STDOUT, f);
-    }
-}
-
-pub fn writeln<F: FnMut(&mut Output)>(f: F) {
-    write(f);
-    unsafe {
-        Sink::write(&mut STDOUT, b'\n');
-    }
-}
-
-/// Macro for printing to the standard output, i.e. alternative to
-/// `print!` in `std`.
-///
-/// # Examples
-///
-/// ```
-/// # use porus::prelude::*;
-/// # fn main() {
-/// # let mut stdout: StringBuffer = default();
-/// # stdio::initialize(&mut io::Bytes::new(b""), &mut stdout);
-/// writef!("Hello, world!\n");
-/// assert_eq!(b"Hello, world!\n", stdout.as_ref());
-/// # }
-/// ```
-///
-/// ```
-/// # use porus::prelude::*;
-/// # fn main() {
-/// # let mut stdout: StringBuffer = default();
-/// # stdio::initialize(&mut io::Bytes::new(b""), &mut stdout);
-/// writef!("{:d}\n", 123);
-/// assert_eq!(b"123\n", stdout.as_ref());
-/// # }
-/// ```
-pub macro writef($($arg:tt)*) {
-    write(f!($($arg)*))
-}
-
-/// Macro for writing to the standard output, with a newline,
-/// i.e. alternative to `println!` in `std`.
-///
-/// # Examples
-///
-/// ```
-/// # use porus::prelude::*;
-/// # let mut stdout: StringBuffer = default();
-/// # stdio::initialize(&mut io::Bytes::new(b""), &mut stdout);
-/// writelnf!("Hello, world!");
-/// assert_eq!(b"Hello, world!\n", stdout.as_ref());
-/// ```
-///
-/// ```
-/// # use porus::prelude::*;
-/// # let mut stdout: StringBuffer = default();
-/// # stdio::initialize(&mut io::Bytes::new(b""), &mut stdout);
-/// writelnf!("{:d}", 123);
-/// assert_eq!(b"123\n", stdout.as_ref());
-/// ```
-pub macro writelnf($($arg:tt)*) {
-    writeln(f!($($arg)*))
 }

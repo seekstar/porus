@@ -7,11 +7,11 @@ fn main() {
     let v: &Vec<isize> = &mut (0..h).map(|_| read!()).collect();
 
     let write_key = |name: &str, i: usize| {
-        writef!("{:s} key = {:d}, ", name, list::get(v, i));
+        printf!("{} key = {:isize}, ", name, *list::get(v, i));
     };
 
     for i in 0..h {
-        writef!("node {:d}:", i + 1);
+        printf!("node {:usize}:", i + 1);
         write_key("", i);
         if let Some(parent) = dheap::parent_index(2, i) {
             write_key("parent", parent);
@@ -24,6 +24,6 @@ fn main() {
         if right < h {
             write_key("right", right);
         }
-        writelnf!("");
+        printf!("\n");
     }
 }

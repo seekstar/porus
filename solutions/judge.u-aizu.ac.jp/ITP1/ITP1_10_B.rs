@@ -11,7 +11,7 @@ fn main() {
     let h = b * sin(d);
     let w = b * cos(d);
 
-    writelnf!("{:.5f}", a * h / 2.0);
-    writelnf!("{:.5f}", (a + b + sqrt(h * h + (a - w) * (a - w))));
-    writelnf!("{:.5f}", h);
+    printf!("{:.5f}\n", a * h / 2.0);
+    printf!("{:.5f}\n", (a + b + sqrt(h * h + (a - w) * (a - w))));
+    printf!("{:.5f}\n", h);
 }

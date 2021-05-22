@@ -4,16 +4,16 @@ prelude!();
 
 fn main() {
     let n: usize = read!();
-    let vec = &mut vec![0isize; 0];
+    let vec = &mut vec![0; 0];
 
     for _ in 0..n {
-        let op: usize = read!();
+        let op: u64 = read!();
         if op == 0 {
-            let x: isize = read!();
+            let x: i64 = read!();
             stack::push(vec, x);
         } else if op == 1 {
             let p: usize = read!();
-            writelnf!("{:d}", list::get(vec, p));
+            printf!("{:i}\n", *list::get(vec, p));
         } else if op == 2 {
             stack::pop(vec);
         }

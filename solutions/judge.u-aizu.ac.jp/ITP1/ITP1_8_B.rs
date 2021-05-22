@@ -4,17 +4,17 @@ prelude!();
 
 fn main() {
     loop {
-        let mut sum: usize = 0;
+        let mut sum: u64 = 0;
         let mut c: u8 = 0;
         read(Whitespace);
         while read(Char(&mut c)) && (c >= b'0') && (c <= b'9') {
-            sum += (c - b'0') as usize;
+            sum += (c - b'0') as u64;
         }
 
         if sum == 0 {
             break;
         }
 
-        writelnf!("{:d}", sum)
+        printf!("{sum:u}\n");
     }
 }

@@ -14,6 +14,7 @@
 #![allow(clippy::unwrap_used)]
 #![allow(clippy::panic)]
 #![allow(clippy::blanket_clippy_restriction_lints)]
+#![allow(clippy::indexing_slicing)]
 
 extern crate proc_macro;
 extern crate proc_macro2;
@@ -25,9 +26,9 @@ extern crate rustc_parse_format;
 use proc_macro::TokenStream;
 
 mod common;
-mod format;
+mod printf;
 
 #[proc_macro]
-pub fn format(stream: TokenStream) -> TokenStream {
-    format::format(stream.into()).into()
+pub fn printf(stream: TokenStream) -> TokenStream {
+    printf::printf(stream.into()).into()
 }

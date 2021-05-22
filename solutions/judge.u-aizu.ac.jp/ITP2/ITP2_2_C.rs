@@ -9,15 +9,15 @@ fn main() {
     let a: &mut Vec<_> = &mut (0..n).map(|_| BinaryHeap::new()).collect();
 
     for _ in 0..q {
-        let op: usize = read!();
+        let op: u64 = read!();
         let t: usize = read!();
         let h = list::get_mut(a, t);
         if op == 0 {
-            let x: isize = read!();
+            let x: i64 = read!();
             heap::push(h, x);
         } else if op == 1 {
             if let Some(&x) = Heap::peek(h) {
-                writelnf!("{:d}", x)
+                printf!("{x:i}\n")
             }
         } else if op == 2 {
             Heap::pop(h);

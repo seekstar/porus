@@ -107,6 +107,7 @@ def rustc_argv(mode, target, filename, *libs):
     for lib in libs:
         yield from ('--extern', '{}={}'.format(libname(lib), lib))
 
+    yield from ("-Z", "macro-backtrace")
     yield from ("-o", dest_filename(filename, mode, target))
     yield "-"
 
@@ -157,6 +158,7 @@ def get_compile_argv(filename, *libs, mode='debug', target=None):
 
 PRELUDE = b'''#![feature(proc_macro_hygiene)]
 #![feature(rustc_attrs)]
+#![feature(array_methods)]
 #![cfg_attr(not(debug_assertions), no_std)]
 '''
 

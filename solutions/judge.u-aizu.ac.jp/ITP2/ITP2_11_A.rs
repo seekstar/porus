@@ -3,15 +3,15 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let n: u64 = read!();
+    let n: usize = read!();
 
-    for i in 0..1 << n {
-        writef!("{:d}:", i);
+    for i in 0u64..1 << n {
+        printf!("{:u}:", i);
         for j in 0..n {
             if ((1 << j) & i) > 0 {
-                writef!(" {:d}", j)
+                printf!(" {:usize}", j)
             }
         }
-        writelnf!("");
+        printf!("\n");
     }
 }

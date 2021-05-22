@@ -4,10 +4,10 @@ prelude!();
 
 fn main() {
     let n: usize = read!();
-    let a: &mut Vec<isize> = &mut (0..n).map(|_| read!()).collect();
+    let a: &mut Vec<i64> = &mut (0..n).map(|_| read!()).collect();
 
     let count = list::bubble_sort(a, PartialOrd::lt);
 
-    writelnf!("{}", join(f!(" "), list::iter(a).map(|e| f!("{:d}", e))));
-    writelnf!("{:d}", count);
+    interleave(list::iter(a), || printf!(" "), |e| printf!("{e:i}"));
+    printf!("\n{:usize}\n", count);
 }

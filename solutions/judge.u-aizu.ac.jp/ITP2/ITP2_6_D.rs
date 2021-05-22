@@ -4,12 +4,12 @@ prelude!();
 
 fn main() {
     let n: usize = read!();
-    let a: &mut Vec<usize> = &mut (0..n).map(|_| read!()).collect();
+    let a: &mut Vec<u64> = &mut (0..n).map(|_| read!()).collect();
     let q: usize = read!();
 
     for _ in 0..q {
-        let k: usize = read!();
+        let k: u64 = read!();
         let r = list::bsearch(a, &k);
-        writelnf!("{:d} {:d}", r.0, r.1);
+        printf!("{:usize} {:usize}\n", r.0, r.1);
     }
 }

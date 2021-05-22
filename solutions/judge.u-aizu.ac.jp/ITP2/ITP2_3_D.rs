@@ -4,16 +4,9 @@ prelude!();
 
 fn main() {
     let n: usize = read!();
-    let a: &Vec<usize> = &(0..n).map(|_| read!()).collect();
+    let a: &Vec<u64> = &(0..n).map(|_| read!()).collect();
     let m: usize = read!();
-    let b: &Vec<usize> = &(0..m).map(|_| read!()).collect();
+    let b: &Vec<u64> = &(0..m).map(|_| read!()).collect();
 
-    writelnf!(
-        "{:d}",
-        if b.iter().cmp(a.iter()) == Greater {
-            1
-        } else {
-            0
-        }
-    );
+    printf!("{:u}\n", b.iter().cmp(a.iter()) == Greater);
 }

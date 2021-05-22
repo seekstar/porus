@@ -78,5 +78,5 @@ fn main() {
         }
     }
 
-    writelnf!("{:d}", stack::pop(a));
+    printf!("{:isize}\n", stack::pop(a));
 }

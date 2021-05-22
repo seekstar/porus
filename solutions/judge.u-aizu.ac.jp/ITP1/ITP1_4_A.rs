@@ -3,7 +3,10 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let a: usize = read!();
-    let b: usize = read!();
-    writelnf!("{:d} {:d} {:.6f}", a / b, a % b, (a as f64) / (b as f64));
+    let a: u64 = read!();
+    let b: u64 = read!();
+    let d = a / b;
+    let r = a % b;
+    let f = (a as f64) / (b as f64);
+    printf!("{d:u} {r:u} {f:.6f}\n");
 }

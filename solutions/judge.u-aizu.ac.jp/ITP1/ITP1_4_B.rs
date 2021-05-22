@@ -4,5 +4,7 @@ prelude!();
 
 fn main() {
     let r: f64 = read!();
-    writelnf!("{:.6f} {:.6f}", PI * r * r, PI * 2.0 * r);
+    let area = PI * r * r;
+    let circumference = PI * 2.0 * r;
+    printf!("{area:.6f} {circumference:.6f}\n");
 }

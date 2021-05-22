@@ -18,9 +18,7 @@ fn main() {
         } else if command == b"reverse" {
             s.as_mut()[a..=b].reverse();
         } else if command == b"print" {
-            writelnf!("{:s}", unsafe {
-                core::str::from_utf8_unchecked(s.as_ref()[a..=b].as_ref())
-            });
+            printf!("{}\n", s.as_ref()[a..=b].as_ref());
         }
     }
 }

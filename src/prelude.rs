@@ -17,10 +17,10 @@ pub fn default<T: Default>() -> T {
 
 pub use crate::stdio;
 
-pub use crate::fmt::{f, join};
+pub use crate::fmt::{interleave, printf};
 pub use crate::io;
 pub use crate::scan::{Char, Whitespace};
-pub use crate::stdio::{read, read_opt, writef, writelnf};
+pub use crate::stdio::{read, read_opt};
 
 pub use crate::allocator;
 pub use crate::pool::{self, Pool};
@@ -38,7 +38,7 @@ pub use crate::stack::{self, Stack};
 pub use crate::dheap::{self, DHeap};
 pub use crate::dlist::DoublyLinkedList;
 pub use crate::flist::SinglyLinkedList;
-pub use crate::string::{stringf, String, StringBuffer};
+pub use crate::string::{String, StringBuffer};
 
 /// the porus prelude
 #[macro_export]

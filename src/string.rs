@@ -1,7 +1,4 @@
-use crate::fmt::{self, fwrite_str};
-#[allow(unused_imports)]
-use crate::fmt::{f, fwrite};
-use crate::io::Sink;
+use crate::fmt::Bytes;
 use alloc::alloc::{Allocator, Global, Layout};
 use core::cmp::Ordering;
 use core::hint::unreachable_unchecked;
@@ -205,28 +202,13 @@ impl<A: Allocator> Drop for String<A> {
     }
 }
 
-impl<'a> fmt::String for &'a String {
-    fn write<S: Sink>(self, s: &mut S) {
-        fwrite_str(s, self);
+impl Bytes for String {
+    fn len(&self) -> usize {
+        self.as_ref().len()
     }
-}
 
-/// Create [`String`](string::String) using interpolation of runtime
-/// expressions, i.e. alternative to `format!` in `std!`.
-///
-/// # Examples
-/// ```
-/// # use porus::prelude::*;
-/// assert_eq!(b"test", stringf!("test").as_ref());
-/// assert_eq!(b"hello world", stringf!("hello {:s}", "world").as_ref());
-/// assert_eq!(b"x = 10, y = 30", stringf!("x = {:d}, y = {:d}", 10, 30).as_ref());
-/// ```
-pub macro stringf($($arg:tt)*) {
-    {
-        let mut buffer: StringBuffer = Default::default();
-        fwrite(&mut buffer, &mut f!($($arg)*));
-        let string: String = From::from(buffer);
-        string
+    fn as_ptr(&self) -> *const u8 {
+        self.as_ref().as_ptr()
     }
 }
 

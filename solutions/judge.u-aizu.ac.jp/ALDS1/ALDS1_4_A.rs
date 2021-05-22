@@ -7,7 +7,7 @@ fn main() {
     let s: &mut Vec<usize> = &mut (0..n).map(|_| read!()).collect();
     let q: usize = read!();
 
-    let mut count = 0;
+    let mut count: usize = 0;
 
     for _ in 0..q {
         let t: usize = read!();
@@ -16,5 +16,5 @@ fn main() {
         }
     }
 
-    writelnf!("{:d}", count);
+    printf!("{:usize}\n", count);
 }

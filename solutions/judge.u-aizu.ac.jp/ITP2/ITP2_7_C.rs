@@ -7,27 +7,27 @@ fn main() {
     let s = &mut BTreeSet::new();
 
     for _ in 0..q {
-        let query: usize = read!();
+        let query: u64 = read!();
 
         match query {
             0 => {
-                let x: usize = read!();
+                let x: u64 = read!();
                 set::insert(s, x);
-                writelnf!("{:d}", collection::size(s));
+                printf!("{:usize}\n", collection::size(s));
             }
             1 => {
-                let x: usize = read!();
-                writelnf!("{:d}", if set::contains(s, &x) { 1 } else { 0 });
+                let x: u64 = read!();
+                printf!("{:u}\n", set::contains(s, &x));
             }
             2 => {
-                let x: usize = read!();
+                let x: u64 = read!();
                 set::remove(s, &x);
             }
             3 => {
-                let l: usize = read!();
-                let r: usize = read!();
+                let l: u64 = read!();
+                let r: u64 = read!();
                 for c in set::range(s, l..=r) {
-                    writelnf!("{:d}", c);
+                    printf!("{:u}\n", *c);
                 }
             }
             _ => panic!("invalid query"),
