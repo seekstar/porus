@@ -64,7 +64,7 @@ pub fn printf(tokens: TokenStream) -> TokenStream {
                         pre.push_str(&fmt.ty[1..]);
                         pre.make_ascii_uppercase();
 
-                        let prefix = Ident::new(&pre.as_str(), Span::call_site());
+                        let prefix = Ident::new(pre.as_str(), Span::call_site());
                         let into_type = Ident::new(fmt.ty, Span::call_site());
                         sizes = quote!( #sizes + porus::fmt::#prefix.len() + 2usize );
                         format = quote!( concat(#format, concat(concat(*b"%", porus::fmt::#prefix), *#lit)) );
