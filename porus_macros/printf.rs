@@ -10,7 +10,7 @@ use rustc_span::{SessionGlobals, SESSION_GLOBALS};
 
 struct Scoped<'a, T, I: Iterator<Item = T>> {
     it: I,
-    session_globals: &'a SessionGlobals
+    session_globals: &'a SessionGlobals,
 }
 
 impl<'a, T, I: Iterator<Item = T>> Iterator for Scoped<'a, T, I> {
@@ -22,14 +22,15 @@ impl<'a, T, I: Iterator<Item = T>> Iterator for Scoped<'a, T, I> {
 }
 
 impl<'a, T, I: Iterator<Item = T>> Scoped<'a, T, I> {
-    fn new<'b>(it: I, session_globals: &'b SessionGlobals) -> Scoped<'b, T, I> {
+    fn new(it: I, session_globals: &'a SessionGlobals) -> Scoped<'a, T, I> {
         Scoped {
             it,
-            session_globals
+            session_globals,
         }
     }
 }
 
+#[allow(clippy::too_many_lines)]
 pub fn printf(tokens: TokenStream) -> TokenStream {
     let (s, mut args) = parse_args(tokens).unwrap();
 
@@ -41,7 +42,10 @@ pub fn printf(tokens: TokenStream) -> TokenStream {
 
     let session_globals = SessionGlobals::new(DEFAULT_EDITION);
 
-    for p in Scoped::new(Parser::new(s.value().as_str(), None, None, false, ParseMode::Format), &session_globals) {
+    for p in Scoped::new(
+        Parser::new(s.value().as_str(), None, None, false, ParseMode::Format),
+        &session_globals,
+    ) {
         match p {
             Piece::String(s) => {
                 let size = Literal::usize_suffixed(s.len());
@@ -61,7 +65,8 @@ pub fn printf(tokens: TokenStream) -> TokenStream {
                                 named_arguments.insert(name, index);
                                 let ident = Ident::new(
                                     &SESSION_GLOBALS.set(&session_globals, || name.as_str()),
-                                    Span::call_site());
+                                    Span::call_site(),
+                                );
                                 args.push(Expr::Verbatim(quote! { #ident }));
                                 index
                             }
