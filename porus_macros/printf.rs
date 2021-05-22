@@ -5,6 +5,31 @@ use rustc_parse_format::{Argument, Count, ParseMode, Parser, Piece, Position};
 use std::collections::HashMap;
 use syn::Expr;
 
+use rustc_span::edition::DEFAULT_EDITION;
+use rustc_span::{SessionGlobals, SESSION_GLOBALS};
+
+struct Scoped<'a, T, I: Iterator<Item = T>> {
+    it: I,
+    session_globals: &'a SessionGlobals
+}
+
+impl<'a, T, I: Iterator<Item = T>> Iterator for Scoped<'a, T, I> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        SESSION_GLOBALS.set(self.session_globals, || self.it.next())
+    }
+}
+
+impl<'a, T, I: Iterator<Item = T>> Scoped<'a, T, I> {
+    fn new<'b>(it: I, session_globals: &'b SessionGlobals) -> Scoped<'b, T, I> {
+        Scoped {
+            it,
+            session_globals
+        }
+    }
+}
+
 pub fn printf(tokens: TokenStream) -> TokenStream {
     let (s, mut args) = parse_args(tokens).unwrap();
 
@@ -14,7 +39,9 @@ pub fn printf(tokens: TokenStream) -> TokenStream {
     let mut format = quote! { [] };
     let mut arguments = quote! {};
 
-    for p in Parser::new(s.value().as_str(), None, None, false, ParseMode::Format) {
+    let session_globals = SessionGlobals::new(DEFAULT_EDITION);
+
+    for p in Scoped::new(Parser::new(s.value().as_str(), None, None, false, ParseMode::Format), &session_globals) {
         match p {
             Piece::String(s) => {
                 let size = Literal::usize_suffixed(s.len());
@@ -32,7 +59,9 @@ pub fn printf(tokens: TokenStream) -> TokenStream {
                             None => {
                                 let index = args.len();
                                 named_arguments.insert(name, index);
-                                let ident = Ident::new(&name.as_str(), Span::call_site());
+                                let ident = Ident::new(
+                                    &SESSION_GLOBALS.set(&session_globals, || name.as_str()),
+                                    Span::call_site());
                                 args.push(Expr::Verbatim(quote! { #ident }));
                                 index
                             }

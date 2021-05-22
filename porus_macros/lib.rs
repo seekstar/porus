@@ -22,6 +22,7 @@ extern crate syn;
 #[macro_use]
 extern crate quote;
 extern crate rustc_parse_format;
+extern crate rustc_span;
 
 use proc_macro::TokenStream;
 
