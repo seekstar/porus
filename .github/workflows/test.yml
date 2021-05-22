@@ -193,6 +193,7 @@ jobs:
 
     - run: python3 c.py --debug test --mode=${{ matrix.mode }}
       env:
+        RUST_BACKTRACE: 1
         VERBOSE: 1
         ACTIONS_CACHE_VERSION: ${{ secrets.ACTIONS_CACHE_VERSION }}
         ACTIONS_CACHE_KEYS: ${{ matrix.rust }}|${{ matrix.os }}|${{ matrix.mode }}|${{ github.job }}|${{ github.run_number }},${{ matrix.rust }}|${{ matrix.os }}|${{ matrix.mode }}|${{ github.job }}|,${{ matrix.rust }}|${{ matrix.os }}|${{ matrix.mode }}|,${{ matrix.rust }}|${{ matrix.os }}|,${{ matrix.rust }}|,

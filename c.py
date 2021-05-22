@@ -108,6 +108,7 @@ def rustc_argv(mode, target, filename, *libs):
         yield from ('--extern', '{}={}'.format(libname(lib), lib))
 
     yield from ("-Z", "macro-backtrace")
+    yield from ("-Z", "proc-macro-backtrace=yes")
     yield from ("-o", dest_filename(filename, mode, target))
     yield "-"
 
