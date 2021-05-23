@@ -9,11 +9,7 @@ pub struct Node<H: Copy, T> {
     data: T,
 }
 
-pub struct SinglyLinkedList<
-    T,
-    H: Copy = NonNull<u8>,
-    P: Pool<Node<H, T>, Handle = H> = Global,
-> {
+pub struct SinglyLinkedList<T, H: Copy = NonNull<u8>, P: Pool<Node<H, T>, Handle = H> = Global> {
     pool: P,
     sentinel: Option<P::Handle>,
     _data: PhantomData<T>,
@@ -36,9 +32,7 @@ impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H> + Default> SinglyLinkedList<T, 
     }
 }
 
-impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H> + Default> Default
-    for SinglyLinkedList<T, H, P>
-{
+impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H> + Default> Default for SinglyLinkedList<T, H, P> {
     fn default() -> Self {
         Self::new()
     }

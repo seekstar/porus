@@ -11,6 +11,10 @@
 #![feature(iter_intersperse)]
 #![feature(maybe_uninit_extra)]
 #![feature(rustc_attrs)]
+#![feature(nonnull_slice_from_raw_parts)]
+#![feature(slice_ptr_len)]
+#![feature(slice_ptr_get)]
+#![feature(ptr_as_uninit)]
 #![cfg_attr(feature = "online-judge", feature(lang_items))]
 #![doc(test(attr(feature(proc_macro_hygiene))))]
 #![no_std]
@@ -73,6 +77,8 @@ pub mod libc;
 pub mod math;
 
 pub mod allocator;
+pub mod sys;
+
 pub mod capacity;
 pub mod collection;
 pub mod deque;
@@ -82,7 +88,6 @@ pub mod pool;
 pub mod set;
 pub mod stack;
 
-pub mod block;
 pub mod chunk;
 pub mod string;
 
@@ -107,7 +112,7 @@ pub fn panic(_info: &::core::panic::PanicInfo) -> ! {
 }
 
 #[global_allocator]
-static _A: allocator::System = allocator::System;
+static _A: sys::System = sys::System;
 
 #[cfg(feature = "online-judge")]
 #[alloc_error_handler]

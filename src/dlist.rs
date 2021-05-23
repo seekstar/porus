@@ -14,11 +14,7 @@ pub struct Node<H: Copy, T> {
     data: T,
 }
 
-pub struct DoublyLinkedList<
-    T,
-    H: Copy = NonNull<u8>,
-    P: Pool<Node<H, T>, Handle = H> = Global,
-> {
+pub struct DoublyLinkedList<T, H: Copy = NonNull<u8>, P: Pool<Node<H, T>, Handle = H> = Global> {
     pool: P,
     sentinel: Link<H>,
     _data: PhantomData<T>,
@@ -44,9 +40,7 @@ impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H> + Default> DoublyLinkedList<T, 
     }
 }
 
-impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H> + Default> Default
-    for DoublyLinkedList<T, H, P>
-{
+impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H> + Default> Default for DoublyLinkedList<T, H, P> {
     fn default() -> Self {
         Self::new()
     }

@@ -1,15 +1,22 @@
-use crate::block::Block;
+use crate::allocator::{allocate, deallocate, grow_to};
 use crate::capacity::{DefaultPolicy, Policy};
 use crate::pool::Pool;
 use alloc::alloc::{Allocator, Global};
+use core::marker::PhantomData;
 use core::mem::ManuallyDrop;
+use core::ptr::NonNull;
 
 #[derive(Clone, Copy)]
 #[rustc_layout_scalar_valid_range_start(0)]
-#[cfg_attr(target_pointer_width = "64", rustc_layout_scalar_valid_range_start(0xFFFFFFFFFFFFFFFE))]
-#[cfg_attr(target_pointer_width = "32", rustc_layout_scalar_valid_range_end(0xFFFFFFFE))]
+#[cfg_attr(
+    target_pointer_width = "64",
+    rustc_layout_scalar_valid_range_start(0xFFFFFFFFFFFFFFFE)
+)]
+#[cfg_attr(
+    target_pointer_width = "32",
+    rustc_layout_scalar_valid_range_end(0xFFFFFFFE)
+)]
 pub struct Handle(usize);
-
 
 union Node<T> {
     data: ManuallyDrop<T>,
@@ -19,7 +26,15 @@ union Node<T> {
 pub struct Chunk<T, P: Policy = DefaultPolicy, A: Allocator = Global> {
     size: usize,
     next: Option<Handle>,
-    data: Block<Node<T>, P, A>,
+    data: NonNull<[Node<T>]>,
+    allocator: A,
+    _policy: PhantomData<P>,
+}
+
+impl<T, P: Policy, A: Allocator> Drop for Chunk<T, P, A> {
+    fn drop(&mut self) {
+        deallocate(&self.allocator, self.data);
+    }
 }
 
 impl<T, P: Policy, A: Allocator> Chunk<T, P, A> {
@@ -27,7 +42,9 @@ impl<T, P: Policy, A: Allocator> Chunk<T, P, A> {
         Self {
             size: 0,
             next: None,
-            data: Block::new(allocator, capacity),
+            data: allocate(&allocator, P::initial(capacity)),
+            allocator,
+            _policy: PhantomData,
         }
     }
 }
@@ -43,11 +60,11 @@ impl<T, P: Policy, A: Allocator> Pool<T> for Chunk<T, P, A> {
     type Handle = Handle;
 
     fn get(&self, handle: Handle) -> &T {
-        unsafe { &self.data.get(handle.0).data }
+        unsafe { &*self.data.get_unchecked_mut(handle.0).as_ref().data }
     }
 
     fn get_mut(&mut self, handle: Handle) -> &mut T {
-        unsafe { &mut self.data.get_mut(handle.0).data }
+        unsafe { &mut *self.data.get_unchecked_mut(handle.0).as_mut().data }
     }
 
     fn add(&mut self, item: T) -> Handle {
@@ -55,32 +72,29 @@ impl<T, P: Policy, A: Allocator> Pool<T> for Chunk<T, P, A> {
             None => {
                 let size = self.size;
                 self.size = usize::wrapping_add(self.size, 1);
-                if size == self.data.capacity() {
-                    assert!(self.data.grow(0) > 0);
+                if size == self.data.len() {
+                    self.data = grow_to(&self.allocator, self.data, P::grow(size));
                 }
                 size
             }
             Some(handle) => {
-                self.next = unsafe { self.data.get(handle.0).next };
+                self.next = unsafe { self.data.get_unchecked_mut(handle.0).as_ref().next };
                 handle.0
             }
         };
 
-        self.data.write(
-            index,
-            Node {
-                data: ManuallyDrop::new(item),
-            },
-        );
-        unsafe {
-            Handle(index)
-        }
+        unsafe { self.data.as_uninit_slice_mut().get_unchecked_mut(index) }.write(Node {
+            data: ManuallyDrop::new(item),
+        });
+
+        unsafe { Handle(index) }
     }
 
     fn remove(&mut self, handle: Handle) -> T {
         let index = handle.0;
-        let node = self.data.read(index);
-        self.data.write(index, Node { next: self.next });
+        let p = unsafe { self.data.as_uninit_slice_mut().get_unchecked_mut(index) };
+        let node = unsafe { p.assume_init_read() };
+        p.write(Node { next: self.next });
         self.next = Some(handle);
         ManuallyDrop::into_inner(unsafe { node.data })
     }

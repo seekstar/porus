@@ -30,15 +30,11 @@ impl<T, A: Allocator> Pool<T> for A {
     type Handle = NonNull<u8>;
 
     fn get(&self, handle: Self::Handle) -> &T {
-        unsafe {
-            handle.cast().as_ref()
-        }
+        unsafe { handle.cast().as_ref() }
     }
 
     fn get_mut(&mut self, handle: Self::Handle) -> &mut T {
-        unsafe {
-            handle.cast().as_mut()
-        }
+        unsafe { handle.cast().as_mut() }
     }
 
     fn add(&mut self, item: T) -> Self::Handle {
