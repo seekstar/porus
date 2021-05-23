@@ -11,10 +11,13 @@
 #![allow(clippy::implicit_return)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(clippy::missing_inline_in_public_items)]
+#![allow(clippy::missing_panics_doc)]
 #![allow(clippy::unwrap_used)]
 #![allow(clippy::panic)]
 #![allow(clippy::blanket_clippy_restriction_lints)]
 #![allow(clippy::indexing_slicing)]
+#![allow(clippy::default_numeric_fallback)]
+#![allow(clippy::integer_arithmetic)]
 
 extern crate proc_macro;
 extern crate proc_macro2;

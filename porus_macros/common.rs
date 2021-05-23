@@ -44,6 +44,7 @@ fn make_tuple(args: Punctuated<Expr, Comma>) -> Expr {
     })
 }
 
+#[allow(clippy::needless_pass_by_value)]
 pub fn parse_scanf(
     s: LitStr,
     args: Punctuated<Expr, Comma>,
@@ -160,6 +161,7 @@ impl<'a, T, I: Iterator<Item = T>> Scoped<'a, T, I> {
 }
 
 #[allow(clippy::too_many_lines)]
+#[allow(clippy::needless_pass_by_value)]
 pub fn parse_printf(s: LitStr, mut args: Punctuated<Expr, Comma>) -> (TokenStream, TokenStream) {
     let mut named_arguments = HashMap::new();
 
