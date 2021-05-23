@@ -160,7 +160,6 @@ def get_compile_argv(filename, *libs, mode='debug', target=None):
 
 
 PRELUDE = b'''#![feature(proc_macro_hygiene)]
-#![feature(rustc_attrs)]
 #![feature(array_methods)]
 #![cfg_attr(not(debug_assertions), no_std)]
 '''

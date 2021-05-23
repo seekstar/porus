@@ -3,8 +3,12 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let h: usize = read!();
-    let v: &mut Vec<i64> = &mut (0..h).map(|_| read!()).collect();
+    let mut h = default();
+    scanf!("{:usize}", &mut h);
+    let v = &mut vec![default(); h];
+    for e in v.iter_mut() {
+        scanf!("{:i}", e);
+    }
     dheap::heapify(2, v, PartialOrd::gt);
 
     list::iter(v).for_each(|e| printf!(" {:i}", e));

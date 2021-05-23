@@ -3,8 +3,8 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let mut c: u8 = 0;
-    while read(Char(&mut c)) {
+    let mut c = default();
+    while scanf!("{:c}", &mut c) {
         printf!(
             "{:c}",
             match c {

@@ -3,9 +3,8 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let a: i64 = read!();
-    let b: i64 = read!();
-    let c: i64 = read!();
+    let (mut a, mut b, mut c) = default();
+    scanf!("{:i} {:i} {:i}", &mut a, &mut b, &mut c);
     printf!(
         "{:i} {:i}\n",
         Ord::min(Ord::min(a, b), c),

@@ -3,12 +3,13 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let q: usize = read!();
+    let mut q = default();
+    scanf!("{:usize}", &mut q);
     let s = &mut BTreeSet::new();
 
     for _ in 0..q {
-        let query: u64 = read!();
-        let x: u64 = read!();
+        let (mut query, mut x) = default();
+        scanf!("{:u} {:u}", &mut query, &mut x);
 
         match query {
             0 => {

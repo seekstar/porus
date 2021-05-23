@@ -3,9 +3,8 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let a: f64 = read!();
-    let b: f64 = read!();
-    let c: f64 = read!();
+    let (mut a, mut b, mut c) = default();
+    scanf!("{:f} {:f} {:f}", &mut a, &mut b, &mut c);
 
     let d = f64::to_radians(c);
     let h = b * sin(d);

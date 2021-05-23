@@ -8,8 +8,8 @@ fn print(x: u32) {
 }
 
 fn main() {
-    let a: u32 = read!();
-    let b: u32 = read!();
+    let (mut a, mut b) = default();
+    scanf!("{:u32} {:u32}", &mut a, &mut b);
     print(a & b);
     print(a | b);
     print(a ^ b);

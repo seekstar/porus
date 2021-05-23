@@ -6,13 +6,13 @@ fn main() {
     let h = &mut BinaryHeap::new();
 
     loop {
-        let b: StringBuffer = read!();
-        let s: String = From::from(b);
+        let s: String = StringBuffer::new(8).scan();
         let command = s.as_ref();
         if command == b"end" {
             break;
         } else if command == b"insert" {
-            let k: u64 = read!();
+            let mut k = default();
+            scanf!("{:u}", &mut k);
             heap::push(h, k);
         } else if command == b"extract" {
             printf!("{:u}\n", heap::pop(h));

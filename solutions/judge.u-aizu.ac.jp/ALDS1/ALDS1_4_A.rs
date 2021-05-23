@@ -3,14 +3,20 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let n: usize = read!();
-    let s: &mut Vec<usize> = &mut (0..n).map(|_| read!()).collect();
-    let q: usize = read!();
+    let mut n = default();
+    scanf!("{:usize}", &mut n);
+    let s = &mut vec![default(); n];
+    for e in s.iter_mut() {
+        scanf!("{:u}", e);
+    }
+    let mut q = default();
+    scanf!("{:u}", &mut q);
 
     let mut count: usize = 0;
 
     for _ in 0..q {
-        let t: usize = read!();
+        let mut t = default();
+        scanf!("{:u}", &mut t);
         if let Some(_) = list::find(s, &t) {
             count += 1;
         }

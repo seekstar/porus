@@ -8,7 +8,8 @@ fn print(x: u32) {
 }
 
 fn main() {
-    let x: u32 = read!();
+    let mut x = default();
+    scanf!("{:u32}", &mut x);
     print(x);
     print(!x);
     print(x << 1);

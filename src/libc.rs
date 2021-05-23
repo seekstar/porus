@@ -15,6 +15,7 @@ extern "C" {
 
     pub fn printf(fmt: *const u8, ...) -> i32;
     pub fn scanf(fmt: *const u8, ...) -> i32;
+    pub fn sscanf(s: *const u8, fmt: *const u8, ...) -> i32;
 
     #[cfg(unix)]
     pub fn posix_memalign(memptr: *mut *mut u8, alignment: usize, size: usize) -> i32;

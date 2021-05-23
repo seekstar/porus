@@ -27,9 +27,59 @@ extern crate rustc_span;
 use proc_macro::TokenStream;
 
 mod common;
-mod printf;
+use common::{parse_args, parse_printf, parse_sargs, parse_scanf};
 
 #[proc_macro]
 pub fn printf(stream: TokenStream) -> TokenStream {
-    printf::printf(stream.into()).into()
+    let (fmt, args) = parse_args(stream.into()).unwrap();
+    let (format, arguments) = parse_printf(fmt, args);
+
+    (quote! {
+        {
+            #format
+            #[allow(unused_imports)]
+            use porus::fmt::{Bytes, FLOAT_ESCAPE_PREFIX, FLOAT_ESCAPE_SUFFIX};
+            use u64 as u;
+            use i64 as i;
+            unsafe { porus::libc::printf(#arguments); }
+        }
+    })
+    .into()
+}
+
+#[proc_macro]
+pub fn scanf(stream: TokenStream) -> TokenStream {
+    let (fmt, args) = parse_args(stream.into()).unwrap();
+    let (format, arguments, count) = parse_scanf(fmt, args);
+
+    (quote! {
+        {
+            #format
+            #[allow(unused_imports)]
+            use porus::fmt::BytesMut;
+            use u64 as u;
+            use i64 as i;
+            unsafe { porus::libc::scanf(#arguments) == #count }
+        }
+    })
+    .into()
+}
+
+#[proc_macro]
+pub fn sscanf(stream: TokenStream) -> TokenStream {
+    let (s, fmt, args) = parse_sargs(stream.into()).unwrap();
+    let (format, arguments, count) = parse_scanf(fmt, args);
+
+    (quote! {
+        {
+            let scanf_str = #s;
+            #format
+            #[allow(unused_imports)]
+            use porus::fmt::{Bytes, BytesMut};
+            use u64 as u;
+            use i64 as i;
+            unsafe { porus::libc::sscanf(Bytes::as_ptr(scanf_str), #arguments) == #count }
+        }
+    })
+    .into()
 }

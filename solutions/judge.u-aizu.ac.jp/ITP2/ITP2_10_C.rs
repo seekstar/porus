@@ -4,25 +4,32 @@ prelude!();
 
 fn main() {
     let mut state: u64 = 0;
-    let q: usize = read!();
+    let mut q = default();
+    scanf!("{:usize}", &mut q);
+
     for _ in 0..q {
-        let query: u64 = read!();
+        let mut query = default();
+        scanf!("{:u}", &mut query);
 
         match query {
             0 => {
-                let i: usize = read!();
+                let mut i = default();
+                scanf!("{:usize}", &mut i);
                 printf!("{:u}\n", (state & (1 << i)) > 0)
             }
             1 => {
-                let i: usize = read!();
+                let mut i = default();
+                scanf!("{:usize}", &mut i);
                 state |= 1 << i;
             }
             2 => {
-                let i: usize = read!();
+                let mut i = default();
+                scanf!("{:usize}", &mut i);
                 state &= !(1 << i);
             }
             3 => {
-                let i: usize = read!();
+                let mut i = default();
+                scanf!("{:usize}", &mut i);
                 state ^= 1 << i;
             }
             4 => {

@@ -26,10 +26,19 @@ fn includes(mut a: impl Iterator<Item = i64>, b: impl Iterator<Item = i64>) -> b
 }
 
 fn main() {
-    let n: usize = read!();
-    let a: &mut Vec<i64> = &mut (0..n).map(|_| read!()).collect();
-    let m: usize = read!();
-    let b: &mut Vec<i64> = &mut (0..m).map(|_| read!()).collect();
+    let mut n = default();
+    scanf!("{:usize}", &mut n);
+    let a = &mut vec![default(); n];
+    for e in a.iter_mut() {
+        scanf!("{:i}", e);
+    }
+
+    let mut m = default();
+    scanf!("{:usize}", &mut m);
+    let b = &mut vec![default(); m];
+    for e in b.iter_mut() {
+        scanf!("{:i}", e);
+    }
 
     printf!("{:u}\n", includes(list::iter(a), list::iter(b)));
 }

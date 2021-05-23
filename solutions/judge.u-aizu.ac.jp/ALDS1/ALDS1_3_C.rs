@@ -3,19 +3,21 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let n: usize = read!();
+    let mut n = default();
+    scanf!("{:usize}", &mut n);
 
     let a = &mut DoublyLinkedList::new_with_pool(Chunk::<_>::new_with_capacity(1000000));
 
     for _ in 0..n {
-        let b: StringBuffer = read!();
-        let s: String = From::from(b);
+        let s: String = StringBuffer::new(12).scan();
         let command = s.as_ref();
         if command == b"insert" {
-            let x: u64 = read!();
+            let mut x = default();
+            scanf!("{:u}", &mut x);
             a.insert_after(x, None);
         } else if command == b"delete" {
-            let x: u64 = read!();
+            let mut x = default();
+            scanf!("{:u}", &mut x);
             let mut h = a.front();
             while !h.is_none() {
                 if a.get(h.unwrap()) == &x {

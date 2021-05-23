@@ -3,18 +3,21 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let mut s: StringBuffer = read!();
-    let q: usize = read!();
+    let mut s = [0u8; 1001];
+    scanf!("{:s}", s.as_mut_slice());
+    let mut q = default();
+    scanf!("{:usize}", &mut q);
 
     for _ in 0..q {
-        let buf: StringBuffer = read!();
-        let sc: String = From::from(buf);
+        let sc: String = StringBuffer::new(8).scan();
         let command = sc.as_ref();
-        let a: usize = read!();
-        let b: usize = read!();
+        let (mut a, mut b) = default();
+        scanf!("{:usize} {:usize}", &mut a, &mut b);
 
         if command == b"replace" {
-            read!(s.as_mut()[a..=b].as_mut());
+            let mut p = [0u8; 1001];
+            scanf!(" {:s}", p.as_mut_slice());
+            s.as_mut_slice()[a..=b].swap_with_slice(p.as_mut_slice()[..=b - a].as_mut());
         } else if command == b"reverse" {
             s.as_mut()[a..=b].reverse();
         } else if command == b"print" {

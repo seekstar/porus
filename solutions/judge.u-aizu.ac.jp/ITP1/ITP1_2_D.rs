@@ -3,11 +3,15 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let w: i64 = read!();
-    let h: i64 = read!();
-    let x: i64 = read!();
-    let y: i64 = read!();
-    let r: i64 = read!();
+    let (mut w, mut h, mut x, mut y, mut r) = default();
+    scanf!(
+        "{:i} {:i} {:i} {:i} {:i}",
+        &mut w,
+        &mut h,
+        &mut x,
+        &mut y,
+        &mut r
+    );
     printf!(
         "{}",
         if (r <= x) && (x <= (w - r)) && (r <= y) && (y <= (h - r)) {

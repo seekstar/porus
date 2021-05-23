@@ -4,8 +4,8 @@ prelude!();
 
 fn main() {
     loop {
-        let h: u64 = read!();
-        let w: u64 = read!();
+        let (mut h, mut w) = default();
+        scanf!("{:u} {:u}", &mut h, &mut w);
         if (h == 0) && (w == 0) {
             break;
         }

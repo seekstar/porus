@@ -2,81 +2,34 @@
 extern crate porus;
 prelude!();
 
-use porus::io::{PeekableSource, Source};
-use porus::scan::Consumer;
-
-enum Symbol {
-    Operator(u8),
-    Operand(isize),
-}
-
-use Symbol::Operand;
-use Symbol::Operator;
-
-impl Default for Symbol {
-    fn default() -> Self {
-        Operator(0)
-    }
-}
-
-impl<'a> Consumer for &'a mut Symbol {
-    fn consume<I: Source>(self, s: &mut PeekableSource<I>) -> bool {
-        match s.peek() {
-            None => false,
-            Some(&b'+') => {
-                *self = Operator(b'+');
-                s.consume();
-                true
-            }
-            Some(&b'-') => {
-                *self = Operator(b'-');
-                s.consume();
-                true
-            }
-            Some(&b'*') => {
-                *self = Operator(b'*');
-                s.consume();
-                true
-            }
-            Some(_) => {
-                let mut x: isize = 0;
-                if Consumer::consume(&mut x, s) {
-                    *self = Operand(x);
-                    true
-                } else {
-                    false
-                }
-            }
-        }
-    }
-}
-
 fn main() {
     let a = &mut Vec::new();
+    let mut s = [0u8; 7];
 
-    while let Some(s) = read_opt!() {
-        match s {
-            Operand(x) => {
-                stack::push(a, x);
-            }
-            Operator(b'+') => {
+    while scanf!(" {:s}", s.as_mut_slice()) {
+        match s[0] {
+            b'+' => {
                 let y = stack::pop(a);
                 let x = stack::pop(a);
                 stack::push(a, x + y);
             }
-            Operator(b'-') => {
+            b'-' => {
                 let y = stack::pop(a);
                 let x = stack::pop(a);
                 stack::push(a, x - y);
             }
-            Operator(b'*') => {
+            b'*' => {
                 let y = stack::pop(a);
                 let x = stack::pop(a);
                 stack::push(a, x * y);
             }
-            Operator(_) => unreachable!(),
+            _ => {
+                let mut x = default();
+                sscanf!(s.as_slice(), "{:i}", &mut x);
+                stack::push(a, x);
+            }
         }
     }
 
-    printf!("{:isize}\n", stack::pop(a));
+    printf!("{:i}\n", stack::pop(a));
 }

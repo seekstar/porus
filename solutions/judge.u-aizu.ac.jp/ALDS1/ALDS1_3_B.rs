@@ -3,19 +3,19 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let n: usize = read!();
-    let q: u64 = read!();
-
+    let (mut n, mut q) = default();
+    scanf!("{:usize} {:u}", &mut n, &mut q);
     let a = &mut VecDeque::new();
 
     for _ in 0..n {
-        let b: StringBuffer = read!();
-        let name: String = From::from(b);
-        let time: u64 = read!();
+        let name: String = StringBuffer::new(11).scan();
+        let mut time = default();
+        scanf!("{:u}\n", &mut time);
         deque::push_back(a, (name, time));
     }
 
-    let mut sum: u64 = 0;
+    let mut sum = default();
+    scanf!("{:u}\n", &mut sum);
 
     while !deque::is_empty(a) {
         let (name, time) = deque::pop_front(a);

@@ -5,12 +5,6 @@ prelude!();
 #[derive(Default, Clone, Copy)]
 struct Card(u8, u32);
 
-fn read_card() -> Card {
-    let mut suit = 0u8;
-    read!(Char(&mut suit));
-    Card(suit, read!())
-}
-
 fn stable(b: bool) -> &'static str {
     if b {
         "Stable"
@@ -20,8 +14,12 @@ fn stable(b: bool) -> &'static str {
 }
 
 fn main() {
-    let n: usize = read!();
-    let a: &mut Vec<Card> = &mut (0..n).map(|_| read_card()).collect();
+    let mut n = default();
+    scanf!("{:usize}", &mut n);
+    let a = &mut vec![Card(0, 0); n];
+    for e in a.iter_mut() {
+        scanf!(" {:c}{:u32}", &mut e.0, &mut e.1);
+    }
 
     let bi: &mut Vec<usize> = &mut (0..n).collect();
     list::quick_sort(bi, |&i, &j| list::get(a, i).1 <= list::get(a, j).1);

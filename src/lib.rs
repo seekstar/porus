@@ -11,6 +11,7 @@
 #![feature(const_evaluatable_checked)]
 #![feature(const_trait_impl)]
 #![feature(iter_intersperse)]
+#![feature(maybe_uninit_extra)]
 #![cfg_attr(feature = "online-judge", feature(lang_items))]
 #![doc(test(attr(feature(proc_macro_hygiene))))]
 #![no_std]
@@ -70,13 +71,8 @@ pub mod utils;
 
 pub mod math;
 
-pub mod file;
 pub mod fmt;
 pub mod libc;
-pub mod stdio;
-
-pub mod io;
-pub mod scan;
 
 pub mod allocator;
 pub mod capacity;

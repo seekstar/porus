@@ -3,18 +3,22 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let n: usize = read!();
+    let mut n = default();
+    scanf!("{:usize}", &mut n);
 
     let list = &mut DoublyLinkedList::new_with_pool(Chunk::<_>::new_with_capacity(500000));
     let mut cursor = list.front();
 
     for _ in 0..n {
-        let op: u64 = read!();
+        let mut op = default();
+        scanf!("{:u}", &mut op);
         if op == 0 {
-            let x: i64 = read!();
+            let mut x = default();
+            scanf!("{:i}", &mut x);
             cursor = Some(list.insert_before(x, cursor));
         } else if op == 1 {
-            let d: isize = read!();
+            let mut d = default();
+            scanf!("{:i}", &mut d);
 
             if d < 0 {
                 for _ in 0..(-d) {

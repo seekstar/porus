@@ -3,14 +3,18 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let n: usize = read!();
-    let a: &Vec<i64> = &(0..n).map(|_| read!()).collect();
-    let q: usize = read!();
+    let mut n = default();
+    scanf!("{:usize}", &mut n);
+    let a = &mut vec![default(); n];
+    for e in a.iter_mut() {
+        scanf!("{:i}", e);
+    }
+    let mut q = default();
+    scanf!("{:usize}", &mut q);
 
     for _ in 0..q {
-        let com: u64 = read!();
-        let b: usize = read!();
-        let e: usize = read!();
+        let (mut com, mut b, mut e) = default();
+        scanf!("{:u} {:usize} {:usize}", &mut com, &mut b, &mut e);
         let slice = &list::slice(a, b..e);
         let it = list::iter(slice);
 

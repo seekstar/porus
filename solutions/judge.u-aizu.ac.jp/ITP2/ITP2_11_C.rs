@@ -3,9 +3,12 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let _n: usize = read!();
-    let k: usize = read!();
-    let b: Vec<u64> = (0..k).map(|_| read!()).collect();
+    let (mut n, mut k) = default();
+    scanf!("{:usize} {:usize}", &mut n, &mut k);
+    let b = &mut vec![default(); k];
+    for e in b.iter_mut() {
+        scanf!("{:u}", e);
+    }
 
     for i in 0..1 << k {
         printf!(

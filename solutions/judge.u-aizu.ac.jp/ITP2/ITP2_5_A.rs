@@ -3,14 +3,12 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let n: usize = read!();
-    let a: &mut Vec<(i64, i64)> = &mut (0..n)
-        .map(|_| {
-            let x = read!();
-            let y = read!();
-            (x, y)
-        })
-        .collect();
+    let mut n = default();
+    scanf!("{:usize}", &mut n);
+    let a = &mut vec![(0, 0); n];
+    for e in a.iter_mut() {
+        scanf!("{:i} {:i}", &mut e.0, &mut e.1);
+    }
 
     list::shell_sort(
         a,

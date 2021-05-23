@@ -6,9 +6,8 @@ prelude!();
 
 fn main() {
     loop {
-        let m: i64 = read!();
-        let f: i64 = read!();
-        let r: i64 = read!();
+        let (mut m, mut f, mut r) = default();
+        scanf!("{:i} {:i} {:i}", &mut m, &mut f, &mut r);
 
         if (m == -1) && (f == -1) && (r == -1) {
             break;

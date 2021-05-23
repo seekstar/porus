@@ -4,8 +4,8 @@ prelude!();
 
 fn main() {
     loop {
-        let (mut a, mut op, mut b): (i64, u8, i64) = default();
-        read!(&mut a, Char(&mut op), &mut b);
+        let (mut a, mut op, mut b) = default();
+        scanf!("{:i} {:c} {:i}", &mut a, &mut op, &mut b);
 
         if op == b'?' {
             break;

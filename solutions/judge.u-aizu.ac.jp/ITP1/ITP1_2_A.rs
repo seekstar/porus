@@ -3,8 +3,8 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let a: i64 = read!();
-    let b: i64 = read!();
+    let (mut a, mut b) = default();
+    scanf!("{:i} {:i}", &mut a, &mut b);
     printf!(
         "a {} b",
         match Ord::cmp(&a, &b) {

@@ -15,12 +15,8 @@ pub fn default<T: Default>() -> T {
     Default::default()
 }
 
-pub use crate::stdio;
-
-pub use crate::fmt::{interleave, printf};
-pub use crate::io;
-pub use crate::scan::{Char, Whitespace};
-pub use crate::stdio::{read, read_opt};
+pub use crate::fmt::interleave;
+pub use porus_macros::{printf, scanf, sscanf};
 
 pub use crate::allocator;
 pub use crate::pool::{self, Pool};
@@ -44,31 +40,14 @@ pub use crate::string::{String, StringBuffer};
 #[macro_export]
 macro_rules! prelude {
     () => {
-        prelude!(stdio, 1024);
-    };
-    (stdio, $size:expr) => {
         #[allow(unused_imports)]
         use $crate::prelude::*;
 
         pub mod __porus_main {
-            use $crate::file::{Sink, Source};
-            use $crate::stdio::initialize;
-
-            static mut STDIN: [u8; $size] = [0; $size];
-            static mut STDOUT: [u8; $size] = [0; $size];
-
-            #[cfg_attr(not(feature = "online-judge"), rustc_main)]
-            fn main() {
-                let stdin = &mut Source::new(0, unsafe { &mut STDIN });
-                let stdout = &mut Sink::new(1, unsafe { &mut STDOUT });
-                initialize(stdin, stdout);
-                super::main();
-            }
-
             #[cfg(feature = "online-judge")]
             #[export_name = "main"]
             pub extern "C" fn porus_start() -> i32 {
-                main();
+                super::main();
                 0
             }
         }

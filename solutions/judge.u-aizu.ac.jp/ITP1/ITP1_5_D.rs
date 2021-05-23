@@ -3,7 +3,8 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let n: u64 = read!();
+    let mut n = default();
+    scanf!("{:u}", &mut n);
 
     'outer: for i in 1..=n {
         if (i % 3) != 0 {

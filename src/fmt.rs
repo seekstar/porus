@@ -1,5 +1,3 @@
-pub use porus_macros::printf;
-
 #[allow(clippy::integer_arithmetic)]
 #[allow(clippy::many_single_char_names)]
 #[allow(clippy::indexing_slicing)]
@@ -42,6 +40,16 @@ impl Bytes for [u8] {
 
     fn as_ptr(&self) -> *const u8 {
         self.as_ptr()
+    }
+}
+
+pub trait BytesMut {
+    fn as_mut_ptr(&mut self) -> *mut u8;
+}
+
+impl BytesMut for [u8] {
+    fn as_mut_ptr(&mut self) -> *mut u8 {
+        self.as_mut_ptr()
     }
 }
 

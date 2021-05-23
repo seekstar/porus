@@ -3,11 +3,15 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let h: usize = read!();
-    let v: &Vec<isize> = &mut (0..h).map(|_| read!()).collect();
+    let mut h = default();
+    scanf!("{:usize}", &mut h);
+    let v = &mut vec![default(); h];
+    for e in v.iter_mut() {
+        scanf!("{:i}", e);
+    }
 
     let write_key = |name: &str, i: usize| {
-        printf!("{} key = {:isize}, ", name, *list::get(v, i));
+        printf!("{} key = {:i}, ", name, *list::get(v, i));
     };
 
     for i in 0..h {

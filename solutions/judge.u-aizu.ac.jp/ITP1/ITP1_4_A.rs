@@ -3,8 +3,8 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let a: u64 = read!();
-    let b: u64 = read!();
+    let (mut a, mut b) = default();
+    scanf!("{:u} {:u}", &mut a, &mut b);
     let d = a / b;
     let r = a % b;
     let f = (a as f64) / (b as f64);

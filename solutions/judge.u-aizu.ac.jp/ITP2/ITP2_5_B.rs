@@ -3,16 +3,13 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let n: usize = read!();
+    let mut n = default();
+    scanf!("{:usize}", &mut n);
     let a: &mut Vec<(u64, u64, u8, u64, String)> = &mut (0..n)
         .map(|_| {
-            let v = read!();
-            let w = read!();
-            let mut t: u8 = 0;
-            read!(Char(&mut t));
-            let d = read!();
-            let b: StringBuffer = read!();
-            let s: String = From::from(b);
+            let (mut v, mut w, mut t, mut d) = default();
+            scanf!("{:u} {:u} {:c} {:u}", &mut v, &mut w, &mut t, &mut d);
+            let s: String = StringBuffer::new(21).scan();
             (v, w, t, d, s)
         })
         .collect();

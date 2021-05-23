@@ -3,25 +3,29 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let n: usize = read!();
+    let mut n = default();
+    scanf!("{:usize}", &mut n);
 
     let buf = &mut VecDeque::new();
 
     for _ in 0..n {
-        let op: u64 = read!();
+        let mut op = default();
+        scanf!("{:u}", &mut op);
         if op == 0 {
-            let d: usize = read!();
-            let x: i64 = read!();
+            let (mut d, mut x) = default();
+            scanf!("{:u} {:i}", &mut d, &mut x);
             if d == 0 {
                 deque::push_front(buf, x);
             } else if d == 1 {
                 deque::push_back(buf, x);
             }
         } else if op == 1 {
-            let p: usize = read!();
+            let mut p = default();
+            scanf!("{:usize}", &mut p);
             printf!("{:i}\n", *list::get(buf, p));
         } else if op == 2 {
-            let d: u64 = read!();
+            let mut d = default();
+            scanf!("{:u}", &mut d);
             if d == 0 {
                 deque::pop_front(buf);
             } else if d == 1 {

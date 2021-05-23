@@ -3,7 +3,8 @@ extern crate porus;
 prelude!();
 
 fn main() {
-    let n: usize = read!();
+    let mut n = default();
+    scanf!("{:usize}", &mut n);
 
     for i in 0u64..1 << n {
         printf!("{:u}:", i);
