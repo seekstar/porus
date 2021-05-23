@@ -1,21 +1,22 @@
 use crate::deque::Deque;
-use crate::pool::{self, Handle, Pool};
+use crate::pool::{self, Pool};
 use alloc::alloc::Global;
 use core::marker::PhantomData;
+use core::ptr::NonNull;
 
-struct Link<H: Handle> {
+struct Link<H: Copy> {
     prev: Option<H>,
     next: Option<H>,
 }
 
-pub struct Node<H: Handle, T> {
+pub struct Node<H: Copy, T> {
     link: Link<H>,
     data: T,
 }
 
 pub struct DoublyLinkedList<
     T,
-    H: Handle = pool::AllocHandle,
+    H: Copy = NonNull<u8>,
     P: Pool<Node<H, T>, Handle = H> = Global,
 > {
     pool: P,
@@ -23,7 +24,7 @@ pub struct DoublyLinkedList<
     _data: PhantomData<T>,
 }
 
-impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H>> DoublyLinkedList<T, H, P> {
+impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H>> DoublyLinkedList<T, H, P> {
     pub fn new_with_pool(pool: P) -> Self {
         Self {
             pool,
@@ -36,14 +37,14 @@ impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H>> DoublyLinkedList<T, H, P> {
     }
 }
 
-impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H> + Default> DoublyLinkedList<T, H, P> {
+impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H> + Default> DoublyLinkedList<T, H, P> {
     #[must_use]
     pub fn new() -> Self {
         Self::new_with_pool(Default::default())
     }
 }
 
-impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H> + Default> Default
+impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H> + Default> Default
     for DoublyLinkedList<T, H, P>
 {
     fn default() -> Self {
@@ -51,7 +52,7 @@ impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H> + Default> Default
     }
 }
 
-impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H>> DoublyLinkedList<T, H, P> {
+impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H>> DoublyLinkedList<T, H, P> {
     pub fn front(&self) -> Option<P::Handle> {
         self.sentinel.next
     }
@@ -133,7 +134,7 @@ impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H>> DoublyLinkedList<T, H, P> {
     }
 }
 
-impl<T, H: Handle, P: Pool<Node<H, T>, Handle = H>> Deque for DoublyLinkedList<T, H, P> {
+impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H>> Deque for DoublyLinkedList<T, H, P> {
     type Elem = T;
 
     fn is_empty(&self) -> bool {

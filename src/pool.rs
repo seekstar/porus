@@ -1,7 +1,8 @@
-pub trait Handle: Copy {}
+use alloc::alloc::{Allocator, Layout};
+use core::ptr::{read, write, NonNull};
 
 pub trait Pool<T> {
-    type Handle: Handle;
+    type Handle: Copy;
 
     fn get(&self, handle: Self::Handle) -> &T;
     fn get_mut(&mut self, handle: Self::Handle) -> &mut T;
@@ -25,37 +26,33 @@ pub fn remove<T, P: Pool<T>>(pool: &mut P, handle: P::Handle) -> T {
     Pool::remove(pool, handle)
 }
 
-use alloc::alloc::{Allocator, Layout};
-use core::ptr::{read, write, NonNull};
-
-#[derive(Clone, Copy)]
-pub struct AllocHandle(NonNull<u8>);
-
-impl Handle for AllocHandle {}
-
 impl<T, A: Allocator> Pool<T> for A {
-    type Handle = AllocHandle;
+    type Handle = NonNull<u8>;
 
     fn get(&self, handle: Self::Handle) -> &T {
-        unsafe { &*handle.0.cast().as_ptr() }
+        unsafe {
+            handle.cast().as_ref()
+        }
     }
 
     fn get_mut(&mut self, handle: Self::Handle) -> &mut T {
-        unsafe { &mut *handle.0.cast().as_ptr() }
+        unsafe {
+            handle.cast().as_mut()
+        }
     }
 
     fn add(&mut self, item: T) -> Self::Handle {
         unsafe {
             let mem = Allocator::allocate(self, Layout::new::<T>()).unwrap();
-            write(mem.as_ptr().cast(), item);
-            AllocHandle(mem.cast())
+            write(mem.cast().as_ptr(), item);
+            mem.cast()
         }
     }
 
     fn remove(&mut self, handle: Self::Handle) -> T {
         unsafe {
-            let item = read(handle.0.cast().as_ptr());
-            Allocator::deallocate(self, handle.0, Layout::new::<T>());
+            let item = read(handle.cast().as_ptr());
+            Allocator::deallocate(self, handle.cast(), Layout::new::<T>());
             item
         }
     }

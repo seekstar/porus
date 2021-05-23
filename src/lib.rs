@@ -1,6 +1,4 @@
 #![feature(core_intrinsics)]
-#![feature(decl_macro)]
-#![feature(specialization)]
 #![feature(allocator_api)]
 #![feature(alloc_error_handler)]
 #![feature(is_sorted)]
@@ -12,6 +10,7 @@
 #![feature(const_trait_impl)]
 #![feature(iter_intersperse)]
 #![feature(maybe_uninit_extra)]
+#![feature(rustc_attrs)]
 #![cfg_attr(feature = "online-judge", feature(lang_items))]
 #![doc(test(attr(feature(proc_macro_hygiene))))]
 #![no_std]
@@ -69,10 +68,9 @@ extern crate porus_macros;
 
 pub mod utils;
 
-pub mod math;
-
 pub mod fmt;
 pub mod libc;
+pub mod math;
 
 pub mod allocator;
 pub mod capacity;

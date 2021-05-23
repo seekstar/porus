@@ -140,7 +140,7 @@
 | [ITP2_6_D](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_6_D) | [Equal Range](solutions/judge.u-aizu.ac.jp/ITP2/ITP2_6_D.rs) |
 | [ITP2_7_A](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_7_A) | [Set: Search](solutions/judge.u-aizu.ac.jp/ITP2/ITP2_7_A.rs) |
 | [ITP2_7_B](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_7_B) | [Set: Delete](solutions/judge.u-aizu.ac.jp/ITP2/ITP2_7_B.rs) |
-| [ITP2_7_C](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_7_C) | [Set: Range Search]((solutions/judge.u-aizu.ac.jp/ITP2/ITP2_7_C.rs) |
+| [ITP2_7_C](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_7_C) | [Set: Range Search](solutions/judge.u-aizu.ac.jp/ITP2/ITP2_7_C.rs) |
 | [ITP2_7_D](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_7_D) | Multi-Set |
 | [ITP2_8_A](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_8_A) | Map: Search |
 | [ITP2_8_B](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP2_8_B) | Map: Delete |
