@@ -5,7 +5,8 @@ prelude!();
 fn main() {
     let mut i: usize = 1;
     loop {
-        let x: u64 = read!();
+        let mut x = default();
+        scanf!("{:u}", &mut x);
         if x == 0 {
             break;
         }
