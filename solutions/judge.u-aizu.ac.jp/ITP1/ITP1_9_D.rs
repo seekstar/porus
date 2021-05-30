@@ -9,7 +9,7 @@ fn main() {
     scanf!("{:usize}", &mut q);
 
     for _ in 0..q {
-        let sc: String = StringBuffer::new(8).scan();
+        let sc: String = StringBuffer::with_capacity(8).scan();
         let command = sc.as_ref();
         let (mut a, mut b) = default();
         scanf!("{:usize} {:usize}", &mut a, &mut b);

@@ -70,8 +70,6 @@
 extern crate alloc;
 extern crate porus_macros;
 
-pub mod utils;
-
 pub mod fmt;
 pub mod libc;
 pub mod math;

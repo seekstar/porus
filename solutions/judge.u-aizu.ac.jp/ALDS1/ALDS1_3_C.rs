@@ -6,10 +6,10 @@ fn main() {
     let mut n = default();
     scanf!("{:usize}", &mut n);
 
-    let a = &mut DoublyLinkedList::new_with_pool(Chunk::<_>::new_with_capacity(1000000));
+    let a = &mut DoublyLinkedList::new_in(Chunk::<_>::with_capacity(1000000));
 
     for _ in 0..n {
-        let s: String = StringBuffer::new(12).scan();
+        let s: String = StringBuffer::with_capacity(12).scan();
         let command = s.as_ref();
         if command == b"insert" {
             let mut x = default();

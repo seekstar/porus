@@ -9,7 +9,7 @@ fn main() {
         .map(|_| {
             let (mut v, mut w, mut t, mut d) = default();
             scanf!("{:u} {:u} {:c} {:u}", &mut v, &mut w, &mut t, &mut d);
-            let s: String = StringBuffer::new(21).scan();
+            let s: String = StringBuffer::with_capacity(21).scan();
             (v, w, t, d, s)
         })
         .collect();

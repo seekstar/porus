@@ -6,7 +6,7 @@ fn main() {
     let mut n = default();
     scanf!("{:usize}", &mut n);
 
-    let list = &mut DoublyLinkedList::new_with_pool(Chunk::<_>::new_with_capacity(500000));
+    let list = &mut DoublyLinkedList::new_in(Chunk::<_>::with_capacity(500000));
     let mut cursor = list.front();
 
     for _ in 0..n {

@@ -6,7 +6,7 @@ fn main() {
     let h = &mut BinaryHeap::new();
 
     loop {
-        let s: String = StringBuffer::new(8).scan();
+        let s: String = StringBuffer::with_capacity(8).scan();
         let command = s.as_ref();
         if command == b"end" {
             break;

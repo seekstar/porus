@@ -217,14 +217,14 @@ where
     Inline<{ size_of::<Shared<A>>() - 1 }>: Sized,
 {
     #[must_use]
-    pub fn new(capacity: usize) -> Self
+    pub fn with_capacity(capacity: usize) -> Self
     where
         A: Default,
     {
-        Self::new_with_allocator(capacity, Default::default())
+        Self::with_capacity_in(capacity, Default::default())
     }
 
-    pub fn new_with_allocator(capacity: usize, allocator: A) -> Self {
+    pub fn with_capacity_in(capacity: usize, allocator: A) -> Self {
         let counter = Allocator::allocate(
             &allocator,
             Layout::array::<u8>(usize::wrapping_add(size_of::<usize>(), capacity)).unwrap(),

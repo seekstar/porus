@@ -38,7 +38,7 @@ impl<T, P: Policy, A: Allocator> Drop for Chunk<T, P, A> {
 }
 
 impl<T, P: Policy, A: Allocator> Chunk<T, P, A> {
-    pub fn new(allocator: A, capacity: usize) -> Self {
+    pub fn with_capacity_in(capacity: usize, allocator: A) -> Self {
         Self {
             size: 0,
             next: None,
@@ -47,12 +47,27 @@ impl<T, P: Policy, A: Allocator> Chunk<T, P, A> {
             _policy: PhantomData,
         }
     }
+
+    pub fn new_in(allocator: A) -> Self {
+        Self::with_capacity_in(0, allocator)
+    }
 }
 
 impl<T, P: Policy, A: Allocator + Default> Chunk<T, P, A> {
     #[must_use]
-    pub fn new_with_capacity(capacity: usize) -> Self {
-        Self::new(Default::default(), capacity)
+    pub fn with_capacity(capacity: usize) -> Self {
+        Self::with_capacity_in(capacity, Default::default())
+    }
+
+    #[must_use]
+    pub fn new() -> Self {
+        Self::with_capacity(0)
+    }
+}
+
+impl<T, P: Policy, A: Allocator + Default> Default for Chunk<T, P, A> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

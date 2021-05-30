@@ -8,7 +8,7 @@ fn main() {
     let a = &mut VecDeque::new();
 
     for _ in 0..n {
-        let name: String = StringBuffer::new(11).scan();
+        let name: String = StringBuffer::with_capacity(11).scan();
         let mut time = default();
         scanf!("{:u}\n", &mut time);
         deque::push_back(a, (name, time));
