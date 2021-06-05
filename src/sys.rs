@@ -27,6 +27,7 @@ pub const MIN_ALIGN: usize = 8;
 )))]
 pub const MIN_ALIGN: usize = 16;
 
+#[cfg(unix)]
 #[allow(clippy::trivially_copy_pass_by_ref)]
 pub unsafe fn realloc_fallback(
     alloc: &System,
@@ -58,11 +59,7 @@ unsafe fn aligned_malloc(layout: &Layout) -> *mut u8 {
     }
 }
 
-#[cfg(windows)]
-unsafe fn aligned_malloc(layout: &Layout) -> *mut u8 {
-    libc::_aligned_malloc(layout.size(), layout.align())
-}
-
+#[cfg(unix)]
 unsafe impl GlobalAlloc for System {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         if layout.align() <= MIN_ALIGN && layout.align() <= layout.size() {
@@ -72,21 +69,10 @@ unsafe impl GlobalAlloc for System {
         }
     }
 
-    #[cfg(unix)]
     unsafe fn dealloc(&self, ptr: *mut u8, _layout: Layout) {
         libc::free(ptr);
     }
 
-    #[cfg(windows)]
-    unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
-        if layout.align() <= MIN_ALIGN && layout.align() <= layout.size() {
-            libc::free(ptr)
-        } else {
-            libc::_aligned_free(ptr)
-        }
-    }
-
-    #[cfg(unix)]
     unsafe fn realloc(&self, ptr: *mut u8, layout: Layout, new_size: usize) -> *mut u8 {
         if layout.align() <= MIN_ALIGN && layout.align() <= new_size {
             libc::realloc(ptr, new_size)
@@ -94,13 +80,19 @@ unsafe impl GlobalAlloc for System {
             realloc_fallback(self, ptr, layout, new_size)
         }
     }
+}
 
-    #[cfg(windows)]
+#[cfg(windows)]
+unsafe impl GlobalAlloc for System {
+    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
+        libc::_aligned_malloc(layout.size(), layout.align())
+    }
+
+    unsafe fn dealloc(&self, ptr: *mut u8, _layout: Layout) {
+        libc::_aligned_free(ptr)
+    }
+
     unsafe fn realloc(&self, ptr: *mut u8, layout: Layout, new_size: usize) -> *mut u8 {
-        if layout.align() <= MIN_ALIGN && layout.align() <= new_size {
-            libc::realloc(ptr, new_size)
-        } else {
-            libc::_aligned_realloc(ptr, new_size, layout.align())
-        }
+        libc::_aligned_realloc(ptr, new_size, layout.align())
     }
 }
