@@ -58,7 +58,7 @@ impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H>> Stack for SinglyLinkedList<T, 
         match self.sentinel {
             None => None,
             Some(handle) => {
-                let node = pool::remove(&mut self.pool, handle);
+                let node = pool::take(&mut self.pool, handle);
                 self.sentinel = node.next;
                 Some(node.data)
             }

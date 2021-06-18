@@ -124,7 +124,7 @@ impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H>> DoublyLinkedList<T, H, P> {
         let next = self.next(Some(handle));
         self.get_node_mut(prev).next = next;
         self.get_node_mut(next).prev = prev;
-        pool::remove(&mut self.pool, handle).data
+        pool::take(&mut self.pool, handle).data
     }
 }
 

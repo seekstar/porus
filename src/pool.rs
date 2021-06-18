@@ -7,7 +7,7 @@ pub trait Pool<T> {
     fn get(&self, handle: Self::Handle) -> &T;
     fn get_mut(&mut self, handle: Self::Handle) -> &mut T;
     fn add(&mut self, item: T) -> Self::Handle;
-    fn remove(&mut self, handle: Self::Handle) -> T;
+    fn take(&mut self, handle: Self::Handle) -> T;
 }
 
 pub fn get<T, P: Pool<T>>(pool: &P, handle: P::Handle) -> &T {
@@ -22,8 +22,8 @@ pub fn add<T, P: Pool<T>>(pool: &mut P, item: T) -> P::Handle {
     Pool::add(pool, item)
 }
 
-pub fn remove<T, P: Pool<T>>(pool: &mut P, handle: P::Handle) -> T {
-    Pool::remove(pool, handle)
+pub fn take<T, P: Pool<T>>(pool: &mut P, handle: P::Handle) -> T {
+    Pool::take(pool, handle)
 }
 
 impl<T, A: Allocator> Pool<T> for A {
@@ -45,7 +45,7 @@ impl<T, A: Allocator> Pool<T> for A {
         }
     }
 
-    fn remove(&mut self, handle: Self::Handle) -> T {
+    fn take(&mut self, handle: Self::Handle) -> T {
         unsafe {
             let item = read(handle.cast().as_ptr());
             Allocator::deallocate(self, handle.cast(), Layout::new::<T>());

@@ -105,7 +105,7 @@ impl<T, P: Policy, A: Allocator> Pool<T> for Chunk<T, P, A> {
         unsafe { Handle(index) }
     }
 
-    fn remove(&mut self, handle: Handle) -> T {
+    fn take(&mut self, handle: Handle) -> T {
         let index = handle.0;
         let p = unsafe { self.data.as_uninit_slice_mut().get_unchecked_mut(index) };
         let node = unsafe { p.assume_init_read() };
