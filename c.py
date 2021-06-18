@@ -42,7 +42,10 @@ def target_dir(mode, target):
         yield mode
 
 def libname(path):
-    return os.path.splitext(os.path.basename(path))[0][3:].split('-', 1)[0]
+    basename = os.path.splitext(os.path.basename(path))[0].split('-', 1)[0]
+    if basename.startswith("lib"):
+        return basename[3:]
+    return basename
 
 def cargo_argv(mode, target):
     if mode == 'release':
