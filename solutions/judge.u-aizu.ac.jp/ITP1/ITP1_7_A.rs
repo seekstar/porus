@@ -1,9 +1,3 @@
-#![feature(exclusive_range_pattern)]
-
-#[macro_use]
-extern crate porus;
-prelude!();
-
 fn main() {
     loop {
         let (mut m, mut f, mut r) = default();

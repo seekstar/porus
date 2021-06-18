@@ -1,7 +1,3 @@
-#[macro_use]
-extern crate porus;
-prelude!();
-
 fn main() {
     let a = &mut Vec::new();
     let mut s = [0u8; 7];

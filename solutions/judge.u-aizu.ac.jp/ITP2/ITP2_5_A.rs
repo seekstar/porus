@@ -1,12 +1,8 @@
-#[macro_use]
-extern crate porus;
-prelude!();
-
 fn main() {
     let mut n = default();
     scanf!("{:usize}", &mut n);
     let a = &mut vec![(0, 0); n];
-    for e in a.iter_mut() {
+    for e in list::iter_mut(a) {
         scanf!("{:i} {:i}", &mut e.0, &mut e.1);
     }
 

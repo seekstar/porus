@@ -1,7 +1,3 @@
-#[macro_use]
-extern crate porus;
-prelude!();
-
 fn main() {
     let mut n = default();
     scanf!("{:usize}", &mut n);

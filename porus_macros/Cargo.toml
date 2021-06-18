@@ -16,4 +16,4 @@ quote = "1.0.9"
 
 [dependencies.syn]
 version = "1.0.72"
-features = ["full"]
+features = ["full", "visit-mut"]

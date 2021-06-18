@@ -1,7 +1,3 @@
-#[macro_use]
-extern crate porus;
-prelude!();
-
 #[derive(Default, Clone, Copy)]
 struct Card(u8, u8);
 
@@ -18,7 +14,7 @@ fn main() {
     scanf!("{:usize}", &mut n);
 
     let a = &mut vec![Card(0, 0); n];
-    for e in a.iter_mut() {
+    for e in list::iter_mut(a) {
         scanf!(" {:c}{:u8}", &mut e.0, &mut e.1);
     }
 

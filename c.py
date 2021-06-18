@@ -24,6 +24,8 @@ SOLUTION_PATTERN = r'^(?:[^/]+)/(?P<oj>[\w\-.]+)(?:/.*)?/(?P<pid>[A-Za-z0-9_\-]+
 NATIVE = run(["rustc", "-vV"], stdin=DEVNULL, capture_output=True, check=True).stdout.decode().split("host: ", 1)[1].split("\n", 1)[0]
 SYSROOT = os.path.expanduser("~/.xargo")
 
+LLVMBC = os.environ.get("LLVMBC", "0").lower() in ("true", "1", "yes")
+
 def features(mode, target):
     if target is None:
         yield "local-judge"
@@ -80,7 +82,10 @@ def rustc_argv_prefix(mode, target, filename, *libs):
         yield from ('-C', 'debuginfo=2')
     if mode == 'release':
         yield from ("--crate-type", "cdylib")
-        yield from ("--emit", "asm")
+        if LLVMBC and target is not None:
+            yield from ("--emit", "llvm-bc")
+        else:
+            yield from ("--emit", "asm")
         yield from ("-C", "llvm-args=-disable-debug-info-print")
         yield from ("-C", "lto=fat")
         yield from ("-C", "opt-level=2")
@@ -161,13 +166,33 @@ def get_compile_argv(filename, *libs, mode='debug', target=None):
 
 PRELUDE = b'''#![feature(proc_macro_hygiene)]
 #![feature(array_methods)]
+#![feature(exclusive_range_pattern)]
+#![feature(custom_inner_attributes)]
 #![cfg_attr(not(debug_assertions), no_std)]
+extern crate porus;
+#[porus_macros::transform_forloop]
+mod solution {
+use porus::prelude::*;
+'''
+
+EPILUDE = b'''}
+
+#[cfg(feature = "online-judge")]
+#[export_name = "main"]
+pub extern "C" fn porus_start() -> i32 {
+  main();
+  0
+}
 '''
 
 def read_source(filename):
+    info = get_solution_info(os.path.relpath(filename, ROOTDIR))
     with open(filename, 'rb') as f:
         source = f.read()
-    return PRELUDE + source
+    if info and info[0] == 'leetcode.com':
+        return PRELUDE + source + b'''}'''
+    else:
+        return PRELUDE + source + EPILUDE
 
 def get_submit_env(name, envs):
     return None
@@ -193,3 +218,12 @@ def expand(
     argv = list(rustc_expand_argv(mode, target, filename, *libs))
     source = read_source(filename)
     run(argv, input=source, check=True)
+
+if LLVMBC:
+    _dest_filename = dest_filename
+
+    def dest_filename(filename, mode, target):
+        name = _dest_filename(filename, mode, target)
+        if mode == 'release' and target is not None:
+            name = name[:-2] + ".bc"
+        return name

@@ -21,6 +21,7 @@
 
 extern crate proc_macro;
 extern crate proc_macro2;
+#[macro_use]
 extern crate syn;
 #[macro_use]
 extern crate quote;
@@ -30,7 +31,9 @@ extern crate rustc_span;
 use proc_macro::TokenStream;
 
 mod common;
-use common::{parse_args, parse_printf, parse_sargs, parse_scanf};
+use common::{parse_args, parse_printf, parse_sargs, parse_scanf, transform};
+use syn::visit_mut::VisitMut;
+use syn::{Block, Expr, ExprBlock, ExprForLoop};
 
 #[proc_macro]
 pub fn printf(stream: TokenStream) -> TokenStream {
@@ -85,4 +88,50 @@ pub fn sscanf(stream: TokenStream) -> TokenStream {
         }
     })
     .into()
+}
+
+struct TransformForLoop {}
+
+impl VisitMut for TransformForLoop {
+    #[allow(clippy::pattern_type_mismatch)]
+    fn visit_expr_mut(&mut self, node: &mut Expr) {
+        if let Expr::ForLoop(ExprForLoop {
+            attrs,
+            label,
+            pat,
+            expr,
+            body,
+            ..
+        }) = node
+        {
+            let stream = if let Some(l) = label {
+                quote! {
+                    {
+                        let mut porus_iter = #expr;
+                        #l while let Some(#pat) = porus::iter::Iter::next(&mut porus_iter) #body
+                    }
+                }
+            } else {
+                quote! {
+                    {
+                        let mut porus_iter = #expr;
+                        while let Some(#pat) = porus::iter::Iter::next(&mut porus_iter) #body
+                    }
+                }
+            };
+
+            let block: Block = parse_quote!(#stream);
+            *node = Expr::Block(ExprBlock {
+                attrs: attrs.clone(),
+                label: None,
+                block,
+            });
+        }
+    }
+}
+
+#[proc_macro_attribute]
+pub fn transform_forloop(_attr: TokenStream, stream: TokenStream) -> TokenStream {
+    let item = transform(TransformForLoop {}, stream.into()).unwrap();
+    (quote! { #item }).into()
 }

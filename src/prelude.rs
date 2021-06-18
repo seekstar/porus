@@ -35,25 +35,3 @@ pub use crate::dheap::{self, DHeap};
 pub use crate::dlist::DoublyLinkedList;
 pub use crate::flist::SinglyLinkedList;
 pub use crate::string::{String, StringBuffer};
-
-/// the porus prelude
-#[macro_export]
-macro_rules! prelude {
-    () => {
-        #[allow(unused_imports)]
-        use $crate::prelude::*;
-
-        pub mod __porus_main {
-            #[cfg(feature = "online-judge")]
-            #[export_name = "main"]
-            pub extern "C" fn porus_start() -> i32 {
-                super::main();
-                0
-            }
-        }
-    };
-    (leetcode) => {
-        #[allow(unused_imports)]
-        use $crate::prelude::*;
-    };
-}

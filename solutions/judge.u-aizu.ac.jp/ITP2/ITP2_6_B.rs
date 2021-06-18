@@ -1,7 +1,3 @@
-#[macro_use]
-extern crate porus;
-prelude!();
-
 fn includes(mut a: impl Iterator<Item = i64>, b: impl Iterator<Item = i64>) -> bool {
     let mut x = 0;
     for y in b {
@@ -29,14 +25,14 @@ fn main() {
     let mut n = default();
     scanf!("{:usize}", &mut n);
     let a = &mut vec![default(); n];
-    for e in a.iter_mut() {
+    for e in list::iter_mut(a) {
         scanf!("{:i}", e);
     }
 
     let mut m = default();
     scanf!("{:usize}", &mut m);
     let b = &mut vec![default(); m];
-    for e in b.iter_mut() {
+    for e in list::iter_mut(b) {
         scanf!("{:i}", e);
     }
 

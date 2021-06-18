@@ -1,7 +1,3 @@
-#[macro_use]
-extern crate porus;
-prelude!();
-
 fn main() {
     loop {
         let (mut a, mut op, mut b) = default();

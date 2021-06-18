@@ -1,7 +1,3 @@
-#[macro_use]
-extern crate porus;
-prelude!();
-
 fn main() {
     let mut s = [0u8; 1001];
     scanf!("{:s}", s.as_mut_slice());

@@ -7,7 +7,8 @@ use std::collections::HashMap;
 use syn::parse::{ParseStream, Parser as SynParser, Result};
 use syn::punctuated::Punctuated;
 use syn::token::{Comma, Paren};
-use syn::{Expr, ExprTuple, LitStr};
+use syn::visit_mut::VisitMut;
+use syn::{Expr, ExprTuple, ItemMod, LitStr};
 
 fn args(input: ParseStream) -> Result<(LitStr, Punctuated<Expr, Comma>)> {
     let s: LitStr = input.parse()?;
@@ -274,4 +275,16 @@ pub fn parse_printf(s: LitStr, mut args: Punctuated<Expr, Comma>) -> (TokenStrea
             printf_format.as_slice().as_ptr() #arguments
         },
     )
+}
+
+pub fn transform<V: VisitMut>(mut visitor: V, tokens: TokenStream) -> Result<TokenStream> {
+    let mut s: ItemMod = syn::parse2(tokens)?;
+    visitor.visit_item_mod_mut(&mut s);
+
+    let items = match s.content {
+        None => vec![],
+        Some(x) => x.1,
+    };
+
+    Ok(items.iter().map(|item| quote! {#item}).collect())
 }

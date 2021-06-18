@@ -1,7 +1,3 @@
-#[macro_use]
-extern crate porus;
-prelude!(leetcode);
-
 use core::mem::size_of;
 use core::ptr::copy_nonoverlapping;
 use core::slice;

@@ -263,6 +263,9 @@ impl<T, const N: usize> List for [T; N] {
 mod iter;
 pub use self::iter::iter;
 
+mod iter_mut;
+pub use self::iter_mut::iter_mut;
+
 pub mod sorting;
 pub use self::sorting::{
     bubble_sort, insertion_sort, is_stable_sort, quick_sort, selection_sort, shell_sort,

@@ -1,7 +1,3 @@
-#[macro_use]
-extern crate porus;
-prelude!();
-
 fn main() {
     let (mut a, mut b) = default();
     scanf!("{:u} {:u}", &mut a, &mut b);

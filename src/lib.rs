@@ -15,6 +15,7 @@
 #![feature(slice_ptr_len)]
 #![feature(slice_ptr_get)]
 #![feature(ptr_as_uninit)]
+#![feature(generic_associated_types)]
 #![cfg_attr(feature = "online-judge", feature(lang_items))]
 #![doc(test(attr(feature(proc_macro_hygiene))))]
 #![no_std]
@@ -76,6 +77,8 @@ pub mod math;
 
 pub mod allocator;
 pub mod sys;
+
+pub mod iter;
 
 pub mod capacity;
 pub mod collection;
