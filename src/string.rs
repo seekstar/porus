@@ -15,7 +15,7 @@ pub struct Shared<A: Allocator> {
     s: NonNull<[u8]>,
 }
 
-#[cfg(all(target_endian = "little", target_pointer_width = "64"))]
+#[cfg(all(target_endian = "little"))]
 #[derive(Clone, Copy)]
 pub struct Inline<const N: usize> {
     length: u8,
@@ -29,7 +29,7 @@ pub struct Shared<A: Allocator> {
     counter: *const usize,
 }
 
-#[cfg(all(target_endian = "big", target_pointer_width = "64"))]
+#[cfg(all(target_endian = "big"))]
 #[derive(Clone, Copy)]
 pub struct Inline<const N: usize> {
     s: [u8; N],
