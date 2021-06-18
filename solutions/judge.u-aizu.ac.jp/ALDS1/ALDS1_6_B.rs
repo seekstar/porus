@@ -11,7 +11,11 @@ fn main() {
     let l = &list::slice(a, ..pivot);
     let r = &list::slice(a, (pivot + 1)..);
 
-    list::iter(l).for_each(|e| printf!("{e:u} "));
+    for e in list::iter(l) {
+        printf!("{e:u} ");
+    }
     printf!("[{:u}]", *list::get(a, pivot));
-    list::iter(r).for_each(|e| printf!(" {e:u}"));
+    for e in list::iter(r) {
+        printf!(" {e:u}");
+    }
 }

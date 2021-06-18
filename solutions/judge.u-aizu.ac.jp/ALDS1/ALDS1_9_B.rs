@@ -7,6 +7,8 @@ fn main() {
     }
     dheap::heapify(2, v, PartialOrd::gt);
 
-    list::iter(v).for_each(|e| printf!(" {:i}", e));
+    for e in list::iter(v) {
+        printf!(" {:i}", e);
+    }
     printf!("\n");
 }

@@ -22,5 +22,7 @@ fn main() {
     interleave(list::iter(g), || printf!(" "), |e| printf!("{e:usize}"));
 
     printf!("\n{:usize}\n", count);
-    list::iter(a).for_each(|e| printf!("{e:u}\n"));
+    for e in list::iter(a) {
+        printf!("{e:u}\n");
+    }
 }

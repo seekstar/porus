@@ -24,5 +24,7 @@ fn main() {
         "{}\n",
         stable(list::is_stable_sort(a, |x, y| x.1 < y.1, bi))
     );
-    list::iter(bi).for_each(|i| printf!("{:c} {:u}\n", list::get(a, i).0, list::get(a, i).1));
+    for i in list::iter(bi) {
+        printf!("{:c} {:u}\n", list::get(a, i).0, list::get(a, i).1);
+    }
 }
