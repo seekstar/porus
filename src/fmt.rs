@@ -17,10 +17,13 @@ pub const fn concat<const M: usize, const N: usize>(a: [u8; M], b: [u8; N]) -> [
     c
 }
 
-#[allow(clippy::len_without_is_empty)]
 pub trait Bytes {
     fn len(&self) -> usize;
     fn as_ptr(&self) -> *const u8;
+
+    fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
 }
 
 impl Bytes for str {

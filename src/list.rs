@@ -341,28 +341,27 @@ pub trait List: Collection {
         count
     }
 
-    #[allow(clippy::integer_arithmetic)]
     fn partition<F: Fn(&Self::Elem, &Self::Elem) -> bool>(&mut self, lt: F) -> usize
     where
         Self: ListMut,
     {
         let size = Collection::size(self);
         let mut i = 0;
-        for j in 0..size - 1 {
-            if lt(
-                List::get(self, j).unwrap(),
-                List::get(self, size - 1).unwrap(),
-            ) {
-                List::swap(self, j, i);
-                i += 1;
+
+        if let Some(pivot) = usize::checked_sub(size, 1) {
+            for j in 0..pivot {
+                if lt(List::get(self, j).unwrap(), List::get(self, pivot).unwrap()) {
+                    List::swap(self, j, i);
+                    i = usize::wrapping_add(i, 1);
+                }
             }
+
+            List::swap(self, i, pivot);
         }
 
-        List::swap(self, i, size - 1);
         i
     }
 
-    #[allow(clippy::integer_arithmetic)]
     fn quick_sort_aux<F: Fn(&Self::Elem, &Self::Elem) -> bool>(&mut self, lt: &F)
     where
         Self: ListMut,
@@ -374,7 +373,7 @@ pub trait List: Collection {
 
         let p = List::partition(self, lt);
         List::quick_sort_aux(&mut List::slice_mut(self, ..p), lt);
-        List::quick_sort_aux(&mut List::slice_mut(self, (p + 1)..), lt);
+        List::quick_sort_aux(&mut List::slice_mut(self, usize::wrapping_add(p, 1)..), lt);
     }
 
     fn quick_sort<F: Fn(&Self::Elem, &Self::Elem) -> bool>(&mut self, lt: F)
