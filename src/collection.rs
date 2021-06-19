@@ -2,13 +2,15 @@ pub trait Collection {
     fn size(&self) -> usize;
 }
 
-pub fn size<T: Collection>(c: &T) -> usize {
-    Collection::size(c)
-}
-
 impl<T, const N: usize> Collection for [T; N] {
     fn size(&self) -> usize {
         N
+    }
+}
+
+impl<T> Collection for [T] {
+    fn size(&self) -> usize {
+        self.len()
     }
 }
 

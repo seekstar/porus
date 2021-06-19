@@ -1,5 +1,5 @@
 use porus::list::ListMut;
-use porus::prelude::list;
+use porus::prelude::List;
 use proptest::prelude::*;
 
 #[derive(Debug, Clone)]
@@ -17,19 +17,19 @@ impl ArbitrarySort {
     fn sort<E, L: ListMut<Elem = E>, F: Fn(&E, &E) -> bool>(&self, list: &mut L, lt: F) {
         match self {
             BubbleSort => {
-                list::bubble_sort(list, lt);
+                List::bubble_sort(list, lt);
             }
             InsertionSort => {
-                list::insertion_sort(list, lt);
+                List::insertion_sort(list, lt);
             }
             SelectionSort => {
-                list::selection_sort(list, lt);
+                List::selection_sort(list, lt);
             }
             ShellSort(gaps) => {
-                list::shell_sort(list, lt, gaps);
+                List::shell_sort(list, lt, gaps);
             }
             QuickSort => {
-                list::quick_sort(list, lt);
+                List::quick_sort(list, lt);
             }
         }
     }
@@ -61,7 +61,7 @@ proptest! {
     #[test]
     fn stable_sort(mut v: Vec::<usize>, sort in arbitrary_stable_sort()) {
         let s: &mut Vec<usize> = &mut (0..v.len()).collect();
-        sort.sort(s, |&i, &j| list::get(&v, i) < list::get(&v, j));
-        prop_assert!(list::is_stable_sort(&v, PartialOrd::lt, s));
+        sort.sort(s, |&i, &j| List::get(&v, i).unwrap() < List::get(&v, j).unwrap());
+        prop_assert!(List::is_stable_sort(&v, PartialOrd::lt, s));
     }
 }

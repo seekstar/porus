@@ -25,16 +25,16 @@ fn main() {
     let mut n = default();
     scanf!("{:usize}", &mut n);
     let a = &mut vec![default(); n];
-    for e in list::iter_mut(a) {
+    for e in List::iter_mut(a) {
         scanf!("{:i}", e);
     }
 
     let mut m = default();
     scanf!("{:usize}", &mut m);
     let b = &mut vec![default(); m];
-    for e in list::iter_mut(b) {
+    for e in List::iter_mut(b) {
         scanf!("{:i}", e);
     }
 
-    printf!("{:u}\n", includes(list::iter(a), list::iter(b)));
+    printf!("{:u}\n", includes(List::iter(a), List::iter(b)));
 }

@@ -12,7 +12,7 @@ fn main() {
                 let mut x = default();
                 scanf!("{:u}", &mut x);
                 set::insert(s, x);
-                printf!("{:usize}\n", collection::size(s));
+                printf!("{:usize}\n", Collection::size(s));
             }
             1 => {
                 let mut x = default();

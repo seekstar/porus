@@ -2,7 +2,7 @@ fn main() {
     let mut n = default();
     scanf!("{:usize}", &mut n);
     let a = &mut vec![default(); n];
-    for e in list::iter_mut(a) {
+    for e in List::iter_mut(a) {
         scanf!("{:i}", e);
     }
     let mut q = default();
@@ -13,11 +13,11 @@ fn main() {
         scanf!("{:usize} {:usize} {:usize}", &mut b, &mut e, &mut t);
 
         for i in b..e {
-            list::swap(a, i, t);
+            List::swap(a, i, t);
             t += 1;
         }
     }
 
-    interleave(list::iter(a), || printf!(" "), |e| printf!("{e:i}"));
+    interleave(List::iter(a), || printf!(" "), |e| printf!("{e:i}"));
     printf!("\n");
 }

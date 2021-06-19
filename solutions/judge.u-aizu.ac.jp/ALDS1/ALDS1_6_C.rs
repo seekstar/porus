@@ -13,18 +13,24 @@ fn main() {
     let mut n = default();
     scanf!("{:usize}", &mut n);
     let a = &mut vec![Card(0, 0); n];
-    for e in list::iter_mut(a) {
+    for e in List::iter_mut(a) {
         scanf!(" {:c}{:u32}", &mut e.0, &mut e.1);
     }
 
     let bi: &mut Vec<usize> = &mut (0..n).collect();
-    list::quick_sort(bi, |&i, &j| list::get(a, i).1 <= list::get(a, j).1);
+    List::quick_sort(bi, |&i, &j| {
+        List::get(a, i).unwrap().1 <= List::get(a, j).unwrap().1
+    });
 
     printf!(
         "{}\n",
-        stable(list::is_stable_sort(a, |x, y| x.1 < y.1, bi))
+        stable(List::is_stable_sort(a, |x, y| x.1 < y.1, bi))
     );
-    for i in list::iter(bi) {
-        printf!("{:c} {:u}\n", list::get(a, i).0, list::get(a, i).1);
+    for i in List::iter(bi) {
+        printf!(
+            "{:c} {:u}\n",
+            List::get(a, i).unwrap().0,
+            List::get(a, i).unwrap().1
+        );
     }
 }

@@ -2,12 +2,12 @@ fn main() {
     let mut h = default();
     scanf!("{:usize}", &mut h);
     let v = &mut vec![default(); h];
-    for e in list::iter_mut(v) {
+    for e in List::iter_mut(v) {
         scanf!("{:i}", e);
     }
 
     let write_key = |name: &str, i: usize| {
-        printf!("{} key = {:i}, ", name, *list::get(v, i));
+        printf!("{} key = {:i}, ", name, *List::get(v, i).unwrap());
     };
 
     for i in 0..h {

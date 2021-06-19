@@ -1,4 +1,4 @@
-use porus::prelude::{list, BinaryHeap, Heap};
+use porus::prelude::{BinaryHeap, Heap, List};
 use proptest::prelude::*;
 use std::fmt::Debug;
 
@@ -27,13 +27,13 @@ proptest! {
 
         prop_assert_eq!(None, Heap::peek(h));
 
-        for e in v.iter() {
+        for e in v.as_slice() {
             Heap::push(h, *e);
         }
 
-        list::quick_sort(&mut v, PartialOrd::gt);
+        List::quick_sort(&mut v, PartialOrd::gt);
 
-        for e in v.iter() {
+        for e in v.as_slice() {
             prop_assert_eq!(Some(e), Heap::peek(h));
             prop_assert_eq!(Some(*e), Heap::pop(h));
         }

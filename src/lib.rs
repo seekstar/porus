@@ -16,6 +16,7 @@
 #![feature(slice_ptr_get)]
 #![feature(ptr_as_uninit)]
 #![feature(generic_associated_types)]
+#![feature(associated_type_defaults)]
 #![cfg_attr(feature = "online-judge", feature(lang_items))]
 #![doc(test(attr(feature(proc_macro_hygiene))))]
 #![no_std]

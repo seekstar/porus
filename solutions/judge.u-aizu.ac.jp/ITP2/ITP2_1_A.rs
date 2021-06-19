@@ -13,7 +13,7 @@ fn main() {
         } else if op == 1 {
             let mut p = default();
             scanf!("{:usize}", &mut p);
-            printf!("{:i}\n", *list::get(vec, p));
+            printf!("{:i}\n", *List::get(vec, p).unwrap());
         } else if op == 2 {
             stack::pop(vec);
         }

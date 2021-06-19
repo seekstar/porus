@@ -2,7 +2,7 @@ fn main() {
     let mut n = default();
     scanf!("{:usize}", &mut n);
     let a = &mut vec![default(); n];
-    for e in list::iter_mut(a) {
+    for e in List::iter_mut(a) {
         scanf!("{:u}", e);
     }
 
@@ -11,18 +11,18 @@ fn main() {
     ];
 
     let mut skip = 0;
-    while (list::get(gaps, skip) > &n) && (list::get(gaps, skip) != &1) {
+    while (List::get(gaps, skip).unwrap() > &n) && (List::get(gaps, skip).unwrap() != &1) {
         skip += 1;
     }
-    let g = &list::slice(gaps, skip..);
+    let g = &List::slice(gaps, skip..);
 
-    let count = list::shell_sort(a, PartialOrd::lt, g);
+    let count = List::shell_sort(a, PartialOrd::lt, g);
 
-    printf!("{:usize}\n", collection::size(g));
-    interleave(list::iter(g), || printf!(" "), |e| printf!("{e:usize}"));
+    printf!("{:usize}\n", Collection::size(g));
+    interleave(List::iter(g), || printf!(" "), |e| printf!("{e:usize}"));
 
     printf!("\n{:usize}\n", count);
-    for e in list::iter(a) {
+    for e in List::iter(a) {
         printf!("{e:u}\n");
     }
 }

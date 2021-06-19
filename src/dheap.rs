@@ -1,6 +1,6 @@
-use crate::collection::{self, Collection};
+use crate::collection::Collection;
 use crate::heap::Heap;
-use crate::list::{self, ListMut};
+use crate::list::{List, ListMut};
 use crate::stack::{self, Stack};
 
 #[must_use]
@@ -20,10 +20,10 @@ pub fn siftup<E, L: ListMut<Elem = E>, F: Fn(&E, &E) -> bool>(
     gt: F,
 ) {
     if let Some(parent) = parent_index(d, n) {
-        if !gt(list::get(l, n), list::get(l, parent)) {
+        if !gt(List::get(l, n).unwrap(), List::get(l, parent).unwrap()) {
             return;
         }
-        list::swap(l, n, parent);
+        List::swap(l, n, parent);
         siftup(d, l, parent, gt);
     }
 }
@@ -34,10 +34,10 @@ pub fn siftdown<E, L: ListMut<Elem = E>, F: Fn(&E, &E) -> bool>(
     n: usize,
     gt: F,
 ) {
-    let largest = (child_index(d, n, 0)..Ord::min(collection::size(l), child_index(d, n, d))).fold(
+    let largest = (child_index(d, n, 0)..Ord::min(Collection::size(l), child_index(d, n, d))).fold(
         n,
         |largest, c| {
-            if gt(list::get(l, c), list::get(l, largest)) {
+            if gt(List::get(l, c).unwrap(), List::get(l, largest).unwrap()) {
                 c
             } else {
                 largest
@@ -46,13 +46,13 @@ pub fn siftdown<E, L: ListMut<Elem = E>, F: Fn(&E, &E) -> bool>(
     );
 
     if largest > n {
-        list::swap(l, n, largest);
+        List::swap(l, n, largest);
         siftdown(d, l, largest, gt);
     }
 }
 
 pub fn heapify<E, L: ListMut<Elem = E>, F: Fn(&E, &E) -> bool>(d: usize, l: &mut L, gt: F) {
-    if let Some(index) = usize::checked_sub(collection::size(l), 1) {
+    if let Some(index) = usize::checked_sub(Collection::size(l), 1) {
         if let Some(parent) = parent_index(d, index) {
             let mut n = parent;
             loop {
@@ -83,7 +83,7 @@ impl<E, L: ListMut<Elem = E> + Stack<Elem = E>, F: Fn(&E, &E) -> bool> Collectio
     for DHeap<E, L, F>
 {
     fn size(&self) -> usize {
-        collection::size(&self.list)
+        Collection::size(&self.list)
     }
 }
 
@@ -91,16 +91,16 @@ impl<E, L: ListMut<Elem = E> + Stack<Elem = E>, F: Fn(&E, &E) -> bool> Heap for 
     type Elem = E;
 
     fn push(&mut self, item: E) {
-        let size = collection::size(self);
+        let size = Collection::size(self);
         stack::push(&mut self.list, item);
         siftup(self.d, &mut self.list, size, &self.gt);
     }
 
     fn pop(&mut self) -> Option<E> {
-        match usize::checked_sub(collection::size(self), 1) {
+        match usize::checked_sub(Collection::size(self), 1) {
             None => None,
             Some(index) => {
-                list::swap(&mut self.list, 0, index);
+                List::swap(&mut self.list, 0, index);
                 let result = stack::pop(&mut self.list);
                 siftdown(self.d, &mut self.list, 0, &self.gt);
                 Some(result)
@@ -109,10 +109,6 @@ impl<E, L: ListMut<Elem = E> + Stack<Elem = E>, F: Fn(&E, &E) -> bool> Heap for 
     }
 
     fn peek(&self) -> Option<&E> {
-        if collection::size(self) == 0 {
-            None
-        } else {
-            Some(list::get(&self.list, 0))
-        }
+        List::get(&self.list, 0)
     }
 }

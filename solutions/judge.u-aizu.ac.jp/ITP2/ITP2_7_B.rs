@@ -10,7 +10,7 @@ fn main() {
         match query {
             0 => {
                 set::insert(s, x);
-                printf!("{:usize}\n", collection::size(s));
+                printf!("{:usize}\n", Collection::size(s));
             }
             1 => {
                 printf!("{:u}\n", set::contains(s, &x));

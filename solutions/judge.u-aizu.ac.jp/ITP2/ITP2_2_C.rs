@@ -7,7 +7,7 @@ fn main() {
     for _ in 0..q {
         let (mut op, mut t) = default();
         scanf!("{:u} {:usize}", &mut op, &mut t);
-        let h = list::get_mut(a, t);
+        let h = List::get_mut(a, t).unwrap();
         if op == 0 {
             let mut x = default();
             scanf!("{:i}", &mut x);

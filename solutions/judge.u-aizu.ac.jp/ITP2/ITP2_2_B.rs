@@ -10,13 +10,13 @@ fn main() {
         if op == 0 {
             let mut x = default();
             scanf!("{:i}", &mut x);
-            deque::push_back(list::get_mut(a, t), x);
+            deque::push_back(List::get_mut(a, t).unwrap(), x);
         } else if op == 1 {
-            if !deque::is_empty(list::get(a, t)) {
-                printf!("{:i}\n", *deque::front(list::get(a, t)))
+            if !deque::is_empty(List::get(a, t).unwrap()) {
+                printf!("{:i}\n", *deque::front(List::get(a, t).unwrap()))
             }
         } else if op == 2 {
-            Deque::pop_front(list::get_mut(a, t));
+            Deque::pop_front(List::get_mut(a, t).unwrap());
         }
     }
 }

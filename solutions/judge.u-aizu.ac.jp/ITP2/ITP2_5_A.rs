@@ -2,11 +2,11 @@ fn main() {
     let mut n = default();
     scanf!("{:usize}", &mut n);
     let a = &mut vec![(0, 0); n];
-    for e in list::iter_mut(a) {
+    for e in List::iter_mut(a) {
         scanf!("{:i} {:i}", &mut e.0, &mut e.1);
     }
 
-    list::shell_sort(
+    List::shell_sort(
         a,
         PartialOrd::lt,
         &[
@@ -14,7 +14,7 @@ fn main() {
         ],
     );
 
-    for (x, y) in list::iter(a) {
+    for (x, y) in List::iter(a) {
         printf!("{:i} {:i}\n", x, y)
     }
 }

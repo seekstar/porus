@@ -21,17 +21,18 @@ pub use porus_macros::{printf, scanf, sscanf};
 pub use crate::allocator;
 pub use crate::pool::{self, Pool};
 
-pub use crate::chunk::Chunk;
+pub use crate::iter::Iter;
 
-pub use crate::collection::{self, Collection};
+pub use crate::collection::Collection;
 pub use crate::deque::{self, Deque};
 pub use crate::heap::{self, Heap};
-pub use crate::list::sorting;
-pub use crate::list::{self, List, ListMut};
+pub use crate::list::List;
 pub use crate::set::{self, Set, SetMut};
 pub use crate::stack::{self, Stack};
+
+pub use crate::chunk::Chunk;
+pub use crate::string::{String, StringBuffer};
 
 pub use crate::dheap::{self, DHeap};
 pub use crate::dlist::DoublyLinkedList;
 pub use crate::flist::SinglyLinkedList;
-pub use crate::string::{String, StringBuffer};

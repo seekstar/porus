@@ -2,7 +2,7 @@ fn main() {
     let mut n = default();
     scanf!("{:usize}", &mut n);
     let s = &mut vec![default(); n];
-    for e in list::iter_mut(s) {
+    for e in List::iter_mut(s) {
         scanf!("{:u}", e);
     }
     let mut q = default();
@@ -13,8 +13,8 @@ fn main() {
     for _ in 0..q {
         let mut t = default();
         scanf!("{:u}", &mut t);
-        let r = list::bsearch(s, &t);
-        if r.1 > r.0 {
+        let r = List::bsearch(s, &t);
+        if r.end > r.start {
             count += 1;
         }
     }

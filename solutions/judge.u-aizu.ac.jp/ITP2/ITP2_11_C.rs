@@ -2,7 +2,7 @@ fn main() {
     let (mut n, mut k) = default();
     scanf!("{:usize} {:usize}", &mut n, &mut k);
     let b = &mut vec![default(); k];
-    for e in list::iter_mut(b) {
+    for e in List::iter_mut(b) {
         scanf!("{:u}", e);
     }
 

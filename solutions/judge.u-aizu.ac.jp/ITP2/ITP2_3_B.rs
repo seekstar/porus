@@ -3,7 +3,7 @@ fn main() {
     scanf!("{:usize}", &mut n);
     let a = &mut vec![default(); n];
 
-    for e in list::iter_mut(a) {
+    for e in List::iter_mut(a) {
         scanf!("{:i}", e);
     }
     let mut q = default();
@@ -12,8 +12,8 @@ fn main() {
     for _ in 0..q {
         let (mut com, mut b, mut e) = default();
         scanf!("{:u} {:usize} {:usize}", &mut com, &mut b, &mut e);
-        let slice = &list::slice(a, b..e);
-        let it = list::iter(slice);
+        let slice = &List::slice(a, b..e);
+        let it = List::iter(slice);
 
         printf!(
             "{:i}\n",

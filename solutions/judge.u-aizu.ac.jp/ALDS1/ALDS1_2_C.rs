@@ -14,31 +14,47 @@ fn main() {
     scanf!("{:usize}", &mut n);
 
     let a = &mut vec![Card(0, 0); n];
-    for e in list::iter_mut(a) {
+    for e in List::iter_mut(a) {
         scanf!(" {:c}{:u8}", &mut e.0, &mut e.1);
     }
 
     let bi: &mut Vec<usize> = &mut (0..n).collect();
-    list::bubble_sort(bi, |&i, &j| list::get(a, i).1 < list::get(a, j).1);
+    List::bubble_sort(bi, |&i, &j| {
+        List::get(a, i).unwrap().1 < List::get(a, j).unwrap().1
+    });
     interleave(
-        list::iter(bi),
+        List::iter(bi),
         || printf!(" "),
-        |i| printf!("{:c}{:u}", list::get(a, i).0, list::get(a, i).1),
+        |i| {
+            printf!(
+                "{:c}{:u}",
+                List::get(a, i).unwrap().0,
+                List::get(a, i).unwrap().1
+            )
+        },
     );
     printf!(
         "\n{}\n",
-        stable(list::is_stable_sort(a, |x, y| x.1 < y.1, bi))
+        stable(List::is_stable_sort(a, |x, y| x.1 < y.1, bi))
     );
 
     let si: &mut Vec<usize> = &mut (0..n).collect();
-    list::selection_sort(si, |&i, &j| list::get(a, i).1 < list::get(a, j).1);
+    List::selection_sort(si, |&i, &j| {
+        List::get(a, i).unwrap().1 < List::get(a, j).unwrap().1
+    });
     interleave(
-        list::iter(si),
+        List::iter(si),
         || printf!(" "),
-        |i| printf!("{:c}{:u}", list::get(a, i).0, list::get(a, i).1),
+        |i| {
+            printf!(
+                "{:c}{:u}",
+                List::get(a, i).unwrap().0,
+                List::get(a, i).unwrap().1
+            )
+        },
     );
     printf!(
         "\n{}\n",
-        stable(list::is_stable_sort(a, |x, y| x.1 < y.1, si))
+        stable(List::is_stable_sort(a, |x, y| x.1 < y.1, si))
     );
 }

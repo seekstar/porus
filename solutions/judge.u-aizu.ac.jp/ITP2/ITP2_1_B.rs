@@ -18,7 +18,7 @@ fn main() {
         } else if op == 1 {
             let mut p = default();
             scanf!("{:usize}", &mut p);
-            printf!("{:i}\n", *list::get(buf, p));
+            printf!("{:i}\n", *List::get(buf, p).unwrap());
         } else if op == 2 {
             let mut d = default();
             scanf!("{:u}", &mut d);

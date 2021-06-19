@@ -2,12 +2,12 @@ fn main() {
     let mut n = default();
     scanf!("{:usize}", &mut n);
     let a = &mut vec![default(); n];
-    for e in list::iter_mut(a) {
+    for e in List::iter_mut(a) {
         scanf!("{:i}", e);
     }
 
-    let count = list::bubble_sort(a, PartialOrd::lt);
+    let count = List::bubble_sort(a, PartialOrd::lt);
 
-    interleave(list::iter(a), || printf!(" "), |e| printf!("{e:i}"));
+    interleave(List::iter(a), || printf!(" "), |e| printf!("{e:i}"));
     printf!("\n{:usize}\n", count);
 }

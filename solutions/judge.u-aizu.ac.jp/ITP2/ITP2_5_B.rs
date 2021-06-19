@@ -10,7 +10,7 @@ fn main() {
         })
         .collect();
 
-    list::shell_sort(
+    List::shell_sort(
         a,
         PartialOrd::lt,
         &[
@@ -18,7 +18,7 @@ fn main() {
         ],
     );
 
-    for (v, w, t, d, s) in list::iter(a) {
+    for (v, w, t, d, s) in List::iter(a) {
         printf!("{:u} {:u} {:c} {:u} {:s}\n", v, w, t, d, &s);
     }
 }

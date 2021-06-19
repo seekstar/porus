@@ -175,6 +175,7 @@ PRELUDE = b'''#![feature(proc_macro_hygiene)]
 extern crate porus;
 #[porus_macros::transform_forloop]
 mod solution {
+#[allow(unused_imports)]
 use porus::prelude::*;
 '''
 

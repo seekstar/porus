@@ -10,16 +10,16 @@ fn main() {
         if op == 0 {
             let mut x = default();
             scanf!("{:i}", &mut x);
-            stack::push(list::get_mut(a, t), x);
+            stack::push(List::get_mut(a, t).unwrap(), x);
         } else if op == 1 {
             interleave(
-                list::iter(list::get(a, t)),
+                List::iter(List::get(a, t).unwrap()),
                 || printf!(" "),
                 |e| printf!("{e:i}"),
             );
             printf!("\n");
         } else if op == 2 {
-            list::set(a, t, Vec::new());
+            List::set(a, t, Vec::new());
         }
     }
 }

@@ -10,13 +10,13 @@ fn main() {
         if op == 0 {
             let mut x = default();
             scanf!("{:i}", &mut x);
-            stack::push(list::get_mut(a, t), x);
+            stack::push(List::get_mut(a, t).unwrap(), x);
         } else if op == 1 {
-            if !stack::is_empty(list::get(a, t)) {
-                printf!("{:i}\n", *stack::top(list::get(a, t)))
+            if !stack::is_empty(List::get(a, t).unwrap()) {
+                printf!("{:i}\n", *stack::top(List::get(a, t).unwrap()))
             }
         } else if op == 2 {
-            Stack::pop(list::get_mut(a, t));
+            Stack::pop(List::get_mut(a, t).unwrap());
         }
     }
 }
