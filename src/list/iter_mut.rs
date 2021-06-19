@@ -9,16 +9,13 @@ pub struct ListIterMut<'a, T: ListMut> {
     end: usize,
 }
 
-impl<'a, T: ListMut> Iter<'a> for ListIterMut<'a, T> {
+impl<'a, T: ListMut> Iter for ListIterMut<'a, T> {
     type Item<'b>
     where
-        'a: 'b,
+        Self: 'b,
     = &'b mut <T as List>::Elem;
 
-    fn next<'b>(&'b mut self) -> Option<Self::Item<'b>>
-    where
-        'a: 'b,
-    {
+    fn next(&mut self) -> Option<Self::Item<'_>> {
         (self.start < self.end).then(move || {
             let index = self.start;
             self.start = usize::wrapping_add(self.start, 1);

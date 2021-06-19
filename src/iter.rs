@@ -1,38 +1,27 @@
-pub trait Iter<'a> {
+pub trait Iter {
     type Item<'b>
     where
-        'a: 'b;
-    fn next<'b>(&'b mut self) -> Option<Self::Item<'b>>
-    where
-        'a: 'b;
+        Self: 'b;
+    fn next(&mut self) -> Option<Self::Item<'_>>;
 }
 
 #[allow(clippy::module_name_repetitions)]
-pub trait IntoIter<'a> {
-    type IntoIter: Iter<'a>;
+pub trait IntoIter {
+    type IntoIter: Iter;
     fn into_iter(self) -> Self::IntoIter;
 }
 
-impl<'a, I: Iterator> Iter<'a> for I
-where
-    <Self as Iterator>::Item: 'a,
-{
+impl<I: Iterator> Iter for I {
     type Item<'b>
     where
-        'a: 'b,
+        Self: 'b,
     = <Self as Iterator>::Item;
-    fn next<'b>(&'b mut self) -> Option<Self::Item<'b>>
-    where
-        'a: 'b,
-    {
+    fn next(&mut self) -> Option<Self::Item<'_>> {
         Iterator::next(self)
     }
 }
 
-impl<'a, I: IntoIterator> IntoIter<'a> for I
-where
-    <<Self as IntoIterator>::IntoIter as Iterator>::Item: 'a,
-{
+impl<I: IntoIterator> IntoIter for I {
     type IntoIter = <Self as IntoIterator>::IntoIter;
 
     fn into_iter(self) -> Self::IntoIter {
