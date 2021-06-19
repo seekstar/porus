@@ -189,7 +189,10 @@ pub extern "C" fn porus_start() -> i32 {
 '''
 
 def read_source(filename):
-    info = get_solution_info(os.path.relpath(filename, ROOTDIR))
+    name = os.path.relpath(filename, ROOTDIR)
+    if os.sep != '/':
+        name = name.replace(os.sep, '/')
+    info = get_solution_info(name)
     with open(filename, 'rb') as f:
         source = f.read()
     if info and info[0] == 'leetcode.com':
