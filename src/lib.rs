@@ -22,6 +22,7 @@
 #![no_std]
 #![allow(incomplete_features)]
 #![deny(stable_features)]
+#![deny(unused_features)]
 #![deny(clippy::all)]
 #![deny(clippy::pedantic)]
 #![deny(clippy::nursery)]
