@@ -77,7 +77,7 @@ def coverage_flags():
     yield from ("-C", "inline-threshold=0")
 
 def rustc_argv_prefix(mode, target, filename, *libs):
-    yield from ('rustc', '--edition', '2018')
+    yield from ('rustc', '--edition', '2021')
 
     if VERBOSE:
         yield '-v'

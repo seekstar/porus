@@ -4,16 +4,16 @@ description = "porus macros"
 version = "0.0.0"
 authors = ["bhuztez <bhuztez@gmail.com>"]
 license = "MIT"
-edition = "2018"
+edition = "2021"
 
 [lib]
 proc-macro = true
 path = "lib.rs"
 
 [dependencies]
-proc-macro2 = "1.0.27"
-quote = "1.0.9"
+proc-macro2 = "1.0.30"
+quote = "1.0.10"
 
 [dependencies.syn]
-version = "1.0.72"
+version = "1.0.80"
 features = ["full", "visit-mut"]
