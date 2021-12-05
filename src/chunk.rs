@@ -10,7 +10,7 @@ use core::ptr::NonNull;
 #[rustc_layout_scalar_valid_range_start(0)]
 #[cfg_attr(
     target_pointer_width = "64",
-    rustc_layout_scalar_valid_range_start(0xFFFFFFFFFFFFFFFE)
+    rustc_layout_scalar_valid_range_end(0xFFFFFFFFFFFFFFFE)
 )]
 #[cfg_attr(
     target_pointer_width = "32",

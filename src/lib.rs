@@ -40,6 +40,8 @@
 #![allow(clippy::expect_used)]
 #![allow(clippy::unwrap_used)]
 #![allow(clippy::blanket_clippy_restriction_lints)]
+#![allow(clippy::undocumented_unsafe_blocks)]
+#![allow(clippy::separated_literal_suffix)]
 
 //! [`porus`](self) is a library for competitive programming. Since
 //! most popular online judges accept only a single file within tens
