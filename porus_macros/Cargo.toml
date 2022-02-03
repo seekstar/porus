@@ -11,9 +11,9 @@ proc-macro = true
 path = "lib.rs"
 
 [dependencies]
-proc-macro2 = "1.0.30"
-quote = "1.0.10"
+proc-macro2 = "1.0.36"
+quote = "1.0.15"
 
 [dependencies.syn]
-version = "1.0.80"
+version = "1.0.86"
 features = ["full", "visit-mut"]

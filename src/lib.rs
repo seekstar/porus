@@ -7,7 +7,6 @@
 #![feature(const_fn_trait_bound)]
 #![feature(generic_const_exprs)]
 #![feature(const_trait_impl)]
-#![feature(maybe_uninit_extra)]
 #![feature(rustc_attrs)]
 #![feature(nonnull_slice_from_raw_parts)]
 #![feature(slice_ptr_len)]
@@ -42,6 +41,8 @@
 #![allow(clippy::blanket_clippy_restriction_lints)]
 #![allow(clippy::undocumented_unsafe_blocks)]
 #![allow(clippy::separated_literal_suffix)]
+#![allow(clippy::single_char_lifetime_names)]
+#![allow(clippy::same_name_method)]
 
 //! [`porus`](self) is a library for competitive programming. Since
 //! most popular online judges accept only a single file within tens

@@ -141,6 +141,7 @@ pub trait List: Collection {
         <Self as ListMut>::get_mut(self, index)
     }
 
+    #[allow(clippy::iter_not_returning_iterator)]
     fn iter_mut(&mut self) -> ListIterMut<'_, Self>
     where
         Self: ListMut,
