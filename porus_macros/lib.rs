@@ -105,7 +105,6 @@ impl VisitMut for TransformForLoop {
             body,
             ..
         }) = node
-
         {
             let stream = if let Some(l) = label {
                 quote! {
