@@ -18,6 +18,8 @@
 #![allow(clippy::indexing_slicing)]
 #![allow(clippy::default_numeric_fallback)]
 #![allow(clippy::integer_arithmetic)]
+#![allow(clippy::option_if_let_else)]
+#![allow(clippy::string_slice)]
 
 extern crate proc_macro;
 extern crate proc_macro2;
@@ -103,6 +105,7 @@ impl VisitMut for TransformForLoop {
             body,
             ..
         }) = node
+
         {
             let stream = if let Some(l) = label {
                 quote! {

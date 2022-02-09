@@ -57,9 +57,9 @@ pub fn parse_scanf(
     create_default_session_if_not_set_then(|_| {
         for p in Parser::new(s.value().as_str(), None, None, false, ParseMode::Format) {
             match p {
-                Piece::String(s) => {
-                    let size = Literal::usize_suffixed(s.len());
-                    let lit = Literal::byte_string(s.as_ref());
+                Piece::String(s1) => {
+                    let size = Literal::usize_suffixed(s1.len());
+                    let lit = Literal::byte_string(s1.as_ref());
                     sizes = quote!( #sizes + #size );
                     format = quote!( concat(#format, *#lit) );
                 }
@@ -152,9 +152,9 @@ pub fn parse_printf(s: LitStr, mut args: Punctuated<Expr, Comma>) -> (TokenStrea
     create_default_session_if_not_set_then(|_| {
         for p in Parser::new(s.value().as_str(), None, None, false, ParseMode::Format) {
             match p {
-                Piece::String(s) => {
-                    let size = Literal::usize_suffixed(s.len());
-                    let lit = Literal::byte_string(s.as_ref());
+                Piece::String(s1) => {
+                    let size = Literal::usize_suffixed(s1.len());
+                    let lit = Literal::byte_string(s1.as_ref());
                     sizes = quote!( #sizes + #size );
                     format = quote!( concat(#format, *#lit) );
                 }
@@ -168,7 +168,7 @@ pub fn parse_printf(s: LitStr, mut args: Punctuated<Expr, Comma>) -> (TokenStrea
                                 None => {
                                     let index = args.len();
                                     named_arguments.insert(name, index);
-                                    let ident = Ident::new(&name.as_str(), Span::call_site());
+                                    let ident = Ident::new(name.as_str(), Span::call_site());
                                     args.push(Expr::Verbatim(quote! { #ident }));
                                     index
                                 }

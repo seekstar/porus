@@ -168,10 +168,6 @@ jobs:
         components: rustc-dev, rust-src
         default: true
         override: true
-    - if: ${{ runner.os == 'Windows' }}
-      run: |
-        copy C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\self-contained\crt2.o C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\crt2.o
-        copy C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\self-contained\dllcrt2.o C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\dllcrt2.o
     - uses: actions-rs/toolchain@v1
       if: ${{ runner.os != 'Windows' }}
       with:
@@ -281,10 +277,6 @@ jobs:
         components: rustc-dev, rust-src
         default: true
         override: true
-    - if: ${{ runner.os == 'Windows' }}
-      run: |
-        copy C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\self-contained\crt2.o C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\crt2.o
-        copy C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\self-contained\dllcrt2.o C:\Rust\.rustup\toolchains\${{ matrix.rust }}-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\lib\dllcrt2.o
     - uses: actions-rs/toolchain@v1
       if: ${{ runner.os != 'Windows' }}
       with:
