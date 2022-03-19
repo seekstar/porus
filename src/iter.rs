@@ -13,10 +13,7 @@ pub trait Iter {
 }
 
 impl<I: Iterator> Iter for I {
-    type Item<'a>
-    where
-        Self: 'a,
-    = <Self as Iterator>::Item;
+    type Item<'a> = <Self as Iterator>::Item where Self: 'a;
 
     fn next(&mut self) -> Option<Self::Item<'_>> {
         Iterator::next(self)
@@ -75,10 +72,7 @@ impl<I: DoubleEndedIter + ExactSizeIter> ExactSizeIter for Rev<I> {
 }
 
 impl<I: DoubleEndedIter> Iter for Rev<I> {
-    type Item<'a>
-    where
-        Self: 'a,
-    = <I as Iter>::Item<'a>;
+    type Item<'a> = <I as Iter>::Item<'a> where Self: 'a;
 
     fn next(&mut self) -> Option<Self::Item<'_>> {
         DoubleEndedIter::next_back(&mut self.it)

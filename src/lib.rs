@@ -4,7 +4,6 @@
 #![feature(is_sorted)]
 #![feature(array_methods)]
 #![feature(associated_type_bounds)]
-#![feature(const_fn_trait_bound)]
 #![feature(generic_const_exprs)]
 #![feature(const_trait_impl)]
 #![feature(rustc_attrs)]

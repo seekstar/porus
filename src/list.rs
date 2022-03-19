@@ -32,10 +32,8 @@ const fn range_right(r: &Range<usize>, m: usize) -> Range<usize> {
 pub trait List: Collection {
     type Elem;
 
-    type Slice<'a>: Slice<&'a Self> + List<Elem = Self::Elem>
-    where
-        Self: 'a,
-    = View<'a, Self>;
+    type Slice<'a>: Slice<&'a Self> + List<Elem = Self::Elem> = View<'a, Self> where
+        Self: 'a;
 
     fn get(&self, index: usize) -> Option<&Self::Elem>;
 
@@ -441,9 +439,9 @@ pub struct ListIterRef<'a, T: 'a + List + ?Sized> {
 
 impl<'a, T: 'a + List + ?Sized> Iter for ListIterRef<'a, T> {
     type Item<'b>
+    = &'b <T as List>::Elem
     where
-        Self: 'b,
-    = &'b <T as List>::Elem;
+        Self: 'b;
 
     fn next(&mut self) -> Option<Self::Item<'_>> {
         (self.start < self.end).then(move || {
@@ -489,9 +487,9 @@ pub struct ListIterMut<'a, T: 'a + ListMut + ?Sized> {
 
 impl<'a, T: 'a + ListMut + ?Sized> Iter for ListIterMut<'a, T> {
     type Item<'b>
+    = &'b mut <T as List>::Elem
     where
-        Self: 'b,
-    = &'b mut <T as List>::Elem;
+        Self: 'b;
 
     fn next(&mut self) -> Option<Self::Item<'_>> {
         (self.start < self.end).then(move || {
@@ -537,9 +535,9 @@ impl<'a, L: 'a + List + ?Sized> Collection for View<'a, L> {
 impl<'a, L: 'a + List + ?Sized> List for View<'a, L> {
     type Elem = <L as List>::Elem;
     type Slice<'b>
+    = View<'b, L>
     where
-        Self: 'b,
-    = View<'b, L>;
+        Self: 'b;
 
     fn get(&self, index: usize) -> Option<&Self::Elem> {
         (index < self.size).then(|| {
@@ -597,9 +595,9 @@ impl<'a, L: 'a + ListMut + ?Sized> Collection for ViewMut<'a, L> {
 impl<'a, L: 'a + ListMut + ?Sized> List for ViewMut<'a, L> {
     type Elem = <L as List>::Elem;
     type Slice<'b>
+    = View<'b, L>
     where
-        Self: 'b,
-    = View<'b, L>;
+        Self: 'b;
 
     fn get(&self, index: usize) -> Option<&Self::Elem> {
         (index < self.size).then(|| {
@@ -627,9 +625,9 @@ impl<'a, 'b, L: 'a + ListMut + ?Sized> Slice<&'a ViewMut<'b, L>> for View<'a, L>
 
 impl<'a, L: 'a + ListMut + ?Sized> ListMut for ViewMut<'a, L> {
     type SliceMut<'b>
+    = ViewMut<'b, L>
     where
-        Self: 'b,
-    = ViewMut<'b, L>;
+        Self: 'b;
 
     fn get_mut(&mut self, index: usize) -> Option<&mut Self::Elem> {
         (index < self.size).then(move || {

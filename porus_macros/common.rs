@@ -68,7 +68,7 @@ pub fn parse_scanf(
                     format: fmt,
                 }) => {
                     let arg: Box<dyn ToTokens> = match pos {
-                        Position::ArgumentNamed(_name) => panic!("named argument not supported"),
+                        Position::ArgumentNamed(_name, _) => panic!("named argument not supported"),
                         Position::ArgumentImplicitlyIs(i) | Position::ArgumentIs(i) => {
                             let lit = Literal::usize_unsuffixed(i);
                             Box::new(quote! { scanf_args.#lit })
@@ -163,7 +163,7 @@ pub fn parse_printf(s: LitStr, mut args: Punctuated<Expr, Comma>) -> (TokenStrea
                     format: fmt,
                 }) => {
                     let arg: Box<dyn ToTokens> = match pos {
-                        Position::ArgumentNamed(name) => {
+                        Position::ArgumentNamed(name, _) => {
                             let lit = Literal::usize_unsuffixed(match named_arguments.get(&name) {
                                 None => {
                                     let index = args.len();
@@ -210,7 +210,9 @@ pub fn parse_printf(s: LitStr, mut args: Punctuated<Expr, Comma>) -> (TokenStrea
                         "f" => {
                             let prec: String = match fmt.precision {
                                 Count::CountIs(n) => format!("{}", n),
-                                Count::CountIsName(_name) => panic!("named argument not supported"),
+                                Count::CountIsName(_name, _) => {
+                                    panic!("named argument not supported")
+                                }
                                 Count::CountIsParam(_i) => panic!("param not supported"),
                                 Count::CountImplied => {
                                     panic!("precision is required by floating number format")
