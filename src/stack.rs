@@ -32,6 +32,7 @@ impl<T> Stack for Vec<T> {
         self.is_empty()
     }
 
+    #[allow(clippy::only_used_in_recursion)]
     fn push(&mut self, elem: Self::Elem) {
         self.push(elem);
     }

@@ -45,6 +45,7 @@ use alloc::collections::BTreeSet;
 impl<T: Ord> Set for BTreeSet<T> {
     type Elem = T;
 
+    #[allow(clippy::only_used_in_recursion)]
     fn contains(&self, elem: &T) -> bool {
         self.contains(elem)
     }

@@ -18,6 +18,7 @@ use core::ptr::NonNull;
 )]
 pub struct Handle(usize);
 
+#[repr(C)]
 union Node<T> {
     data: ManuallyDrop<T>,
     next: Option<Handle>,

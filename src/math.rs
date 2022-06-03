@@ -1,3 +1,4 @@
+#![allow(clippy::pub_use)]
 pub use core::f64::consts::PI;
 
 #[must_use]

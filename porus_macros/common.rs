@@ -143,6 +143,7 @@ pub fn parse_scanf(
 #[allow(clippy::too_many_lines)]
 #[allow(clippy::needless_pass_by_value)]
 pub fn parse_printf(s: LitStr, mut args: Punctuated<Expr, Comma>) -> (TokenStream, TokenStream) {
+    let text = s.value();
     let mut named_arguments = HashMap::new();
 
     let mut sizes = quote! { 1usize };
@@ -150,7 +151,7 @@ pub fn parse_printf(s: LitStr, mut args: Punctuated<Expr, Comma>) -> (TokenStrea
     let mut arguments = quote! {};
 
     create_default_session_if_not_set_then(|_| {
-        for p in Parser::new(s.value().as_str(), None, None, false, ParseMode::Format) {
+        for p in Parser::new(text.as_str(), None, None, false, ParseMode::Format) {
             match p {
                 Piece::String(s1) => {
                     let size = Literal::usize_suffixed(s1.len());
@@ -164,11 +165,11 @@ pub fn parse_printf(s: LitStr, mut args: Punctuated<Expr, Comma>) -> (TokenStrea
                 }) => {
                     let arg: Box<dyn ToTokens> = match pos {
                         Position::ArgumentNamed(name, _) => {
-                            let lit = Literal::usize_unsuffixed(match named_arguments.get(&name) {
+                            let lit = Literal::usize_unsuffixed(match named_arguments.get(name) {
                                 None => {
                                     let index = args.len();
                                     named_arguments.insert(name, index);
-                                    let ident = Ident::new(name.as_str(), Span::call_site());
+                                    let ident = Ident::new(name, Span::call_site());
                                     args.push(Expr::Verbatim(quote! { #ident }));
                                     index
                                 }

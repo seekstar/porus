@@ -74,7 +74,7 @@ pub struct DHeap<E, L: ListMut<Elem = E>, F: Fn(&E, &E) -> bool> {
 }
 
 impl<E, L: ListMut<Elem = E> + Stack<Elem = E>, F: Fn(&E, &E) -> bool> DHeap<E, L, F> {
-    pub fn new(d: usize, list: L, gt: F) -> Self {
+    pub const fn new(d: usize, list: L, gt: F) -> Self {
         Self { d, list, gt }
     }
 }

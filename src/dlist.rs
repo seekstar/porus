@@ -21,7 +21,7 @@ pub struct DoublyLinkedList<T, H: Copy = NonNull<u8>, P: Pool<Node<H, T>, Handle
 }
 
 impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H>> DoublyLinkedList<T, H, P> {
-    pub fn new_in(pool: P) -> Self {
+    pub const fn new_in(pool: P) -> Self {
         Self {
             pool,
             sentinel: Link {
@@ -47,11 +47,11 @@ impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H> + Default> Default for DoublyLi
 }
 
 impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H>> DoublyLinkedList<T, H, P> {
-    pub fn front(&self) -> Option<P::Handle> {
+    pub const fn front(&self) -> Option<P::Handle> {
         self.sentinel.next
     }
 
-    pub fn back(&self) -> Option<P::Handle> {
+    pub const fn back(&self) -> Option<P::Handle> {
         self.sentinel.prev
     }
 

@@ -23,6 +23,7 @@ use alloc::collections::BinaryHeap;
 impl<T: Ord> Heap for BinaryHeap<T> {
     type Elem = T;
 
+    #[allow(clippy::only_used_in_recursion)]
     fn push(&mut self, item: Self::Elem) {
         self.push(item);
     }

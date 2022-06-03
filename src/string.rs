@@ -87,6 +87,7 @@ impl<A: Allocator> Drop for Shared<A> {
     }
 }
 
+#[repr(C)]
 pub union String<A: Allocator = Global>
 where
     Inline<{ size_of::<Shared<A>>() - 1 }>: Sized,

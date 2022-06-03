@@ -5,7 +5,7 @@ pub trait Policy {
 }
 
 #[allow(clippy::exhaustive_structs)]
-pub struct FixedPolicy {}
+pub struct FixedPolicy;
 
 impl Policy for FixedPolicy {
     fn initial(size: usize) -> usize {
@@ -22,7 +22,7 @@ impl Policy for FixedPolicy {
 }
 
 #[allow(clippy::exhaustive_structs)]
-pub struct DefaultPolicy {}
+pub struct DefaultPolicy;
 
 impl Policy for DefaultPolicy {
     fn initial(size: usize) -> usize {

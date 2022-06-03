@@ -16,7 +16,7 @@ pub struct SinglyLinkedList<T, H: Copy = NonNull<u8>, P: Pool<Node<H, T>, Handle
 }
 
 impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H>> SinglyLinkedList<T, H, P> {
-    pub fn new_in(pool: P) -> Self {
+    pub const fn new_in(pool: P) -> Self {
         Self {
             pool,
             sentinel: None,
