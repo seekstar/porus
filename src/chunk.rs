@@ -75,10 +75,12 @@ impl<T, P: Policy, A: Allocator + Default> Default for Chunk<T, P, A> {
 impl<T, P: Policy, A: Allocator> Pool<T> for Chunk<T, P, A> {
     type Handle = Handle;
 
+    #[allow(clippy::explicit_auto_deref)]
     fn get(&self, handle: Handle) -> &T {
         unsafe { &*self.data.get_unchecked_mut(handle.0).as_ref().data }
     }
 
+    #[allow(clippy::explicit_auto_deref)]
     fn get_mut(&mut self, handle: Handle) -> &mut T {
         unsafe { &mut *self.data.get_unchecked_mut(handle.0).as_mut().data }
     }

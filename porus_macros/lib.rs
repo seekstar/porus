@@ -92,7 +92,7 @@ pub fn sscanf(stream: TokenStream) -> TokenStream {
     .into()
 }
 
-struct TransformForLoop {}
+struct TransformForLoop;
 
 impl VisitMut for TransformForLoop {
     #[allow(clippy::pattern_type_mismatch)]

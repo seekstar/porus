@@ -65,12 +65,7 @@ pub trait List: Collection {
         Self::Elem: PartialEq,
     {
         let size = Collection::size(self);
-        for i in 0..size {
-            if List::get(self, i).unwrap() == elem {
-                return Some(i);
-            }
-        }
-        None
+        (0..size).find(|&i| List::get(self, i).unwrap() == elem)
     }
 
     fn bsearch(&self, elem: &Self::Elem) -> Range<usize>
