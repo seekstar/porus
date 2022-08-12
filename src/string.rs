@@ -1,6 +1,7 @@
 use crate::fmt::Bytes;
 use crate::libc::scanf;
-use alloc::alloc::{Allocator, Global, Layout};
+use alloc::alloc::Global;
+use core::alloc::{Allocator, Layout};
 use core::cmp::Ordering;
 use core::convert::TryInto;
 use core::mem::{forget, size_of, transmute_copy, ManuallyDrop};

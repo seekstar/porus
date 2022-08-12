@@ -1,7 +1,8 @@
 use crate::allocator::{allocate, deallocate, grow_to};
 use crate::capacity::{DefaultPolicy, Policy};
 use crate::pool::Pool;
-use alloc::alloc::{Allocator, Global};
+use alloc::alloc::Global;
+use core::alloc::Allocator;
 use core::marker::PhantomData;
 use core::mem::ManuallyDrop;
 use core::ptr::NonNull;

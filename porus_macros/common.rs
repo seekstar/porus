@@ -66,9 +66,10 @@ pub fn parse_scanf(
                 Piece::NextArgument(Argument {
                     position: pos,
                     format: fmt,
+                    ..
                 }) => {
                     let arg: Box<dyn ToTokens> = match pos {
-                        Position::ArgumentNamed(_name, _) => panic!("named argument not supported"),
+                        Position::ArgumentNamed(_name) => panic!("named argument not supported"),
                         Position::ArgumentImplicitlyIs(i) | Position::ArgumentIs(i) => {
                             let lit = Literal::usize_unsuffixed(i);
                             Box::new(quote! { scanf_args.#lit })
@@ -162,9 +163,10 @@ pub fn parse_printf(s: LitStr, mut args: Punctuated<Expr, Comma>) -> (TokenStrea
                 Piece::NextArgument(Argument {
                     position: pos,
                     format: fmt,
+                    ..
                 }) => {
                     let arg: Box<dyn ToTokens> = match pos {
-                        Position::ArgumentNamed(name, _) => {
+                        Position::ArgumentNamed(name) => {
                             let lit = Literal::usize_unsuffixed(match named_arguments.get(name) {
                                 None => {
                                     let index = args.len();

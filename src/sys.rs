@@ -1,5 +1,5 @@
 use crate::libc;
-use alloc::alloc::{GlobalAlloc, Layout};
+use core::alloc::{GlobalAlloc, Layout};
 use core::cmp::min;
 use core::ptr::{copy_nonoverlapping, null_mut};
 

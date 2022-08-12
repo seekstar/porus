@@ -1,4 +1,4 @@
-use alloc::alloc::{Allocator, Layout};
+use core::alloc::{Allocator, Layout};
 use core::ptr::{read, write, NonNull};
 
 pub trait Pool<T> {

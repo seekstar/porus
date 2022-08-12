@@ -20,6 +20,7 @@
 #![allow(clippy::integer_arithmetic)]
 #![allow(clippy::option_if_let_else)]
 #![allow(clippy::string_slice)]
+#![allow(clippy::arithmetic)]
 
 extern crate proc_macro;
 extern crate proc_macro2;
