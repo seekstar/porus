@@ -216,6 +216,7 @@ pub fn parse_printf(s: LitStr, mut args: Punctuated<Expr, Comma>) -> (TokenStrea
                                 Count::CountIsName(_name, _) => {
                                     panic!("named argument not supported")
                                 }
+                                Count::CountIsStar(_) => panic!("star not supported"),
                                 Count::CountIsParam(_i) => panic!("param not supported"),
                                 Count::CountImplied => {
                                     panic!("precision is required by floating number format")
