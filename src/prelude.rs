@@ -1,5 +1,6 @@
 #![allow(clippy::pub_use)]
 
+pub use alloc::boxed::Box;
 pub use alloc::collections::BTreeMap;
 pub use alloc::collections::BTreeSet;
 pub use alloc::collections::BinaryHeap;
