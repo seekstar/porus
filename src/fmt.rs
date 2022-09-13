@@ -86,12 +86,9 @@ pub fn interleave<T: Clone, F: FnMut(T), I: Iterator<Item = T>, S: FnMut()>(
     mut sep: S,
     mut f: F,
 ) {
-    it.map(Some).intersperse(None).for_each(|e| match e {
-        Some(x) => {
-            f(x);
-        }
-        None => {
-            sep();
-        }
-    });
+    it.map(Some).intersperse(None).for_each(|e| e.map_or_else(|| {
+        sep();
+    }, |x| {
+        f(x);
+    }));
 }

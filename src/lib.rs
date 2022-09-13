@@ -42,7 +42,7 @@
 #![allow(clippy::separated_literal_suffix)]
 #![allow(clippy::single_char_lifetime_names)]
 #![allow(clippy::same_name_method)]
-#![allow(clippy::arithmetic)]
+#![allow(clippy::arithmetic_side_effects)]
 
 //! [`porus`](self) is a library for competitive programming. Since
 //! most popular online judges accept only a single file within tens

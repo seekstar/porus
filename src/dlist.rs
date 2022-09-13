@@ -67,10 +67,7 @@ impl<T, H: Copy, P: Pool<Node<H, T>, Handle = H>> DoublyLinkedList<T, H, P> {
     }
 
     fn get_link(&self, handle: Option<P::Handle>) -> &Link<P::Handle> {
-        match handle {
-            None => &self.sentinel,
-            Some(h) => &pool::get(&self.pool, h).link,
-        }
+        handle.map_or(&self.sentinel, |h| &pool::get(&self.pool, h).link)
     }
 
     fn get_node_mut(&mut self, handle: Option<P::Handle>) -> &mut Link<P::Handle> {
