@@ -85,7 +85,7 @@ def rustc_argv_prefix(mode, target, filename, *libs):
         yield from ('-C', 'debuginfo=2')
     if mode == 'release':
         yield from ("--crate-type", "cdylib")
-        if LLVMBC and target is not None:
+        if LLVMBC:
             yield from ("--emit", "llvm-bc")
         else:
             yield from ("--emit", "asm")
@@ -171,6 +171,7 @@ PRELUDE = b'''#![feature(proc_macro_hygiene)]
 #![feature(array_methods)]
 #![feature(exclusive_range_pattern)]
 #![feature(custom_inner_attributes)]
+#![feature(generic_const_exprs)]
 #![cfg_attr(not(debug_assertions), no_std)]
 extern crate porus;
 #[porus_macros::transform_forloop]
@@ -207,7 +208,7 @@ def get_submit_env(name, envs):
 def rustc_expand_argv(mode, target, filename, *libs):
     yield from rustc_argv_prefix(mode, target, filename, *libs)
     yield from ("-Z", "unstable-options")
-    yield "--pretty=expanded"
+    yield from ("-Z", "unpretty=expanded")
     yield "-"
 
 @command.add_command
@@ -231,6 +232,6 @@ if LLVMBC:
 
     def dest_filename(filename, mode, target):
         name = _dest_filename(filename, mode, target)
-        if mode == 'release' and target is not None:
+        if mode == 'release':
             name = name[:-2] + ".bc"
         return name
