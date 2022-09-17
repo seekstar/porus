@@ -11,7 +11,6 @@
 #![feature(slice_ptr_len)]
 #![feature(slice_ptr_get)]
 #![feature(ptr_as_uninit)]
-#![feature(generic_associated_types)]
 #![feature(associated_type_defaults)]
 #![feature(iter_intersperse)]
 #![cfg_attr(feature = "online-judge", feature(lang_items))]

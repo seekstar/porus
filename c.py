@@ -172,6 +172,8 @@ PRELUDE = b'''#![feature(proc_macro_hygiene)]
 #![feature(exclusive_range_pattern)]
 #![feature(custom_inner_attributes)]
 #![feature(generic_const_exprs)]
+#![deny(stable_features)]
+#![allow(incomplete_features)]
 #![cfg_attr(not(debug_assertions), no_std)]
 extern crate porus;
 #[porus_macros::transform_forloop]
