@@ -21,7 +21,7 @@
 #![allow(clippy::integer_arithmetic)]
 #![allow(clippy::option_if_let_else)]
 #![allow(clippy::string_slice)]
-#![allow(clippy::arithmetic)]
+#![allow(clippy::arithmetic_side_effects)]
 
 extern crate proc_macro;
 extern crate proc_macro2;
