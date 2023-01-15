@@ -10,7 +10,7 @@ don't have to copy and paste library code into your solution.
 
 ## Requirements
 
-* Rust nightly (components: rustc-dev, rust-src)
+* Rust nightly (components: rustc-dev, rust-src, llvm-tools)
 * xargo
 * Python 3.7+
 

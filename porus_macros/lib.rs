@@ -1,4 +1,5 @@
 #![feature(rustc_private)]
+#![feature(box_patterns)]
 #![deny(clippy::all)]
 #![deny(clippy::pedantic)]
 #![deny(clippy::nursery)]
@@ -29,6 +30,7 @@ extern crate proc_macro2;
 extern crate syn;
 #[macro_use]
 extern crate quote;
+extern crate rustc_driver;
 extern crate rustc_parse_format;
 extern crate rustc_span;
 

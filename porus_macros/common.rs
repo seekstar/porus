@@ -63,7 +63,7 @@ pub fn parse_scanf(
                     sizes = quote!( #sizes + #size );
                     format = quote!( concat(#format, *#lit) );
                 }
-                Piece::NextArgument(Argument {
+                Piece::NextArgument(box Argument {
                     position: pos,
                     format: fmt,
                     ..
@@ -160,7 +160,7 @@ pub fn parse_printf(s: LitStr, mut args: Punctuated<Expr, Comma>) -> (TokenStrea
                     sizes = quote!( #sizes + #size );
                     format = quote!( concat(#format, *#lit) );
                 }
-                Piece::NextArgument(Argument {
+                Piece::NextArgument(box Argument {
                     position: pos,
                     format: fmt,
                     ..

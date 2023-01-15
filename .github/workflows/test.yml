@@ -41,7 +41,7 @@ jobs:
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: nightly
-        components: clippy, rustc-dev
+        components: clippy, rustc-dev, llvm-tools
         default: true
         override: true
 
@@ -70,14 +70,14 @@ jobs:
       if: ${{ runner.os == 'Windows' }}
       with:
         toolchain: ${{ matrix.rust }}-gnu
-        components: rustc-dev
+        components: rustc-dev, llvm-tools
         default: true
         override: true
     - uses: actions-rs/toolchain@v1
       if: ${{ runner.os != 'Windows' }}
       with:
         toolchain: ${{ matrix.rust }}
-        components: rustc-dev
+        components: rustc-dev, llvm-tools
         default: true
         override: true
     - uses: actions-rs/cargo@v1
@@ -113,14 +113,14 @@ jobs:
       if: ${{ runner.os == 'Windows' }}
       with:
         toolchain: ${{ matrix.rust }}-gnu
-        components: rustc-dev
+        components: rustc-dev, llvm-tools
         default: true
         override: true
     - uses: actions-rs/toolchain@v1
       if: ${{ runner.os != 'Windows' }}
       with:
         toolchain: ${{ matrix.rust }}
-        components: rustc-dev
+        components: rustc-dev, llvm-tools
         default: true
         override: true
     - uses: actions-rs/cargo@v1
@@ -165,14 +165,14 @@ jobs:
       if: ${{ runner.os == 'Windows' }}
       with:
         toolchain: ${{ matrix.rust }}-gnu
-        components: rustc-dev, rust-src
+        components: rustc-dev, rust-src, llvm-tools
         default: true
         override: true
     - uses: actions-rs/toolchain@v1
       if: ${{ runner.os != 'Windows' }}
       with:
         toolchain: ${{ matrix.rust }}
-        components: rustc-dev, rust-src
+        components: rustc-dev, rust-src, llvm-tools
         default: true
         override: true
     - uses: actions-rs/cargo@v1
@@ -231,14 +231,14 @@ jobs:
       if: ${{ runner.os == 'Windows' }}
       with:
         toolchain: ${{ matrix.rust }}-gnu
-        components: rustc-dev, rust-src
+        components: rustc-dev, rust-src, llvm-tools
         default: true
         override: true
     - uses: actions-rs/toolchain@v1
       if: ${{ runner.os != 'Windows' }}
       with:
         toolchain: ${{ matrix.rust }}
-        components: rustc-dev, rust-src
+        components: rustc-dev, rust-src, llvm-tools
         default: true
         override: true
     - uses: actions-rs/cargo@v1
@@ -274,14 +274,14 @@ jobs:
       if: ${{ runner.os == 'Windows' }}
       with:
         toolchain: ${{ matrix.rust }}-gnu
-        components: rustc-dev, rust-src
+        components: rustc-dev, rust-src, llvm-tools
         default: true
         override: true
     - uses: actions-rs/toolchain@v1
       if: ${{ runner.os != 'Windows' }}
       with:
         toolchain: ${{ matrix.rust }}
-        components: rustc-dev, rust-src
+        components: rustc-dev, rust-src, llvm-tools
         default: true
         override: true
     - uses: actions-rs/cargo@v1
