@@ -288,7 +288,9 @@ where
     pub fn scan(self) -> String<A> {
         let s = unsafe { self.counter.as_ptr().add(1) }.cast::<u8>();
         let (mut start, mut end): (i32, i32) = Default::default();
-        unsafe { scanf(b" %n%s%n\0".as_ptr(), &mut start, s, &mut end) };
+        unsafe {
+            scanf(b" %n%s%n\0".as_ptr(), &mut start, s, &mut end);
+        }
         self.to_string(i32::wrapping_sub(end, start).try_into().unwrap())
     }
 }

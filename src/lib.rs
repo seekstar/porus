@@ -43,6 +43,7 @@
 #![allow(clippy::same_name_method)]
 #![allow(clippy::arithmetic_side_effects)]
 #![allow(clippy::missing_trait_methods)]
+#![allow(clippy::semicolon_outside_block)]
 
 //! [`porus`](self) is a library for competitive programming. Since
 //! most popular online judges accept only a single file within tens
