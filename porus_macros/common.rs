@@ -115,7 +115,7 @@ pub fn parse_scanf(
                             count += 1;
                         }
                         x => {
-                            panic!("unknown format: {}", x);
+                            panic!("unknown format: {x}";
                         }
                     };
                 }
@@ -212,7 +212,7 @@ pub fn parse_printf(s: LitStr, mut args: Punctuated<Expr, Comma>) -> (TokenStrea
                         }
                         "f" => {
                             let prec: String = match fmt.precision {
-                                Count::CountIs(n) => format!("{}", n),
+                                Count::CountIs(n) => format!("{n}"),
                                 Count::CountIsName(_name, _) => {
                                     panic!("named argument not supported")
                                 }
@@ -236,7 +236,7 @@ pub fn parse_printf(s: LitStr, mut args: Punctuated<Expr, Comma>) -> (TokenStrea
                             arguments = quote!( #arguments , #arg );
                         }
                         x => {
-                            panic!("unknown format: {}", x);
+                            panic!("unknown format: {x}");
                         }
                     };
                 }
