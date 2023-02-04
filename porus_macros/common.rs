@@ -115,7 +115,7 @@ pub fn parse_scanf(
                             count += 1;
                         }
                         x => {
-                            panic!("unknown format: {x}";
+                            panic!("unknown format: {x}");
                         }
                     };
                 }
