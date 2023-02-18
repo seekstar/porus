@@ -10,7 +10,7 @@ edition = '2021'
 porus_macros = { path = "porus_macros" }
 
 [dev-dependencies]
-proptest = "1.0.0"
+proptest = "1.1.0"
 
 [features]
 local-judge = []
