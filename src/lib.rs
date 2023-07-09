@@ -7,7 +7,6 @@
 #![feature(generic_const_exprs)]
 #![feature(const_trait_impl)]
 #![feature(rustc_attrs)]
-#![feature(nonnull_slice_from_raw_parts)]
 #![feature(slice_ptr_len)]
 #![feature(slice_ptr_get)]
 #![feature(ptr_as_uninit)]
